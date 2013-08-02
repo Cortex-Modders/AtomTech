@@ -1,6 +1,7 @@
 package cortexmodders.atomtech;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraftforge.common.Configuration;
 import cortexmodders.atomtech.handlers.PacketHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -17,7 +18,7 @@ public class AtomTech
 {
 	public static CreativeTabs atomTab = new ATCreativeTab("AtomTech");
 	
-	@SidedProxy(clientSide = "cortexmodders.atomtech.ClientProxy", serverSide = "cortexmodders.atomtech.CommonProxy")
+	@SidedProxy(clientSide = "cortexmodders.atomtech.client.ClientProxy", serverSide = "cortexmodders.atomtech.CommonProxy")
 	public static CommonProxy proxy;
 	@Instance
 	public static AtomTech instance;
@@ -25,7 +26,8 @@ public class AtomTech
 	@EventHandler
 	public void preLoad(FMLPreInitializationEvent event)
 	{
-		
+		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+		config.load();
 	}
 	
 	@EventHandler

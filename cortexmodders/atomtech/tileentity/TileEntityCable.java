@@ -19,7 +19,12 @@ public class TileEntityCable extends TileEntity implements IAtomicPower
 		super.updateEntity();
 		if(powerLevel > 0)
 		{
-			transmitPower(xCoord, yCoord, zCoord);
+			sendPower(xCoord + 1, yCoord, zCoord);
+			sendPower(xCoord - 1, yCoord, zCoord);
+			sendPower(xCoord, yCoord + 1, zCoord);
+			sendPower(xCoord, yCoord - 1, zCoord);
+			sendPower(xCoord, yCoord, zCoord + 1);
+			sendPower(xCoord, yCoord, zCoord - 1);
 		}
 	}
 	
@@ -81,12 +86,15 @@ public class TileEntityCable extends TileEntity implements IAtomicPower
 	@Override
 	public void sendPower(int x, int y, int z)
 	{
-		Vec3 powerSource = Vec3.createVectorHelper(xCoord, yCoord, zCoord);
-		if(worldObj.getBlockTileEntity(x, y, z) instanceof IAtomicPower)
+		if(sourceLoc.xCoord != x && sourceLoc.yCoord != y && sourceLoc.zCoord != z)
 		{
-			IAtomicPower target = (IAtomicPower) worldObj.getBlockTileEntity(x, y, z);
-			target.onPowerRecieved(powerSource);
-			resetPowerLevel();
+			Vec3 powerSource = Vec3.createVectorHelper(xCoord, yCoord, zCoord);
+			if(worldObj.getBlockTileEntity(x, y, z) instanceof IAtomicPower)
+			{
+				IAtomicPower target = (IAtomicPower) worldObj.getBlockTileEntity(x, y, z);
+				target.onPowerRecieved(powerSource);
+				resetPowerLevel();
+			}
 		}
 	}
 }
