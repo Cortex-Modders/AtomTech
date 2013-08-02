@@ -1,46 +1,22 @@
 package cortexmodders.atomtech.tileentity;
 
-import cortexmodders.atomtech.power.IAtomicPower;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
+import cortexmodders.atomtech.power.IAtomicPower;
 
-public class TileEntityCable extends TileEntity implements IAtomicPower
+public class TileEntityBattery extends TileEntity implements IAtomicPower
 {
 	private int powerLevel = 0;
-	private Vec3 sourceLoc = null;
 	
 	@Override
 	public void updateEntity()
 	{
-		super.updateEntity();
-		if(powerLevel > 0)
-		{
-			sendPower(xCoord + 1, yCoord, zCoord);
-			sendPower(xCoord - 1, yCoord, zCoord);
-			sendPower(xCoord, yCoord + 1, zCoord);
-			sendPower(xCoord, yCoord - 1, zCoord);
-			sendPower(xCoord, yCoord, zCoord + 1);
-			sendPower(xCoord, yCoord, zCoord - 1);
-		}
-	}
-	
-	public void addPower(int power)
-	{
-		powerLevel += power;
-	}
-	
-	public int getPower()
-	{
-		return powerLevel;
-	}
-	
-	public void resetPowerLevel()
-	{
-		powerLevel = 0;
+		if(!worldObj.isRemote)
+			System.out.println(powerLevel);
 	}
 	
 	@Override
@@ -63,7 +39,6 @@ public class TileEntityCable extends TileEntity implements IAtomicPower
 	{
 		super.readFromNBT(tag);
 		this.powerLevel = tag.getInteger("power");
-		this.sourceLoc = Vec3.createVectorHelper(tag.getDouble("x"), tag.getDouble("y"), tag.getDouble("z"));
 	}
 	
 	@Override
@@ -71,9 +46,6 @@ public class TileEntityCable extends TileEntity implements IAtomicPower
 	{
 		super.writeToNBT(tag);
 		tag.setInteger("power", powerLevel);
-		tag.setDouble("x", sourceLoc.xCoord);
-		tag.setDouble("y", sourceLoc.yCoord);
-		tag.setDouble("z", sourceLoc.zCoord);
 	}
 	
 	@Override
@@ -83,26 +55,33 @@ public class TileEntityCable extends TileEntity implements IAtomicPower
 		if(source != null && source.canSendPower())
 		{
 			addPower(source.getPower());
-			this.sourceLoc = sourceLoc;
 		}
 	}
 	
 	@Override
 	public void sendPower(int x, int y, int z)
 	{
-		if(sourceLoc.xCoord != x && sourceLoc.yCoord != y && sourceLoc.zCoord != z)
+		Vec3 powerSource = Vec3.createVectorHelper(xCoord, yCoord, zCoord);
+		if(worldObj.getBlockTileEntity(x, y, z) instanceof IAtomicPower)
 		{
-			Vec3 powerSource = Vec3.createVectorHelper(xCoord, yCoord, zCoord);
-			if(worldObj.getBlockTileEntity(x, y, z) instanceof IAtomicPower)
+			IAtomicPower target = (IAtomicPower) worldObj.getBlockTileEntity(x, y, z);
+			if(target.canRecievePower())
 			{
-				IAtomicPower target = (IAtomicPower) worldObj.getBlockTileEntity(x, y, z);
-				if(target.canRecievePower())
-				{
-					target.onPowerRecieved(powerSource);
-					resetPowerLevel();
-				}
+				target.onPowerRecieved(powerSource);
 			}
 		}
+	}
+	
+	@Override
+	public int getPower()
+	{
+		return 0;
+	}
+	
+	@Override
+	public void addPower(int power)
+	{
+		powerLevel += power;
 	}
 	
 	@Override
