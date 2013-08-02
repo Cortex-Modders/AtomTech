@@ -16,8 +16,8 @@ public class TileEntityCoalGenerator extends TileEntity implements IAtomicPower
 	@Override
 	public void updateEntity()
 	{
-		if(!worldObj.isRemote)
-			System.out.println(fuelLevel);
+		//if(!worldObj.isRemote)
+			//System.out.println(fuelLevel);
 		if(fuelLevel > 0)
 		{
 			if(fuelLevel % 10 == 0)
