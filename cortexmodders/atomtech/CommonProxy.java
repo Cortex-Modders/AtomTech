@@ -4,6 +4,10 @@ import net.minecraftforge.common.Configuration;
 import cortexmodders.atomtech.element.ElementCollection;
 import cortexmodders.atomtech.lib.ATResources;
 import cortexmodders.atomtech.lib.BlockIds;
+import cortexmodders.atomtech.tileentity.TileEntityBattery;
+import cortexmodders.atomtech.tileentity.TileEntityCable;
+import cortexmodders.atomtech.tileentity.TileEntityCoalGenerator;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CommonProxy
 {
@@ -19,4 +23,20 @@ public class CommonProxy
 		BlockIds.COAL_GENERATOR = config.getBlock("coalGenerator", BlockIds.COAL_GENERATOR_DEF).getInt();
 		BlockIds.BATTERY = config.getBlock("battery", BlockIds.BATTERY_DEF).getInt();
 	}
+	
+	public void registerTileEntities() {
+	    GameRegistry.registerTileEntity(TileEntityCable.class, "tileEntityCable");
+        GameRegistry.registerTileEntity(TileEntityCoalGenerator.class, "tileEntityCoalGenerator");
+        GameRegistry.registerTileEntity(TileEntityBattery.class, "tileEntityBattery");
+	}
+	
+	public void registerEntities() {
+	    
+	}
+	
+	public void registerRenderers() {
+	    // stub.
+	}
+	
+	
 }

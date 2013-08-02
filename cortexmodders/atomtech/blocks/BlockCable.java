@@ -1,15 +1,14 @@
 package cortexmodders.atomtech.blocks;
 
-import cortexmodders.atomtech.AtomTech;
-import cortexmodders.atomtech.power.IAtomicPower;
-import cortexmodders.atomtech.tileentity.TileEntityCable;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import cortexmodders.atomtech.AtomTech;
+import cortexmodders.atomtech.power.IAtomicPower;
+import cortexmodders.atomtech.tileentity.TileEntityCable;
 
 public class BlockCable extends BlockContainer
 {

@@ -1,14 +1,13 @@
 package cortexmodders.atomtech.tileentity;
 
-import cortexmodders.atomtech.power.IAtomicPower;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
+import cortexmodders.atomtech.power.IAtomicPower;
 
-public class TileEntityCable extends TileEntity implements IAtomicPower
+public class TileEntityCable extends TilePoweredBase implements IAtomicPower
 {
 	private int powerLevel = 0;
 	private Vec3 sourceLoc = null;
@@ -28,11 +27,6 @@ public class TileEntityCable extends TileEntity implements IAtomicPower
 			sendPower(xCoord, yCoord, zCoord + 1);
 			sendPower(xCoord, yCoord, zCoord - 1);
 		}
-	}
-	
-	public void addPower(int power)
-	{
-		powerLevel += power;
 	}
 	
 	public int getPower()

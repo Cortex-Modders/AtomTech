@@ -1,14 +1,13 @@
 package cortexmodders.atomtech.tileentity;
 
-import cortexmodders.atomtech.power.IAtomicPower;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
+import cortexmodders.atomtech.power.IAtomicPower;
 
-public class TileEntityCoalGenerator extends TileEntity implements IAtomicPower
+public class TileEntityCoalGenerator extends TilePoweredBase implements IAtomicPower
 {
 	private int fuelLevel = 0;
 	private byte powerLevel = 0;
@@ -37,6 +36,10 @@ public class TileEntityCoalGenerator extends TileEntity implements IAtomicPower
 		{
 			fuelLevel = 0;
 		}
+	}
+	
+	public void addFuel(int fuel) {
+	    fuelLevel += fuel;
 	}
 	
 	@Override
@@ -95,12 +98,6 @@ public class TileEntityCoalGenerator extends TileEntity implements IAtomicPower
 	public int getPower()
 	{
 		return powerLevel;
-	}
-	
-	@Override
-	public void addPower(int power)
-	{
-		fuelLevel += power;
 	}
 	
 	@Override

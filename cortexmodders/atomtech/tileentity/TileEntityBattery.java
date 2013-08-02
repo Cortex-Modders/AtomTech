@@ -4,11 +4,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import cortexmodders.atomtech.power.IAtomicPower;
 
-public class TileEntityBattery extends TileEntity implements IAtomicPower
+public class TileEntityBattery extends TilePoweredBase
 {
 	private int powerLevel = 0;
 	
@@ -70,18 +69,6 @@ public class TileEntityBattery extends TileEntity implements IAtomicPower
 				target.onPowerRecieved(powerSource);
 			}
 		}
-	}
-	
-	@Override
-	public int getPower()
-	{
-		return 0;
-	}
-	
-	@Override
-	public void addPower(int power)
-	{
-		powerLevel += power;
 	}
 	
 	@Override
