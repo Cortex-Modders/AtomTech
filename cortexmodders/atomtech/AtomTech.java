@@ -20,6 +20,7 @@ public class AtomTech
 	
 	@SidedProxy(clientSide = "cortexmodders.atomtech.client.ClientProxy", serverSide = "cortexmodders.atomtech.CommonProxy")
 	public static CommonProxy proxy;
+	
 	@Instance
 	public static AtomTech instance;
 	
@@ -33,7 +34,7 @@ public class AtomTech
 	@EventHandler
 	public void load(FMLInitializationEvent event)
 	{
-		
+		proxy.addElementsJson();
 	}
 	
 	@EventHandler
