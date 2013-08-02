@@ -14,4 +14,9 @@ public class AtomTab extends CreativeTabs
 		// block id of block that is on the tab
 		return 54;
 	}
+	
+	public String getTranslatedTabLabel()
+	{
+		return "Atom Tech";
+	}
 }
