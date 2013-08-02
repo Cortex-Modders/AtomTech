@@ -10,6 +10,11 @@ import cortexmodders.atomtech.power.IAtomicPower;
 public class TileEntityLaptop extends TilePoweredBase
 {
     public boolean lidClosed;
+    public boolean isBroken = false;
+    /**
+     * condition of laptop. 0 = best, 1 = ok, 2 = broken.
+     */
+    public int condition = 0;
     
     public TileEntityLaptop()
     {
@@ -41,12 +46,36 @@ public class TileEntityLaptop extends TilePoweredBase
     public void readFromNBT(NBTTagCompound tag)
     {
         super.readFromNBT(tag);
+        lidClosed = tag.getBoolean("lidClosed");
+        isBroken = tag.getBoolean("isBroken");
+        condition = tag.getInteger("condition");
     }
     
     @Override
     public void writeToNBT(NBTTagCompound tag)
     {
         super.writeToNBT(tag);
+        tag.setBoolean("lidClosed", lidClosed);
+        tag.setBoolean("isBroken", isBroken);
+        tag.setInteger("condition", condition);
+    }
+    
+    /**
+     * makes the laptop more broken.
+     * 
+     */
+    public void degradeCondition() {
+        if(this.condition != 2)
+            this.condition++;
+    }
+    
+    /**
+     * returns if laptop is broken or not.
+     * 
+     * @return
+     */
+    public boolean isBroken() {
+        return this.condition == 2;
     }
     
     // Start of power methods.
