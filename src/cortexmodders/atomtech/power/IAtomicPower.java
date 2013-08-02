@@ -1,7 +1,11 @@
 package cortexmodders.atomtech.power;
 
+import net.minecraft.util.Vec3;
+
 public interface IAtomicPower
 {
-	void onPowerRecieved(int power);
-	int sendPower();
+	void onPowerRecieved(Vec3 sourceLoc);
+	void sendPower(int x, int y, int z);
+	int getPower();
+	void addPower(int power);
 }
