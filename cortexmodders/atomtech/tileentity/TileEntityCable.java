@@ -16,6 +16,8 @@ public class TileEntityCable extends TileEntity implements IAtomicPower
 	@Override
 	public void updateEntity()
 	{
+		if(!worldObj.isRemote)
+			System.out.println(powerLevel);
 		super.updateEntity();
 		if(powerLevel > 0)
 		{
@@ -63,7 +65,7 @@ public class TileEntityCable extends TileEntity implements IAtomicPower
 	{
 		super.readFromNBT(tag);
 		this.powerLevel = tag.getInteger("power");
-		this.sourceLoc = Vec3.createVectorHelper(tag.getDouble("x"), tag.getDouble("y"), tag.getDouble("z"));
+		this.sourceLoc = Vec3.createVectorHelper(tag.getDouble("xv"), tag.getDouble("yv"), tag.getDouble("zv"));
 	}
 	
 	@Override
@@ -71,9 +73,12 @@ public class TileEntityCable extends TileEntity implements IAtomicPower
 	{
 		super.writeToNBT(tag);
 		tag.setInteger("power", powerLevel);
-		tag.setDouble("x", sourceLoc.xCoord);
-		tag.setDouble("y", sourceLoc.yCoord);
-		tag.setDouble("z", sourceLoc.zCoord);
+		if(sourceLoc != null)
+		{
+			tag.setDouble("xv", sourceLoc.xCoord);
+			tag.setDouble("yv", sourceLoc.yCoord);
+			tag.setDouble("zv", sourceLoc.zCoord);
+		}
 	}
 	
 	@Override
