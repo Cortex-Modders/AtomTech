@@ -1,5 +1,6 @@
 package cortexmodders.atomtech;
 
+import net.minecraft.creativetab.CreativeTabs;
 import cortexmodders.atomtech.handlers.PacketHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -14,10 +15,12 @@ import cpw.mods.fml.common.network.NetworkMod;
 @NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = {"AtomTech"}, packetHandler = PacketHandler.class)
 public class AtomTech
 {
+	public static CreativeTabs atomTab = new AtomTab("AtomTech");
+	
 	@SidedProxy(clientSide = "cortexmodders.atomtech.ClientProxy", serverSide = "cortexmodders.atomtech.CommonProxy")
 	public static CommonProxy proxy;
 	@Instance
-	public static CodeLyoko instance;
+	public static AtomTech instance;
 	
 	@EventHandler
 	public void preLoad(FMLPreInitializationEvent event)
@@ -26,13 +29,13 @@ public class AtomTech
 	}
 	
 	@EventHandler
-	public void preLoad(FMLInitializationEvent event)
+	public void load(FMLInitializationEvent event)
 	{
 		
 	}
 	
 	@EventHandler
-	public void preLoad(FMLPostInitializationEvent event)
+	public void postLoad(FMLPostInitializationEvent event)
 	{
 		
 	}
