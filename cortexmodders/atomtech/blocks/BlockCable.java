@@ -20,42 +20,6 @@ public class BlockCable extends BlockContainer
 	}
 	
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, int neighborId)
-	{
-		if(world.getBlockTileEntity(x, y, z) instanceof TileEntityCable)
-		{
-			TileEntityCable cable = (TileEntityCable)world.getBlockTileEntity(x, y, z);
-			if(neighborId == this.blockID && cable != null)
-			{
-				int powerLevelPre = cable.getPower();
-				syncBlock(world, x + 1, y, z, cable);
-				syncBlock(world, x - 1, y, z, cable);
-				syncBlock(world, x, y + 1, z, cable);
-				syncBlock(world, x, y - 1, z, cable);
-				syncBlock(world, x, y, z + 1, cable);
-				syncBlock(world, x, y, z - 1, cable);
-				int powerLevelPost = cable.getPower();
-				if(powerLevelPre != powerLevelPost)
-				{
-					world.notifyBlocksOfNeighborChange(x, y, z, this.blockID);
-				}
-			}
-		}
-	}
-	
-	public void syncBlock(World world, int x, int y, int z, TileEntityCable localCable)
-	{
-		if(world.getBlockId(x, y, z) == this.blockID && world.getBlockTileEntity(x, y, z)  instanceof TileEntityCable)
-		{
-			TileEntityCable sourceCable = (TileEntityCable)world.getBlockTileEntity(x, y, z);
-			if(sourceCable != null && sourceCable.getPower() > 0 && localCable.getPower() < sourceCable.getPower())
-			{
-				localCable.setPower(sourceCable.getPower());
-			}
-		}
-	}
-	
-	@Override
 	public TileEntity createNewTileEntity(World world)
 	{
 		return new TileEntityCable();
