@@ -6,5 +6,5 @@ public class ItemIds {
 	public static final int EXAMPLE_ITEM_DEF = 0;
 	
 	// actual values (from config file)
-	public static final int EXAMPLE_ITEM = 0;
+	public static int EXAMPLE_ITEM;
 }

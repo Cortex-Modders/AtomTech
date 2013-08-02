@@ -13,9 +13,9 @@ import net.minecraft.world.World;
 
 public class BlockCable extends BlockContainer
 {
-	protected BlockCable(int par1, Material par2Material)
+	protected BlockCable(int par1)
 	{
-		super(par1, par2Material);
+		super(par1, Material.cloth);
 		this.setCreativeTab(AtomTech.atomTab);
 	}
 	
@@ -28,7 +28,7 @@ public class BlockCable extends BlockContainer
 	@Override
 	public int getRenderBlockPass()
 	{
-		return -1;
+		return 0;
 	}
 	
 	@Override
@@ -43,10 +43,9 @@ public class BlockCable extends BlockContainer
 		return false;
 	}
 	
-	private boolean validBlock(int blockId)
+	private boolean validBlock(TileEntity tile)
 	{
-		Block block = Block.blocksList[blockId];
-		if(block != null && block instanceof IAtomicPower)
+		if(tile != null && tile instanceof IAtomicPower)
 		{
 			return true;
 		}
@@ -56,7 +55,7 @@ public class BlockCable extends BlockContainer
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess access, int x, int y, int z)
 	{
-		this.setBlockBounds(0.3125F, 0.3125F, 0.3125F, 0.3125F, 0.3125F, 0.3125F);
+		this.setBlockBounds(0.3125F, 0.3125F, 0.3125F, 0.6875F, 0.6875F, 0.6875F);
 		float minx = (float)this.minX;
 		float miny = (float)this.minY;
 		float minz = (float)this.minZ;
@@ -64,18 +63,18 @@ public class BlockCable extends BlockContainer
 		float maxy = (float)this.maxY;
 		float maxz = (float)this.maxZ;
 		
-		if(validBlock(access.getBlockId(x-1, y, z)))
+		if(validBlock(access.getBlockTileEntity(x-1, y, z)))
 			minx = 0;
-		if(validBlock(access.getBlockId(x+1, y, z)))
-			minx = 0;
-		if(validBlock(access.getBlockId(x, y-1, z)))
-			minx = 0;
-		if(validBlock(access.getBlockId(x, y+1, z)))
-			minx = 0;
-		if(validBlock(access.getBlockId(x, y, z-1)))
-			minx = 0;
-		if(validBlock(access.getBlockId(x, y, z+1)))
-			minx = 0;
+		if(validBlock(access.getBlockTileEntity(x+1, y, z)))
+			maxx = 1;
+		if(validBlock(access.getBlockTileEntity(x, y-1, z)))
+			miny = 0;
+		if(validBlock(access.getBlockTileEntity(x, y+1, z)))
+			maxy = 1;
+		if(validBlock(access.getBlockTileEntity(x, y, z-1)))
+			minz = 0;
+		if(validBlock(access.getBlockTileEntity(x, y, z+1)))
+			maxz = 1;
 		
 		this.setBlockBounds(minx, miny, minz, maxx, maxy, maxz);
 	}
