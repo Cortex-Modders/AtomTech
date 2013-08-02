@@ -3,8 +3,9 @@ package cortexmodders.atomtech;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.Configuration;
 import cortexmodders.atomtech.blocks.ModBlocks;
+import cortexmodders.atomtech.element.ElementCollection;
 import cortexmodders.atomtech.handlers.PacketHandler;
-import cortexmodders.atomtech.lib.BlockIds;
+import cortexmodders.atomtech.lib.ATProperties;
 import cortexmodders.atomtech.tileentity.TileEntityBattery;
 import cortexmodders.atomtech.tileentity.TileEntityCable;
 import cortexmodders.atomtech.tileentity.TileEntityCoalGenerator;
@@ -18,11 +19,14 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = "AtomTech", name = "Atom Tech", version = "0.1.0")
+@Mod(modid = ATProperties.ID, name = ATProperties.NAME, version = ATProperties.VERSION)
 @NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = {"AtomTech"}, packetHandler = PacketHandler.class)
 public class AtomTech
 {
-	public static CreativeTabs atomTab = new ATCreativeTab("AtomTech");
+
+    public static ElementCollection elements;
+    
+    public static CreativeTabs atomTab = new ATCreativeTab("AtomTech");
 	
 	@SidedProxy(clientSide = "cortexmodders.atomtech.client.ClientProxy", serverSide = "cortexmodders.atomtech.CommonProxy")
 	public static CommonProxy proxy;
@@ -36,9 +40,7 @@ public class AtomTech
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		config.load();
 		
-		BlockIds.CABLE = config.getBlock("cable", BlockIds.CABLE_DEF).getInt();
-		BlockIds.COAL_GENERATOR = config.getBlock("coalGenerator", BlockIds.COAL_GENERATOR_DEF).getInt();
-		BlockIds.BATTERY = config.getBlock("battery", BlockIds.BATTERY_DEF).getInt();
+		proxy.regesterBlockIds(config);
 		
 		config.save();
 	}
