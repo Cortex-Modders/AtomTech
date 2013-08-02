@@ -8,4 +8,6 @@ public interface IAtomicPower
 	void sendPower(int x, int y, int z);
 	int getPower();
 	void addPower(int power);
+	boolean canRecievePower();
+	boolean canSendPower();
 }

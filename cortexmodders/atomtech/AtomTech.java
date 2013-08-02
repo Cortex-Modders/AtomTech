@@ -5,7 +5,9 @@ import net.minecraftforge.common.Configuration;
 import cortexmodders.atomtech.blocks.ModBlocks;
 import cortexmodders.atomtech.handlers.PacketHandler;
 import cortexmodders.atomtech.lib.BlockIds;
+import cortexmodders.atomtech.tileentity.TileEntityBattery;
 import cortexmodders.atomtech.tileentity.TileEntityCable;
+import cortexmodders.atomtech.tileentity.TileEntityCoalGenerator;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -34,6 +36,10 @@ public class AtomTech
 		config.load();
 		
 		BlockIds.CABLE = config.getBlock("cable", BlockIds.CABLE_DEF).getInt();
+		BlockIds.COAL_GENERATOR = config.getBlock("coalGenerator", BlockIds.COAL_GENERATOR_DEF).getInt();
+		BlockIds.BATTERY = config.getBlock("battery", BlockIds.BATTERY_DEF).getInt();
+		
+		config.save();
 	}
 	
 	@EventHandler
@@ -42,6 +48,8 @@ public class AtomTech
 		ModBlocks.init();
 		
 		GameRegistry.registerTileEntity(TileEntityCable.class, "tileEntityCable");
+		GameRegistry.registerTileEntity(TileEntityCoalGenerator.class, "tileEntityCoalGenerator");
+		GameRegistry.registerTileEntity(TileEntityBattery.class, "tileEntityBattery");
 	}
 	
 	@EventHandler
