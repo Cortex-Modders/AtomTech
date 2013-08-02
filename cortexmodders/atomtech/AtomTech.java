@@ -47,6 +47,7 @@ public class AtomTech
 		
 		proxy.addElementsJson();
 		proxy.registerTileEntities();
+		proxy.registerRenderers();
 		
 		ModBlocks.init();
 	}

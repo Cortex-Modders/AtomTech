@@ -1,7 +1,5 @@
 package cortexmodders.atomtech.blocks;
 
-import cortexmodders.atomtech.tileentity.TileEntityLaptop;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -9,11 +7,15 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import cortexmodders.atomtech.AtomTech;
+import cortexmodders.atomtech.lib.RenderIds;
+import cortexmodders.atomtech.tileentity.TileEntityLaptop;
 
 public class BlockLaptop extends BlockContainer {
 
-    public BlockLaptop(int id, Material material) {
-        super(id, material);
+    public BlockLaptop(int id) {
+        super(id, Material.iron);
+        setCreativeTab(AtomTech.atomTab);
     }
 
     @Override
@@ -23,21 +25,25 @@ public class BlockLaptop extends BlockContainer {
     }
     
     @Override
-    public int getRenderBlockPass()
-    {
-        return 0;
+    public int getRenderType() {
+        return RenderIds.LAPTOP_RENDER_ID;
     }
     
     @Override
-    public void registerIcons(IconRegister register)
-    {
-        this.blockIcon = register.registerIcon("atomtech:laptop");
+    public boolean renderAsNormalBlock() {
+        return false;
     }
     
     @Override
     public boolean isOpaqueCube()
     {
         return false;
+    }
+    
+    @Override
+    public void registerIcons(IconRegister register)
+    {
+        this.blockIcon = register.registerIcon("atomtech:laptop");
     }
     
     @Override

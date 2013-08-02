@@ -4,12 +4,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
-import net.minecraft.util.Vec3;
-import cortexmodders.atomtech.power.IAtomicPower;
 
 public class TileEntityLaptop extends TilePoweredBase
 {
     private byte data = 0b100;
+
+    public float lidAngleX = -180.0F;
+    private final float lidAngleOpen = -80.0F;
+    private final float lidAngleClosed = -180.0F;
     
     public TileEntityLaptop()
     {
@@ -17,9 +19,13 @@ public class TileEntityLaptop extends TilePoweredBase
     }
     
     @Override
-    public void updateEntity()
-    {
-        
+    public void updateEntity() {
+        if(isLidClosed() & lidAngleX != lidAngleClosed) {
+            lidAngleX += 3.0F;
+        }
+        else if(!isLidClosed() & lidAngleX != lidAngleOpen) {
+            lidAngleX -= 3.0F;
+        }
     }
     
     @Override
@@ -56,6 +62,21 @@ public class TileEntityLaptop extends TilePoweredBase
     	return (data & 0b100) != 0;
     }
     
+    public void setLidClosed(boolean b) 
+    {
+        if(b)
+        {
+                data |= 0b100;
+         }
+         else
+         {
+                data &= ~0b100;
+          }
+    }
+    
+    public void toggleLid() {
+        setLidClosed(!isLidClosed());
+    }
     /**
      * condition of laptop. 0 = best, 1 = ok, 2 = broken.
      */

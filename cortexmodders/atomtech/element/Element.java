@@ -3,6 +3,7 @@ package cortexmodders.atomtech.element;
 import static argo.jdom.JsonNodeBuilders.aStringBuilder;
 
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
@@ -64,11 +65,10 @@ public class Element {
         this.atomic_weight = parInt;
     }
 
-    public String fixString(String s) {
+    public static String fixString(String s) {
         if (s.contains("n/a"))
             return "0";
-        s.replace("[", "");
-        s.replace("]", "");
+        s = s.replaceAll("\\]", "").replaceAll("\\[", "");
         return s;
     }
 }
