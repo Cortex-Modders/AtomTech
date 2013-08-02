@@ -15,7 +15,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 @NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = {"AtomTech"}, packetHandler = PacketHandler.class)
 public class AtomTech
 {
-	public static CreativeTabs atomTab = new AtomTab("AtomTech");
+	public static CreativeTabs atomTab = new ATCreativeTab("AtomTech");
 	
 	@SidedProxy(clientSide = "cortexmodders.atomtech.ClientProxy", serverSide = "cortexmodders.atomtech.CommonProxy")
 	public static CommonProxy proxy;

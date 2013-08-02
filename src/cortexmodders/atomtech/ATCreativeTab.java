@@ -2,9 +2,9 @@ package cortexmodders.atomtech;
 
 import net.minecraft.creativetab.CreativeTabs;
 
-public class AtomTab extends CreativeTabs
+public class ATCreativeTab extends CreativeTabs
 {
-	public AtomTab(String name)
+	public ATCreativeTab(String name)
 	{
 		super(name);
 	}
