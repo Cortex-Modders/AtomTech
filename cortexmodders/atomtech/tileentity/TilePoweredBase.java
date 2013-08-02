@@ -5,22 +5,23 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import cortexmodders.atomtech.power.IAtomicPower;
 
-public abstract class TilePoweredBase extends TileEntity implements IAtomicPower {
-
+public abstract class TilePoweredBase extends TileEntity implements IAtomicPower
+{
     private int powerLevel = 0;
     //maybe idk about this..
     private int maxInputPower = 10;
     private final int maxPower;
     
-    private Vec3 sourceLoc = null;
+    private Vec3 sourceLoc;
     
-    public TilePoweredBase(int parMax) {
+    public TilePoweredBase(int parMax)
+    {
         this.maxPower = parMax;
     }
     
-    public TilePoweredBase() {
-        // TODO: Figure out power units.
-        this.maxPower = 10;
+    public TilePoweredBase()
+    {
+        this(100);
     }
     
     @Override
@@ -47,18 +48,27 @@ public abstract class TilePoweredBase extends TileEntity implements IAtomicPower
     // start IAtomicPower methods
     
     @Override
-    public void onPowerRecieved(Vec3 sourceLoc) {
-
+    public void onPowerRecieved(Vec3 sourceLoc)
+    {
+    	int x = (int) sourceLoc.xCoord;
+    	int y = (int) sourceLoc.yCoord;
+    	int z = (int) sourceLoc.zCoord;
+    	if(worldObj.getBlockTileEntity(x, y, z) != null && worldObj.getBlockTileEntity(x, y, z) instanceof IAtomicPower)
+    	{
+    		IAtomicPower source = (IAtomicPower) worldObj.getBlockTileEntity(x, y, z);
+    		source.setPower(addPower(source.getPower()));
+    	}
     }
 
     @Override
-    public void sendPower(int x, int y, int z) {
-        
+    public void sendPower(int x, int y, int z)
+    {
+    	
     }
 
     @Override
-    public int getPower() {
-
+    public int getPower()
+    {
         return powerLevel;
     }
 
@@ -67,30 +77,40 @@ public abstract class TilePoweredBase extends TileEntity implements IAtomicPower
      * 
      */
     @Override
-    public int addPower(int power) {
+    public int addPower(int power)
+    {
         int remainder = 0;
         
-        if(power <= 0)
-            return 0;
-        
-        if(this.powerLevel + power > maxPower) {
-            this.powerLevel = maxPower;
-            remainder = maxPower - power;
+        powerLevel += power;
+        while(powerLevel > maxPower)
+        {
+        	powerLevel--;
+        	remainder++;
         }
-        else
-            this.powerLevel += power;
+        
+        if(powerLevel < 0)
+        {
+        	powerLevel = 0;
+        }
         
         return remainder;
     }
 
     @Override
-    public boolean canRecievePower() {
+    public boolean canRecievePower()
+    {
         return false;
     }
 
     @Override
-    public boolean canSendPower() {
+    public boolean canSendPower()
+    {
         return false;
     }
 
+	@Override
+	public void setPower(int power)
+	{
+		powerLevel = power;
+	}
 }

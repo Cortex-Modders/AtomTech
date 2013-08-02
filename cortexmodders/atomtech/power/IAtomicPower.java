@@ -27,6 +27,8 @@ public interface IAtomicPower
 	 */
 	int getPower();
 	
+	void setPower(int power);
+	
 	/**
 	 * adds power and returns the remainder of the power not used.
 	 * 
@@ -36,14 +38,14 @@ public interface IAtomicPower
 	int addPower(int power);
 	
 	/**
-	 * weather or not power may be received to this block.
+	 * whether or not power may be received by this block.
 	 * 
 	 * @return
 	 */
 	boolean canRecievePower();
 	
 	/**
-	 * weather or not power may be sent away from this block.
+	 * whether or not power may be sent by this block.
 	 * 
 	 * @return
 	 */

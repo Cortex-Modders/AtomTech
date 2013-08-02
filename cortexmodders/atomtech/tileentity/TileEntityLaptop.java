@@ -7,16 +7,18 @@ import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.util.Vec3;
 import cortexmodders.atomtech.power.IAtomicPower;
 
-public class TileEntityLaptop extends TilePoweredBase implements IAtomicPower {
-
+public class TileEntityLaptop extends TilePoweredBase
+{
     public boolean lidClosed;
-
-    public TileEntityLaptop() {
-        
+    
+    public TileEntityLaptop()
+    {
+        super(20);
     }
     
     @Override
-    public void updateEntity() {
+    public void updateEntity()
+    {
         
     }
     
@@ -49,26 +51,27 @@ public class TileEntityLaptop extends TilePoweredBase implements IAtomicPower {
     
     // Start of power methods.
     @Override
-    public void onPowerRecieved(Vec3 sourceLoc) {
+    public void onPowerRecieved(Vec3 sourceLoc)
+    {
         
     }
 
     @Override
-    public void sendPower(int x, int y, int z) {
+    public void sendPower(int x, int y, int z)
+    {
        // cannot send power
     }
 
 
     @Override
-    public boolean canRecievePower() {
+    public boolean canRecievePower()
+    {
         return true;
     }
 
     @Override
-    public boolean canSendPower() {
+    public boolean canSendPower()
+    {
         return false;
     }
-    
-    
-    
 }
