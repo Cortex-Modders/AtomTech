@@ -9,12 +9,7 @@ import cortexmodders.atomtech.power.IAtomicPower;
 
 public class TileEntityLaptop extends TilePoweredBase
 {
-    public boolean lidClosed;
-    public boolean isBroken = false;
-    /**
-     * condition of laptop. 0 = best, 1 = ok, 2 = broken.
-     */
-    public int condition = 0;
+    private byte data = 0b100;
     
     public TileEntityLaptop()
     {
@@ -46,27 +41,39 @@ public class TileEntityLaptop extends TilePoweredBase
     public void readFromNBT(NBTTagCompound tag)
     {
         super.readFromNBT(tag);
-        lidClosed = tag.getBoolean("lidClosed");
-        isBroken = tag.getBoolean("isBroken");
-        condition = tag.getInteger("condition");
+        data = tag.getByte("data");
     }
     
     @Override
     public void writeToNBT(NBTTagCompound tag)
     {
         super.writeToNBT(tag);
-        tag.setBoolean("lidClosed", lidClosed);
-        tag.setBoolean("isBroken", isBroken);
-        tag.setInteger("condition", condition);
+        tag.setByte("data", data);
+    }
+    
+    public boolean isLidClosed()
+    {
+    	return (data & 0b100) != 0;
+    }
+    
+    /**
+     * condition of laptop. 0 = best, 1 = ok, 2 = broken.
+     */
+    public byte getCondition()
+    {
+    	return (byte) (data & 0b11);
     }
     
     /**
      * makes the laptop more broken.
      * 
      */
-    public void degradeCondition() {
-        if(this.condition != 2)
-            this.condition++;
+    public void degradeCondition()
+    {
+        if(getCondition() < 2)
+        	// It's ok to use data++ for the condition because it takes up the first 2 bits
+        	// TODO change to a more acceptable way of changing it
+        	data++;
     }
     
     /**
@@ -74,33 +81,14 @@ public class TileEntityLaptop extends TilePoweredBase
      * 
      * @return
      */
-    public boolean isBroken() {
-        return this.condition == 2;
+    public boolean isBroken()
+    {
+        return (data & 0b11) >= 2;
     }
     
-    // Start of power methods.
-    @Override
-    public void onPowerRecieved(Vec3 sourceLoc)
-    {
-        
-    }
-
-    @Override
-    public void sendPower(int x, int y, int z)
-    {
-       // cannot send power
-    }
-
-
     @Override
     public boolean canRecievePower()
     {
         return true;
-    }
-
-    @Override
-    public boolean canSendPower()
-    {
-        return false;
     }
 }
