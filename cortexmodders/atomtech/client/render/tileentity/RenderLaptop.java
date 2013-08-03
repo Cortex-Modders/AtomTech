@@ -1,10 +1,13 @@
 package cortexmodders.atomtech.client.render.tileentity;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 
 import org.lwjgl.opengl.GL11;
@@ -21,7 +24,7 @@ public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBl
 
     private static final ResourceLocation texture = new ResourceLocation("atomtech", "textures/models/laptop.png");
     private static final ResourceLocation broken_texture = new ResourceLocation("atomtech", "textures/models/laptop_broken.png");
-
+    
     public RenderLaptop(int id) {
         renderId = id;
         model = new ModelLaptop();
@@ -62,71 +65,79 @@ public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBl
         // Rotate based on block metadata.
         GL11.glRotatef(rotate, 0.0F, 1.0F, 0.0F);
 
-
         model.render(laptop, laptop.lidAngleX, 0f, 0f, 0f, 0f, 0.0625F);
 
-        GL11.glPopMatrix();
+        MovingObjectPosition position = Minecraft.getMinecraft().objectMouseOver;
+        int j = 0;
+        Vec3 positionOnBlock;
+        if(position != null) {
+            j = entity.worldObj.getBlockId(position.blockX, position.blockY, position.blockZ);
+            positionOnBlock = Vec3.createVectorHelper(position.hitVec.xCoord - position.blockX, position.hitVec.yCoord - position.blockY, position.hitVec.zCoord - position.blockZ);
+            System.out.println(position.hitVec.xCoord + " " + position.hitVec.yCoord + " " + position.hitVec.zCoord);
+        }
+//        if(j == entity.blockType.blockID &&)
+        if(position != null
+                && j == entity.blockType.blockID
+                && positionOnBlock.xCoord ) {
+            //render wireframe
+            GL11.glPushMatrix();
+            GL11.glPolygonMode( GL11.GL_FRONT, GL11.GL_LINE );
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.4F);
+            GL11.glLineWidth(2.0F);
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GL11.glDepthMask(false);
 
-        //render wireframe
-        GL11.glPushMatrix();
-        GL11.glPolygonMode( GL11.GL_FRONT, GL11.GL_LINE );
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.4F);
-        GL11.glLineWidth(2.0F);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glDepthMask(false);
+            GL11.glTranslatef(-0.625F, 0.0F, -0.1875F);
 
-        GL11.glTranslated(x, y, z);
-        GL11.glTranslatef(-0.625F, 0.0F, -0.1875F);
-        
-        float f1 = 0.0635F;
-        
-        GL11.glBegin(GL11.GL_QUADS);
-        // right       
-        GL11.glVertex3f(0.0f, f1, f1);
-        GL11.glVertex3f(0.0f, 0.0F, f1);
-        GL11.glVertex3f(0.0F, 0.0F, 0.0F);
-        GL11.glVertex3f(0.0f, f1, 0.0F);
+            float f1 = 0.0635F;
 
-        // left
-        GL11.glVertex3f(f1*2, f1, f1);
-        GL11.glVertex3f(f1*2, 0.0F, f1);
-        GL11.glVertex3f(f1*2, 0.0F, 0.0F);
-        GL11.glVertex3f(f1*2, f1, 0.0F);
-        
-        // front
-        GL11.glVertex3f(f1*2, f1, 0.0f);
-        GL11.glVertex3f(f1*2, 0.0F, 0.0f);
-        GL11.glVertex3f(0.0F, 0.0F, 0.0F);
-        GL11.glVertex3f(0.0F, f1, 0.0F);
-        
-        // back
-        GL11.glVertex3f(f1*2, f1, f1);
-        GL11.glVertex3f(f1*2, 0.0F, f1);
-        GL11.glVertex3f(0.0F, 0.0F, f1);
-        GL11.glVertex3f(0.0F, f1, f1);
-        
-        // top
-        GL11.glColor3f(0, 1, 0);
-        GL11.glVertex3f(f1*2, f1, 0.0f);
-        GL11.glVertex3f(f1*2, f1, f1);
-        GL11.glVertex3f(0.0F, f1, f1);
-        GL11.glVertex3f(0.0F, f1, 0.0F);
-        
-        
-        // bottom
-        GL11.glVertex3f(f1*2, 0.0F, 0.0f);
-        GL11.glVertex3f(f1*2, 0.0F, f1);
-        GL11.glVertex3f(0.0F, 0.0F, f1);
-        GL11.glVertex3f(0.0F, 0.0F, 0.0F);
-        
-        GL11.glEnd();
-        
-        GL11.glDepthMask(true);
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glPolygonMode( GL11.GL_FRONT, GL11.GL_FILL );
+            GL11.glBegin(GL11.GL_QUADS);
+                // right       
+                GL11.glVertex3f(0.0f, f1, f1);
+                GL11.glVertex3f(0.0f, 0.0F, f1);
+                GL11.glVertex3f(0.0F, 0.0F, 0.0F);
+                GL11.glVertex3f(0.0f, f1, 0.0F);
+
+                // left
+                GL11.glVertex3f(f1*2, f1, f1);
+                GL11.glVertex3f(f1*2, 0.0F, f1);
+                GL11.glVertex3f(f1*2, 0.0F, 0.0F);
+                GL11.glVertex3f(f1*2, f1, 0.0F);
+
+                // front
+                GL11.glVertex3f(f1*2, f1, 0.0f);
+                GL11.glVertex3f(f1*2, 0.0F, 0.0f);
+                GL11.glVertex3f(0.0F, 0.0F, 0.0F);
+                GL11.glVertex3f(0.0F, f1, 0.0F);
+
+                // back
+                GL11.glVertex3f(f1*2, f1, f1);
+                GL11.glVertex3f(f1*2, 0.0F, f1);
+                GL11.glVertex3f(0.0F, 0.0F, f1);
+                GL11.glVertex3f(0.0F, f1, f1);
+
+                // top
+                GL11.glVertex3f(f1*2, f1, 0.0f);
+                GL11.glVertex3f(f1*2, f1, f1);
+                GL11.glVertex3f(0.0F, f1, f1);
+                GL11.glVertex3f(0.0F, f1, 0.0F);
+
+
+                // bottom
+                GL11.glVertex3f(f1*2, 0.0F, 0.0f);
+                GL11.glVertex3f(f1*2, 0.0F, f1);
+                GL11.glVertex3f(0.0F, 0.0F, f1);
+                GL11.glVertex3f(0.0F, 0.0F, 0.0F);
+            GL11.glEnd();
+
+            GL11.glDepthMask(true);
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glPolygonMode( GL11.GL_FRONT, GL11.GL_FILL );
+            GL11.glPopMatrix();
+        }
         GL11.glPopMatrix();
     }
 
