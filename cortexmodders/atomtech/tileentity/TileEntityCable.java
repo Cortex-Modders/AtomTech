@@ -7,7 +7,7 @@ public class TileEntityCable extends TilePoweredBase
 	public void updateEntity()
 	{
 		if(!worldObj.isRemote)
-			System.out.println(powerLevel);
+			System.out.println(powerLevel + " " + xCoord + " " + yCoord + " " + zCoord);
 		super.updateEntity();
 		if(powerLevel > 0)
 		{
