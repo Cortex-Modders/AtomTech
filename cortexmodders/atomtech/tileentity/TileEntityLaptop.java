@@ -1,8 +1,5 @@
 package cortexmodders.atomtech.tileentity;
 
-import cortexmodders.atomtech.lib.ItemIds;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
@@ -52,7 +49,6 @@ public class TileEntityLaptop extends TilePoweredBase
         super.readFromNBT(tag);
         data = tag.getByte("data");
         lidAngleX = tag.getFloat("lidAngle");
-        int itemId = tag.getInteger("itemId");
     }
     
     @Override

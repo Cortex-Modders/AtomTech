@@ -3,16 +3,15 @@ package cortexmodders.atomtech.element;
 import static argo.jdom.JsonNodeBuilders.aStringBuilder;
 
 import java.util.Map;
-import java.util.regex.Pattern;
+
+import argo.jdom.JsonNode;
+import argo.jdom.JsonStringNode;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
 import cortexmodders.atomtech.ATLogger;
-
 import cpw.mods.fml.common.ModMetadata.JsonStringConverter;
-import argo.jdom.JsonNode;
-import argo.jdom.JsonStringNode;
 
 public class Element {
 

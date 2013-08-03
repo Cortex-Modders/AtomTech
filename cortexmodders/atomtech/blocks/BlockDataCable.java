@@ -1,11 +1,11 @@
 package cortexmodders.atomtech.blocks;
 
-import cortexmodders.atomtech.AtomTech;
-import cortexmodders.atomtech.tileentity.TileEntityDataCable;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import cortexmodders.atomtech.AtomTech;
+import cortexmodders.atomtech.tileentity.TileEntityDataCable;
 
 public class BlockDataCable extends BlockContainer {
 

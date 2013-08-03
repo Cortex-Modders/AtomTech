@@ -1,7 +1,5 @@
 package cortexmodders.atomtech.blocks;
 
-import cortexmodders.atomtech.AtomTech;
-import cortexmodders.atomtech.tileentity.TileEntityCoalGenerator;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,6 +7,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.world.World;
+import cortexmodders.atomtech.AtomTech;
+import cortexmodders.atomtech.tileentity.TileEntityCoalGenerator;
 
 public class BlockCoalGenerator extends BlockContainer
 {
