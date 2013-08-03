@@ -14,7 +14,7 @@ public class TileEntityLaptop extends TilePoweredBase
     private byte data = 0b0100;
     
     public float lidAngleX = -180.0F;
-    private final float lidAngleOpen = -280.0F;
+    private final float lidAngleOpen = -276.0F;
     private final float lidAngleClosed = -180.0F;
     
     public TileEntityLaptop()
@@ -159,6 +159,11 @@ public class TileEntityLaptop extends TilePoweredBase
     public void setData(byte data)
     {
     	this.data = data;
+    }
+    
+    public void fix()
+    {
+    	data &= ~0b11;
     }
     
     @Override

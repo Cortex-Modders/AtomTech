@@ -12,7 +12,7 @@ public abstract class TilePoweredBase extends TileEntity implements IAtomicPower
     protected int maxInputPower = 10;
     protected final int maxPower;
     
-    private Vec3 sourceLoc;
+    private Vec3 sourceLoc = Vec3.createVectorHelper(xCoord, yCoord, zCoord);
     
     protected TilePoweredBase(int parMax)
     {

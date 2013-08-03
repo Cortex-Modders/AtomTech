@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
@@ -72,6 +73,22 @@ public class BlockLaptop extends BlockContainer {
         }
     }
     
+    public void onEntityWalking(World par1World, int x, int y, int z, Entity entity)
+    {
+    	TileEntityLaptop tile = (TileEntityLaptop)par1World.getBlockTileEntity(x, y, z);
+    	
+        if (!par1World.isRemote)
+        {
+            if (!(entity instanceof EntityPlayer) && !par1World.getGameRules().getGameRuleBooleanValue("mobGriefing"))
+            {
+                return;
+            }
+            
+            tile.degradeCondition();
+            sync(x, y, z, tile.getData());
+        }
+    }
+    
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
     {
@@ -87,7 +104,6 @@ public class BlockLaptop extends BlockContainer {
 					{
 						tile.toggleHasFlashDrive();
 						heldItem.stackSize--;
-						
 					}
 					else
 					{
@@ -110,6 +126,16 @@ public class BlockLaptop extends BlockContainer {
 				sync(x, y, z, tile.getData());
 				
 				return true;
+			}
+			else if(tile != null && tile.isBroken())
+			{
+				ItemStack heldItem = player.getHeldItem();
+				if(heldItem != null && heldItem.getItem() != null && heldItem.getItem().equals(Item.stick))
+				{
+					tile.fix();
+					sync(x, y, z, tile.getData());
+					return true;
+				}
 			}
     	}
     	return false;
@@ -148,11 +174,33 @@ public class BlockLaptop extends BlockContainer {
 		{
 			minz = 0.125F;
 			maxz = 0.875F;
+			if(!((TileEntityLaptop)access.getBlockTileEntity(x, y, z)).isLidClosed())
+			{
+				if(meta == 0)
+				{
+					maxz = 1.0F;
+				}
+				else if(meta == 2)
+				{
+					minz = 0.0F;
+				}
+			}
 		}
 		else if(meta == 1 || meta == 3)
 		{
 			minx = 0.125F;
 			maxx = 0.875F;
+			if(!((TileEntityLaptop)access.getBlockTileEntity(x, y, z)).isLidClosed())
+			{
+				if(meta == 1)
+				{
+					minx = 0.0F;
+				}
+				else if(meta == 3)
+				{
+					maxx = 1.0F;
+				}
+			}
 		}
 		
 		this.setBlockBounds(minx, miny, minz, maxx, maxy, maxz);
