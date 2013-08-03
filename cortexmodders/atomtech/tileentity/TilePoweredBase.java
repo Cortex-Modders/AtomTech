@@ -64,7 +64,7 @@ public abstract class TilePoweredBase extends TileEntity implements IAtomicPower
     @Override
     public void sendPower(int x, int y, int z)
     {
-    	if(sourceLoc.xCoord != x || sourceLoc.yCoord != y || sourceLoc.zCoord != z || powerLevel > 0)
+    	if((sourceLoc.xCoord != x || sourceLoc.yCoord != y || sourceLoc.zCoord != z) && powerLevel > 0)
     	{
     		Vec3 powerSource = Vec3.createVectorHelper(xCoord, yCoord, zCoord);
     		if(worldObj.getBlockTileEntity(x, y, z) instanceof IAtomicPower)

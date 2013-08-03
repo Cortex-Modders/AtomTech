@@ -58,14 +58,17 @@ public class BlockLaptop extends BlockContainer {
     @Override
     public void onFallenUpon(World par1World, int x, int y, int z, Entity entity, float par6)
     {
-        if (!par1World.isRemote && par1World.rand.nextFloat() < par6 - 0.5F)
+    	TileEntityLaptop tile = (TileEntityLaptop)par1World.getBlockTileEntity(x, y, z);
+    	
+        if (!par1World.isRemote && par1World.rand.nextFloat() < par6 - 0.5F - (tile.isLidClosed() ? 0.6875F : 0.0F))
         {
             if (!(entity instanceof EntityPlayer) && !par1World.getGameRules().getGameRuleBooleanValue("mobGriefing"))
             {
                 return;
             }
-
-            ((TileEntityLaptop)par1World.getBlockTileEntity(x, y, z)).degradeCondition();
+            
+            tile.degradeCondition();
+            sync(x, y, z, tile.getData());
         }
     }
     
@@ -104,23 +107,7 @@ public class BlockLaptop extends BlockContainer {
 					}
 				}
 				
-				ByteArrayOutputStream bos = new ByteArrayOutputStream();
-				DataOutputStream data = new DataOutputStream(bos);
-				
-				try
-				{
-					data.writeByte(0);
-					data.writeInt(x);
-					data.writeInt(y);
-					data.writeInt(z);
-					data.writeByte(tile.getData());
-				}
-				catch(Exception e)
-				{
-					e.printStackTrace();
-				}
-				
-				PacketDispatcher.sendPacketToAllPlayers(PacketDispatcher.getPacket("AtomTech", bos.toByteArray()));
+				sync(x, y, z, tile.getData());
 				
 				return true;
 			}
@@ -170,4 +157,25 @@ public class BlockLaptop extends BlockContainer {
 		
 		this.setBlockBounds(minx, miny, minz, maxx, maxy, maxz);
 	}
+    
+    private void sync(int x, int y, int z, byte laptopData)
+    {
+    	ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		DataOutputStream data = new DataOutputStream(bos);
+		
+		try
+		{
+			data.writeByte(0);
+			data.writeInt(x);
+			data.writeInt(y);
+			data.writeInt(z);
+			data.writeByte(laptopData);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		PacketDispatcher.sendPacketToAllPlayers(PacketDispatcher.getPacket("AtomTech", bos.toByteArray()));
+    }
 }
