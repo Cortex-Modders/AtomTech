@@ -15,11 +15,11 @@ import cortexmodders.atomtech.lib.RenderIds;
 import cortexmodders.atomtech.tileentity.TileEntityLaptop;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
-public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBlockRenderingHandler {
-
+public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBlockRenderingHandler
+{
     private final int renderId;
     
-    private ModelLaptop model;    
+    private ModelLaptop model;
     
     private static final ResourceLocation texture = new ResourceLocation("atomtech", "textures/models/laptop.png");
     private static final ResourceLocation broken_texture = new ResourceLocation(ATProperties.ID, "textures/tileentity/broken_laptop.png");

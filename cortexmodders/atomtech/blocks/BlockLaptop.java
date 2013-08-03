@@ -1,5 +1,8 @@
 package cortexmodders.atomtech.blocks;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -11,6 +14,7 @@ import net.minecraft.world.World;
 import cortexmodders.atomtech.AtomTech;
 import cortexmodders.atomtech.lib.RenderIds;
 import cortexmodders.atomtech.tileentity.TileEntityLaptop;
+import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class BlockLaptop extends BlockContainer {
 
@@ -71,12 +75,31 @@ public class BlockLaptop extends BlockContainer {
 			{
 				if(player.getHeldItem() != null && player.getHeldItem().getItem() != null && player.getHeldItem().getItem().equals(Item.stick))
 				{
-					tile.setHasFlashDrive(true);
+					tile.toggleHasFlashDrive();
     			}
 				else
 				{
 					tile.toggleLid();
 				}
+				
+				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				DataOutputStream data = new DataOutputStream(bos);
+				
+				try
+				{
+					data.writeByte(0);
+					data.writeInt(x);
+					data.writeInt(y);
+					data.writeInt(z);
+					data.writeByte(tile.getData());
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
+				
+				PacketDispatcher.sendPacketToAllPlayers(PacketDispatcher.getPacket("AtomTech", bos.toByteArray()));
+				
 				return true;
 			}
     	}

@@ -131,6 +131,16 @@ public class TileEntityLaptop extends TilePoweredBase
     	setHasFlashDrive(!hasFlashDrive());
     }
     
+    public byte getData()
+    {
+    	return data;
+    }
+    
+    public void setData(byte data)
+    {
+    	this.data = data;
+    }
+    
     @Override
     public boolean canRecievePower()
     {
