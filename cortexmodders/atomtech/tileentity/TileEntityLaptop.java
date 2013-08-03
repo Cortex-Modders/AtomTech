@@ -44,15 +44,14 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
     		{
     			worldObj.removeBlockTileEntity(xCoord, yCoord, zCoord);
     		}
-//    		System.out.println(hasFlashDrive());
     	}
     	if(!isBroken())
     	{
-    		if(isLidClosed() && lidAngleX != LID_ANGLE_OPEN)
+    		if(isLidClosed() && lidAngleX != LID_ANGLE_CLOSED)
     		{
     			lidAngleX += 4.0F;
     		}
-    		else if(!isLidClosed() && lidAngleX != LID_ANGLE_CLOSED)
+    		else if(!isLidClosed() && lidAngleX != LID_ANGLE_OPEN)
     		{
     			lidAngleX -= 4.0F;
     		}
