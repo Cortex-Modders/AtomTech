@@ -19,6 +19,7 @@ public class BlockATOre extends Block {
         "Cuprum Ore",
         "Plumbum Ore",
         "Uranium Ore",
+        "Lithium Ore"
     };
     
     public BlockATOre(int par1) {
@@ -45,6 +46,7 @@ public class BlockATOre extends Block {
         textures[0] = register.registerIcon("atomtech:cuprum");
         textures[1] = register.registerIcon("atomtech:plumbum");
         textures[2] = register.registerIcon("atomtech:uranium");
+        textures[3] = register.registerIcon("atomtech:lithium");
     }
     
     /**

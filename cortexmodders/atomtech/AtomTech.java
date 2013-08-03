@@ -15,12 +15,12 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = ATProperties.ID, name = ATProperties.NAME, version = ATProperties.VERSION)
 @NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = {"AtomTech"}, packetHandler = PacketHandler.class)
 public class AtomTech
 {
-
     public static ElementCollection elements;
     
     public static CreativeTabs atomTab = new ATCreativeTab("AtomTech");
@@ -53,6 +53,8 @@ public class AtomTech
 		proxy.registerTileEntities();
 		proxy.registerRenderers();
 		proxy.addOreDictionaryOres();
+		
+		GameRegistry.registerWorldGenerator(new WorldGenAtomTech());
 	}
 	
 	@EventHandler

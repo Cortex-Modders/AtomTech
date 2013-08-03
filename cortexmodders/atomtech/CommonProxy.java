@@ -56,5 +56,6 @@ public class CommonProxy
 		OreDictionary.registerOre("oreCopper", new ItemStack(ModBlocks.ores, 1, 0));
 		OreDictionary.registerOre("oreRadioactiveLead", new ItemStack(ModBlocks.ores, 1, 1));
 		OreDictionary.registerOre("oreUranium", new ItemStack(ModBlocks.ores, 1, 2));
+		OreDictionary.registerOre("oreLithium", new ItemStack(ModBlocks.ores, 1, 3));
 	}
 }
