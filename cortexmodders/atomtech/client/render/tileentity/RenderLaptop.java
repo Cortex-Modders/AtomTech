@@ -68,7 +68,7 @@ public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBl
         // Rotate based on block metadata.
         GL11.glRotatef(rotate, 0.0F, 1.0F, 0.0F);
 
-        model.render(laptop, laptop.lidAngleX, 0f, 0f, 0f, 0f, 0.0625F);
+        model.render(laptop, laptop.getLidAngle(), 0f, 0f, 0f, 0f, 0.0625F);
 
         MovingObjectPosition hitPosition = Minecraft.getMinecraft().objectMouseOver;
         if(hitPosition != null) {

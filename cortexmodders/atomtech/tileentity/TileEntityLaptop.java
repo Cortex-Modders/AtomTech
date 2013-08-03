@@ -66,6 +66,10 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
     	}
     }
     
+    public float getLidAngle() {
+        return this.lidAngleX;
+    }
+    
     @Override
     public Packet getDescriptionPacket()
     {
