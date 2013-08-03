@@ -25,6 +25,7 @@ public class TileEntityLaptop extends TilePoweredBase
     @Override
     public void updateEntity()
     {
+    	System.out.println(powerLevel);
     	if(!isBroken())
     	{
     		if(isLidClosed() && lidAngleX != lidAngleClosed)
@@ -169,6 +170,6 @@ public class TileEntityLaptop extends TilePoweredBase
     @Override
     public boolean canRecievePower()
     {
-        return true;
+        return !isBroken();
     }
 }
