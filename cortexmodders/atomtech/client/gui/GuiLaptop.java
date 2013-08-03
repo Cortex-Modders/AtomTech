@@ -5,6 +5,11 @@ import net.minecraft.client.gui.GuiScreen;
 public class GuiLaptop extends GuiScreen {
 
     @Override
+    public void initGui() {
+        super.initGui();
+    }
+    
+    @Override
     public void updateScreen() {
         super.updateScreen();
     }
