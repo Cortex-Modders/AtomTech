@@ -12,10 +12,8 @@ public class TileEntityLaptop extends TilePoweredBase
 {
     private byte data = 0b0100;
     
-    public ItemStack flashDrive;
-
     public float lidAngleX = -180.0F;
-    private final float lidAngleOpen = -270.0F;
+    private final float lidAngleOpen = -280.0F;
     private final float lidAngleClosed = -180.0F;
     
     public TileEntityLaptop()
@@ -25,11 +23,11 @@ public class TileEntityLaptop extends TilePoweredBase
     
     @Override
     public void updateEntity() {
-        if(isLidClosed() & lidAngleX != lidAngleClosed) {
-            lidAngleX += 3.0F;
+        if(isLidClosed() && lidAngleX != lidAngleClosed) {
+            lidAngleX += 4.0F;
         }
-        else if(!isLidClosed() & lidAngleX != lidAngleOpen) {
-            lidAngleX -= 3.0F;
+        else if(!isLidClosed() && lidAngleX != lidAngleOpen) {
+            lidAngleX -= 4.0F;
         }
     }
     
@@ -55,10 +53,6 @@ public class TileEntityLaptop extends TilePoweredBase
         data = tag.getByte("data");
         lidAngleX = tag.getFloat("lidAngle");
         int itemId = tag.getInteger("itemId");
-        if(itemId == ItemIds.FLASH_DRIVE)
-        {
-        	flashDrive = new ItemStack(Item.itemsList[itemId]);
-        }
     }
     
     @Override
@@ -67,10 +61,6 @@ public class TileEntityLaptop extends TilePoweredBase
         super.writeToNBT(tag);
         tag.setByte("data", data);
         tag.setFloat("lidAngle", lidAngleX);
-        if(flashDrive != null)
-        {
-        	tag.setInteger("itemId", flashDrive.itemID);
-        }
     }
     
     public boolean isLidClosed()
