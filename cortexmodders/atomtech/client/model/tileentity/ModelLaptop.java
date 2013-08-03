@@ -44,7 +44,7 @@ public class ModelLaptop extends ModelBase
 	{
 		setRotationAngles(f, f1, f2, f3, f4, f5);
 		top.render(f5);
-		if(tile.hasFlashDrive())
+		if(tile != null && tile.hasFlashDrive())
 			flashDrive.render(f5);
 		base.render(f5);
 	}

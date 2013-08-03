@@ -22,9 +22,9 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
     private byte data = 0b100;
     private ItemStack[] inv;
     
-    public float lidAngleX = -180.0F;
-    private final float lidAngleOpen = -276.0F;
-    private final float lidAngleClosed = -180.0F;
+    private float lidAngleX = -180.0F;
+    public static final float LID_ANGLE_OPEN = -276.0F;
+    public static final float LID_ANGLE_CLOSED = -180.0F;
     
     // local coords
     public final static AxisAlignedBB flashDriveHitPosition = AxisAlignedBB.getAABBPool().getAABB(1, 0, 0.3125, 1, 0.125, 0.375);
@@ -48,11 +48,11 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
     	}
     	if(!isBroken())
     	{
-    		if(isLidClosed() && lidAngleX != lidAngleClosed)
+    		if(isLidClosed() && lidAngleX != LID_ANGLE_OPEN)
     		{
     			lidAngleX += 4.0F;
     		}
-    		else if(!isLidClosed() && lidAngleX != lidAngleOpen)
+    		else if(!isLidClosed() && lidAngleX != LID_ANGLE_CLOSED)
     		{
     			lidAngleX -= 4.0F;
     		}

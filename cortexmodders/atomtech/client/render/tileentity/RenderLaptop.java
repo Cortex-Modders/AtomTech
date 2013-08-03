@@ -93,7 +93,17 @@ public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBl
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer) {
-        // TODO: ADD INVENTORY RENDER!
+        this.func_110628_a(texture);
+        GL11.glPushMatrix();
+        
+        // Move to center of block.
+        GL11.glTranslatef(0.5F, 0.0625F, 0.5F);
+        // Rotate because of Techne dumbness.
+        GL11.glRotatef(180F, 0F, 1F, 1F);
+
+        model.render((TileEntityLaptop)null, TileEntityLaptop.LID_ANGLE_OPEN, 0f, 0f, 0f, 0f, 0.0625F);
+        
+        GL11.glPopMatrix();
     }
 
     @Override
@@ -103,7 +113,7 @@ public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBl
 
     @Override
     public boolean shouldRender3DInInventory() {
-        return false;
+        return true;
     }
 
     @Override
