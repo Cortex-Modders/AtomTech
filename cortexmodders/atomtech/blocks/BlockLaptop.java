@@ -135,7 +135,21 @@ public class BlockLaptop extends BlockContainer
 			TileEntityLaptop tile = (TileEntityLaptop) world.getBlockTileEntity(x, y, z);
 			if(tile != null && !tile.isBroken())
 			{
-				tile.toggleLid();
+				ItemStack heldItem = player.getHeldItem();
+				if(heldItem != null && heldItem.getItem().equals(ModItems.flashDrive) && !tile.hasFlashDrive())
+				{
+					((TileEntityLaptop)world.getBlockTileEntity(x, y, z)).setInventorySlotContents(0, heldItem);
+					heldItem.stackSize--;
+				}
+				else if(heldItem == null && tile.hasFlashDrive())
+				{
+					player.setCurrentItemOrArmor(0, tile.getStackInSlot(0));
+					((TileEntityLaptop)world.getBlockTileEntity(x, y, z)).setInventorySlotContents(0, null);
+				}
+				else
+				{
+					tile.toggleLid();
+				}
 				sync(x, y, z, tile);
 				return true;
 			}

@@ -71,20 +71,23 @@ public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBl
         model.render(laptop, laptop.lidAngleX, 0f, 0f, 0f, 0f, 0.0625F);
 
         MovingObjectPosition hitPosition = Minecraft.getMinecraft().objectMouseOver;
-        int id = entity.worldObj.getBlockId(hitPosition.blockX, hitPosition.blockY, hitPosition.blockZ);
-        Vec3 p = Vec3.createVectorHelper(hitPosition.hitVec.xCoord - hitPosition.blockX, hitPosition.hitVec.yCoord - hitPosition.blockY, hitPosition.hitVec.zCoord - hitPosition.blockZ);
-
-        if(hitPosition != null && (Integer)id != null && id == entity.blockType.blockID && CommonProxy.isVecInsideBB(p, TileEntityLaptop.getBoundingBox())) {
-            //render wireframe
-            GL11.glPushMatrix();
-
-            GL11.glTranslatef(-0.625F, 0.0F, -0.1875F);
-
-            float f1 = 0.0635F;
-            AxisAlignedBB frame = AxisAlignedBB.getAABBPool().getAABB(0, 0, 0, f1*2, f1, f1);
-            RenderUtil.renderWireframe(frame);
-            
-            GL11.glPopMatrix();
+        if(hitPosition != null)
+        {
+        	int id = entity.worldObj.getBlockId(hitPosition.blockX, hitPosition.blockY, hitPosition.blockZ);
+        	Vec3 p = Vec3.createVectorHelper(hitPosition.hitVec.xCoord - hitPosition.blockX, hitPosition.hitVec.yCoord - hitPosition.blockY, hitPosition.hitVec.zCoord - hitPosition.blockZ);
+        	
+        	if(id == entity.blockType.blockID && CommonProxy.isVecInsideBB(p, TileEntityLaptop.getBoundingBox())) {
+        		//render wireframe
+        		GL11.glPushMatrix();
+        		
+        		GL11.glTranslatef(-0.625F, 0.0F, -0.1875F);
+        		
+        		float f1 = 0.0635F;
+        		AxisAlignedBB frame = AxisAlignedBB.getAABBPool().getAABB(0, 0, 0, f1*2, f1, f1);
+        		RenderUtil.renderWireframe(frame);
+        		
+        		GL11.glPopMatrix();
+        	}
         }
 
         GL11.glPopMatrix();
