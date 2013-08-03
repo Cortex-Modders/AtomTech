@@ -5,6 +5,7 @@ import net.minecraftforge.common.Configuration;
 import cortexmodders.atomtech.blocks.ModBlocks;
 import cortexmodders.atomtech.element.ElementCollection;
 import cortexmodders.atomtech.handlers.PacketHandler;
+import cortexmodders.atomtech.item.ModItems;
 import cortexmodders.atomtech.lib.ATProperties;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -36,7 +37,8 @@ public class AtomTech
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		config.load();
 		
-		proxy.regesterBlockIds(config);
+		proxy.registerBlockIds(config);
+		proxy.registerItemIds(config);
 		
 		config.save();
 	}
@@ -44,12 +46,13 @@ public class AtomTech
 	@EventHandler
 	public void load(FMLInitializationEvent event)
 	{
+		ModBlocks.init();
+		ModItems.init();
 		
 		proxy.addElementsJson();
 		proxy.registerTileEntities();
 		proxy.registerRenderers();
-		
-		ModBlocks.init();
+		proxy.addOreDictionaryOres();
 	}
 	
 	@EventHandler

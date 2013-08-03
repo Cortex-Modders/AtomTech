@@ -1,7 +1,8 @@
 package cortexmodders.atomtech.blocks;
 
 import net.minecraft.block.Block;
-import cortexmodders.atomtech.item.ItemATOre;
+import net.minecraft.item.ItemStack;
+import cortexmodders.atomtech.item.ItemBlockATOre;
 import cortexmodders.atomtech.lib.BlockIds;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -32,7 +33,7 @@ public class ModBlocks
 		GameRegistry.registerBlock(coalGenerator, "CoalGenerator");
 		GameRegistry.registerBlock(battery, "Battery");
 		GameRegistry.registerBlock(laptop, "Laptop");
-		GameRegistry.registerBlock(ores, ItemATOre.class, "ores");
+		GameRegistry.registerBlock(ores, ItemBlockATOre.class, "ores");
 	}
 	
 	public static void registerLang()
@@ -41,5 +42,9 @@ public class ModBlocks
 		LanguageRegistry.addName(coalGenerator, "Coal Generator");
 		LanguageRegistry.addName(battery, "Battery");
 		LanguageRegistry.addName(laptop, "Laptop");
+		for(int i = 0; i < BlockATOre.unlocalizedNames.length; i++)
+		{
+			LanguageRegistry.addName(new ItemStack(ores, 1, i), BlockATOre.unlocalizedNames[i]);
+		}
 	}
 }

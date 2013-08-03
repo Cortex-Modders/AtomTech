@@ -1,10 +1,10 @@
 package cortexmodders.atomtech.lib;
 
-public class ItemIds {
-
+public class ItemIds
+{
 	// default values (for config file)
-	public static final int EXAMPLE_ITEM_DEF = 0;
+	public static final int FLASH_DRIVE_DEF = 20000;
 	
 	// actual values (from config file)
-	public static int EXAMPLE_ITEM;
+	public static int FLASH_DRIVE;
 }

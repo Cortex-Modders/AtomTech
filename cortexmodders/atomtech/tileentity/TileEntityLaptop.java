@@ -1,5 +1,8 @@
 package cortexmodders.atomtech.tileentity;
 
+import cortexmodders.atomtech.lib.ItemIds;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
@@ -8,9 +11,11 @@ import net.minecraft.network.packet.Packet132TileEntityData;
 public class TileEntityLaptop extends TilePoweredBase
 {
     private byte data = 0b0100;
+    
+    public ItemStack flashDrive;
 
     public float lidAngleX = -180.0F;
-    private final float lidAngleOpen = -80.0F;
+    private final float lidAngleOpen = -270.0F;
     private final float lidAngleClosed = -180.0F;
     
     public TileEntityLaptop()
@@ -48,6 +53,12 @@ public class TileEntityLaptop extends TilePoweredBase
     {
         super.readFromNBT(tag);
         data = tag.getByte("data");
+        lidAngleX = tag.getFloat("lidAngle");
+        int itemId = tag.getInteger("itemId");
+        if(itemId == ItemIds.FLASH_DRIVE)
+        {
+        	flashDrive = new ItemStack(Item.itemsList[itemId]);
+        }
     }
     
     @Override
@@ -55,6 +66,11 @@ public class TileEntityLaptop extends TilePoweredBase
     {
         super.writeToNBT(tag);
         tag.setByte("data", data);
+        tag.setFloat("lidAngle", lidAngleX);
+        if(flashDrive != null)
+        {
+        	tag.setInteger("itemId", flashDrive.itemID);
+        }
     }
     
     public boolean isLidClosed()
@@ -94,8 +110,6 @@ public class TileEntityLaptop extends TilePoweredBase
     public void degradeCondition()
     {
         if(getCondition() < 2)
-        	// It's ok to use data++ for the condition because it takes up the first 2 bits
-        	// TODO change to a more acceptable way of changing it
         	data++;
     }
     

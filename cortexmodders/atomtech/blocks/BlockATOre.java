@@ -47,9 +47,6 @@ public class BlockATOre extends Block {
         textures[2] = register.registerIcon("atomtech:uranium");
     }
     
-    @SuppressWarnings("unchecked")
-    @SideOnly(Side.CLIENT)
-
     /**
      * returns a list of blocks with the same ID, but different meta (eg: wood returns 4 blocks)
      */

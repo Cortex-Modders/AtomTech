@@ -4,9 +4,9 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import cortexmodders.atomtech.blocks.BlockATOre;
 
-public class ItemATOre extends ItemBlock {
+public class ItemBlockATOre extends ItemBlock {
 
-    public ItemATOre(int id) {
+    public ItemBlockATOre(int id) {
         super(id);
         setHasSubtypes(true);
     }

@@ -9,9 +9,11 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import cortexmodders.atomtech.AtomTech;
+import cortexmodders.atomtech.item.ModItems;
 import cortexmodders.atomtech.lib.RenderIds;
 import cortexmodders.atomtech.tileentity.TileEntityLaptop;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -73,13 +75,31 @@ public class BlockLaptop extends BlockContainer {
 			TileEntityLaptop tile = (TileEntityLaptop) world.getBlockTileEntity(x, y, z);
 			if(tile != null)
 			{
-				if(player.getHeldItem() != null && player.getHeldItem().getItem() != null && player.getHeldItem().getItem().equals(Item.stick))
+				ItemStack heldItem = player.getHeldItem();
+				if(!tile.hasFlashDrive())
 				{
-					tile.toggleHasFlashDrive();
-    			}
+					if(heldItem != null && heldItem.getItem() != null && heldItem.getItem().equals(ModItems.flashDrive))
+					{
+						tile.toggleHasFlashDrive();
+						tile.flashDrive = heldItem;
+						heldItem = null;
+					}
+					else
+					{
+						tile.toggleLid();
+					}
+				}
 				else
 				{
-					tile.toggleLid();
+					if(heldItem == null)
+					{
+						heldItem = tile.flashDrive;
+						tile.flashDrive = null;
+					}
+					else
+					{
+						tile.toggleLid();
+					}
 				}
 				
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
