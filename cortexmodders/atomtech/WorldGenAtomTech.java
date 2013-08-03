@@ -32,6 +32,36 @@ public class WorldGenAtomTech implements IWorldGenerator
 														//Max Vein Size
 			(new WorldGenMinable(ModBlocks.ores.blockID, 8, 0)).generate(world, rand, Xcoord, Ycoord, Zcoord);
 		}
+		
+		//rarity -smaller number = rarer
+		for(int x = 0; x < 5; x++)
+		{
+			int Xcoord = baseX + rand.nextInt(16);				
+			int Zcoord = baseZ + rand.nextInt(16);
+			int Ycoord = rand.nextInt(20) + 15;
+														//Max Vein Size
+			(new WorldGenMinable(ModBlocks.ores.blockID, 4, 1)).generate(world, rand, Xcoord, Ycoord, Zcoord);
+		}
+		
+		//rarity -smaller number = rarer
+		for(int x = 0; x < 4; x++)
+		{
+			int Xcoord = baseX + rand.nextInt(16);				
+			int Zcoord = baseZ + rand.nextInt(16);
+			int Ycoord = rand.nextInt(40);
+														//Max Vein Size
+			(new WorldGenMinable(ModBlocks.ores.blockID, 3, 2)).generate(world, rand, Xcoord, Ycoord, Zcoord);
+		}
+		
+		//rarity -smaller number = rarer
+		for(int x = 0; x < 3; x++)
+		{
+			int Xcoord = baseX + rand.nextInt(16);				
+			int Zcoord = baseZ + rand.nextInt(16);
+			int Ycoord = rand.nextInt(10) + 10;
+														//Max Vein Size
+			(new WorldGenMinable(ModBlocks.ores.blockID, 6, 3)).generate(world, rand, Xcoord, Ycoord, Zcoord);
+		}
 	}
 	
 	private void generateNether(World world, Random rand, int baseX, int baseZ)

@@ -78,7 +78,7 @@ public class BlockLaptop extends BlockContainer {
     	if(!world.isRemote && player != null)
     	{
 			TileEntityLaptop tile = (TileEntityLaptop) world.getBlockTileEntity(x, y, z);
-			if(tile != null)
+			if(tile != null && !tile.isBroken())
 			{
 				ItemStack heldItem = player.getHeldItem();
 				if(!tile.hasFlashDrive())
