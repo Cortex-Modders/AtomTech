@@ -29,10 +29,6 @@ public class BlockCoalGenerator extends BlockContainer
 				TileEntityCoalGenerator coalGen = (TileEntityCoalGenerator)world.getBlockTileEntity(x, y, z);
 				coalGen.addFuel(TileEntityFurnace.getItemBurnTime(heldItem) / 8);
 				heldItem.stackSize--;
-				if(heldItem.stackSize <= 0)
-				{
-					heldItem = null;
-				}
 				return true;
 			}
 		}
