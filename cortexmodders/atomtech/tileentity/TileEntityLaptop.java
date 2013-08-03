@@ -44,7 +44,6 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
     		{
     			worldObj.removeBlockTileEntity(xCoord, yCoord, zCoord);
     		}
-//    		System.out.println(hasFlashDrive());
     	}
     	if(!isBroken())
     	{
