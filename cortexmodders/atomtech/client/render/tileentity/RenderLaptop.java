@@ -10,8 +10,6 @@ import net.minecraft.world.IBlockAccess;
 import org.lwjgl.opengl.GL11;
 
 import cortexmodders.atomtech.client.model.tileentity.ModelLaptop;
-import cortexmodders.atomtech.lib.ATProperties;
-import cortexmodders.atomtech.lib.RenderIds;
 import cortexmodders.atomtech.tileentity.TileEntityLaptop;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
@@ -22,7 +20,7 @@ public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBl
     private ModelLaptop model;
     
     private static final ResourceLocation texture = new ResourceLocation("atomtech", "textures/models/laptop.png");
-    private static final ResourceLocation broken_texture = new ResourceLocation(ATProperties.ID, "textures/tileentity/broken_laptop.png");
+    private static final ResourceLocation broken_texture = new ResourceLocation("atomtech", "textures/tileentity/broken_laptop.png");
     
     public RenderLaptop(int id) {
         renderId = id;
@@ -42,13 +40,29 @@ public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBl
             currentTexture = broken_texture;
         
         //Binds the texture
-        this.func_110628_a(texture);
+        this.func_110628_a(currentTexture);
         
         GL11.glPushMatrix();
         
+        short rotate = 0;
+        int i = laptop.getBlockMetadata();
+        switch(i) {
+        case 0: rotate = 0; break;
+        case 1: rotate = 90; break;
+        case 2: rotate = 180; break;
+        case 3: rotate = -90; break;
+        }
+
+        // Move to corrent place.
         GL11.glTranslatef((float)x, (float)y, (float)z);
+        // Move to center of block.
         GL11.glTranslatef(0.5F, 0.0625F, 0.5F);
+        // Rotate because of Techne dumbness.
         GL11.glRotatef(180F, 0F, 0F, 1F);
+        // Rotate based on block metadata.
+        GL11.glRotatef(rotate, 0.0F, 1.0F, 0.0F);
+        
+        
         model.render(laptop, laptop.lidAngleX, 0f, 0f, 0f, 0f, 0.0625F);
         
         GL11.glPopMatrix();
