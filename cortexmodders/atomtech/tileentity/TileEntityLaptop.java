@@ -1,31 +1,54 @@
 package cortexmodders.atomtech.tileentity;
 
 import cortexmodders.atomtech.blocks.BlockLaptop;
+import cortexmodders.atomtech.blocks.ModBlocks;
 import cortexmodders.atomtech.item.ModItems;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
+import net.minecraft.util.AxisAlignedBB;
 
-public class TileEntityLaptop extends TilePoweredBase
+public class TileEntityLaptop extends TilePoweredBase implements IInventory
 {
-    private byte data = 0b0100;
-    public ItemStack flashDrive;
+    private byte data = 0b100;
+    private ItemStack[] inv;
     
     public float lidAngleX = -180.0F;
     private final float lidAngleOpen = -276.0F;
     private final float lidAngleClosed = -180.0F;
     
+    // these are not offset from the laptop bounding box!
+    public final static AxisAlignedBB[] flashDriveHitPositions = {
+    	//south
+    	AxisAlignedBB.getBoundingBox(0, 0, 0, -0.625, 0, -0.1875),
+    	AxisAlignedBB.getBoundingBox(0, 0, 0, -0.625, 0, -0.1875),
+    	AxisAlignedBB.getBoundingBox(0, 0, 0, -0.625, 0, -0.1875),
+    	AxisAlignedBB.getBoundingBox(0, 0, 0, -0.625, 0, -0.1875),
+    };
+    
     public TileEntityLaptop()
     {
         super(20);
+        inv = new ItemStack[1];
     }
     
     @Override
     public void updateEntity()
     {
+    	if(!worldObj.isRemote)
+    	{
+    		if(worldObj.getBlockId(xCoord, yCoord, zCoord) != ModBlocks.laptop.blockID)
+    		{
+    			worldObj.removeBlockTileEntity(xCoord, yCoord, zCoord);
+    		}
+    		System.out.println(hasFlashDrive());
+    	}
     	if(!isBroken())
     	{
     		if(isLidClosed() && lidAngleX != lidAngleClosed)
@@ -65,6 +88,14 @@ public class TileEntityLaptop extends TilePoweredBase
     public void readFromNBT(NBTTagCompound tag)
     {
         super.readFromNBT(tag);
+        NBTTagList tagList = tag.getTagList("Inventory");
+		for (int i = 0; i < tagList.tagCount(); i++) {
+			NBTTagCompound tag2 = (NBTTagCompound) tagList.tagAt(i);
+			byte slot = tag2.getByte("Slot");
+			if (slot >= 0 && slot < inv.length) {
+				inv[slot] = ItemStack.loadItemStackFromNBT(tag2);
+			}
+		}
         data = tag.getByte("data");
         lidAngleX = tag.getFloat("lidAngle");
     }
@@ -75,6 +106,17 @@ public class TileEntityLaptop extends TilePoweredBase
         super.writeToNBT(tag);
         tag.setByte("data", data);
         tag.setFloat("lidAngle", lidAngleX);
+		NBTTagList itemList = new NBTTagList();
+		for (int i = 0; i < inv.length; i++) {
+			ItemStack stack = inv[i];
+			if (stack != null) {
+				NBTTagCompound tag2 = new NBTTagCompound();
+				tag2.setByte("Slot", (byte) i);
+				stack.writeToNBT(tag2);
+				itemList.appendTag(tag2);
+			}
+		}
+		tag.setTag("Inventory", itemList);
     }
     
     public boolean isLidClosed()
@@ -135,24 +177,7 @@ public class TileEntityLaptop extends TilePoweredBase
     
     public boolean hasFlashDrive()
     {
-    	return (data & 0b1000) != 0 && flashDrive != null;
-    }
-    
-    public void setHasFlashDrive(boolean hasFlashDrive)
-    {
-    	if(hasFlashDrive)
-    	{
-    		data |= 0b1000;
-    	}
-    	else
-    	{
-    		data &= ~0b1000;
-    	}
-    }
-    
-    public void toggleHasFlashDrive()
-    {
-    	setHasFlashDrive(!hasFlashDrive());
+    	return isItemValidForSlot(0, getStackInSlot(0));
     }
     
     public byte getData()
@@ -175,4 +200,91 @@ public class TileEntityLaptop extends TilePoweredBase
     {
         return !isBroken();
     }
+	
+	@Override
+	public int getSizeInventory() {
+		return inv.length;
+	}
+	
+	@Override
+	public ItemStack getStackInSlot(int slot) {
+		return inv[slot];
+	}
+	
+	@Override
+	public void setInventorySlotContents(int slot, ItemStack stack) {
+		inv[slot] = stack;
+		if (stack != null && stack.stackSize > getInventoryStackLimit()) {
+			stack.stackSize = getInventoryStackLimit();
+		}
+	}
+	
+	@Override
+	public ItemStack decrStackSize(int slot, int amt) {
+		ItemStack stack = getStackInSlot(slot);
+		if (stack != null)
+		{
+			if (stack.stackSize <= amt)
+			{
+				setInventorySlotContents(slot, null);
+			}
+			else
+			{
+				stack = stack.splitStack(amt);
+				if (stack.stackSize == 0)
+				{
+					setInventorySlotContents(slot, null);
+				}
+			}
+		}
+		return stack;
+	}
+	
+	@Override
+	public ItemStack getStackInSlotOnClosing(int slot) {
+		ItemStack stack = getStackInSlot(slot);
+		if (stack != null) {
+			setInventorySlotContents(slot, null);
+		}
+		return stack;
+	}
+	
+	@Override
+	public int getInventoryStackLimit() {
+		return 1;
+	}
+	
+	@Override
+	public boolean isUseableByPlayer(EntityPlayer player) {
+		return worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) == this &&
+				player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) < 64;
+	}
+	
+	@Override
+	public void openChest() {}
+	
+	@Override
+	public void closeChest() {}
+	
+	@Override
+	public String getInvName()
+	{
+		return "tileentitylaptop";
+	}
+	
+	@Override
+	public boolean isInvNameLocalized()
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean isItemValidForSlot(int slot, ItemStack stack)
+	{
+		if(stack != null && stack.getItem().equals(ModItems.flashDrive) && slot == 0)
+		{
+			return true;
+		}
+		return false;
+	}
 }

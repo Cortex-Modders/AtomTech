@@ -87,9 +87,8 @@ public class BlockLaptop extends BlockContainer
     	if(!world.isRemote)
     	{
     		TileEntityLaptop tile = (TileEntityLaptop) world.getBlockTileEntity(x, y, z);
-    		if(tile.hasFlashDrive() && tile.flashDrive != null)
+    		if(tile.hasFlashDrive())
     		{
-    			tile.toggleHasFlashDrive();
     			ejectFlashDrive(world, x, y, z);
     		}
     	}
@@ -136,42 +135,14 @@ public class BlockLaptop extends BlockContainer
 			TileEntityLaptop tile = (TileEntityLaptop) world.getBlockTileEntity(x, y, z);
 			if(tile != null && !tile.isBroken())
 			{
-				ItemStack heldItem = player.getHeldItem();
-				if(!tile.hasFlashDrive())
-				{
-					if(heldItem != null && heldItem.getItem() != null && heldItem.getItem().equals(ModItems.flashDrive))
-					{
-						tile.toggleHasFlashDrive();
-						tile.flashDrive = heldItem;
-						heldItem.stackSize--;
-					}
-					else
-					{
-						tile.toggleLid();
-					}
-				}
-				else
-				{
-					if(heldItem == null)
-					{
-						tile.toggleHasFlashDrive();
-						player.inventory.mainInventory[player.inventory.currentItem] = tile.flashDrive;
-						tile.flashDrive = null;
-					}
-					else
-					{
-						tile.toggleLid();
-					}
-				}
-				
+				tile.toggleLid();
 				sync(x, y, z, tile);
-				
 				return true;
 			}
 			else if(tile != null && tile.isBroken())
 			{
 				ItemStack heldItem = player.getHeldItem();
-				if(heldItem != null && heldItem.getItem() != null && heldItem.getItem().equals(Item.stick))
+				if(heldItem != null && heldItem.getItem().equals(Item.stick))
 				{
 					tile.fix();
 					sync(x, y, z, tile);
@@ -266,20 +237,6 @@ public class BlockLaptop extends BlockContainer
 			data.writeInt(y);
 			data.writeInt(z);
 			data.writeByte(tile.getData());
-			if(tile.flashDrive != null && tile.hasFlashDrive())
-			{
-				if(tile.flashDrive.getTagCompound() == null)
-				{
-					tile.flashDrive.setTagCompound(new NBTTagCompound());
-				}
-				NBTTagList tagList = tile.flashDrive.getTagCompound().getTagList("elements");
-				data.writeInt(tagList.tagCount());
-				for (int i = 0; i < tagList.tagCount(); i++)
-				{
-					NBTTagCompound tag = (NBTTagCompound) tagList.tagAt(i);
-					data.writeInt(tag.getInteger("atomicNumber"));
-				}
-			}
 		}
 		catch(Exception e)
 		{
@@ -292,10 +249,10 @@ public class BlockLaptop extends BlockContainer
     public static void ejectFlashDrive(World world, int x, int y, int z)
     {
     	TileEntityLaptop tile = (TileEntityLaptop)world.getBlockTileEntity(x, y, z);
-    	if(tile != null && !world.isRemote)
+    	if(tile != null && !world.isRemote && tile.getStackInSlot(0) != null)
     	{
     		EntityItem item = new EntityItem(world);
-    		item.setEntityItemStack(tile.flashDrive);
+    		item.setEntityItemStack(tile.getStackInSlot(0));
     		switch(world.getBlockMetadata(x, y, z))
     		{
     		case 0:
@@ -313,9 +270,7 @@ public class BlockLaptop extends BlockContainer
     		}
     		
     		world.spawnEntityInWorld(item);
-    		tile.flashDrive = null;
-    		tile.toggleHasFlashDrive();
-    		sync(x, y, z, tile);
+    		tile.setInventorySlotContents(0, null);
     	}
     }
 }

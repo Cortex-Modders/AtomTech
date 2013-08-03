@@ -47,24 +47,5 @@ public class PacketHandler implements IPacketHandler
 		
 		TileEntityLaptop tile = (TileEntityLaptop) world.getBlockTileEntity(x, y, z);
 		tile.setData(data.readByte());
-		if(tile.hasFlashDrive())
-		{
-			tile.flashDrive = new ItemStack(ModItems.flashDrive);
-			NBTTagList elementList = new NBTTagList();
-			for (int i = 0; i < data.readInt(); i++)
-			{
-					NBTTagCompound tag = new NBTTagCompound();
-					tag.setInteger("atomicNumber", data.readInt());
-					elementList.appendTag(tag);
-			}
-			NBTTagCompound tag = tile.flashDrive.getTagCompound();
-			if(tag == null)
-			{
-				tag = new NBTTagCompound();
-			}
-			tag.setTag("elements", elementList);
-			tile.flashDrive.setTagCompound(tag);
-		}
-		world.setBlockTileEntity(x, y, z, tile);
 	}
 }
