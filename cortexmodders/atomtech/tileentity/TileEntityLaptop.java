@@ -12,6 +12,7 @@ import net.minecraft.network.packet.Packet132TileEntityData;
 public class TileEntityLaptop extends TilePoweredBase
 {
     private byte data = 0b0100;
+    public ItemStack flashDrive;
     
     public float lidAngleX = -180.0F;
     private final float lidAngleOpen = -276.0F;
@@ -25,7 +26,6 @@ public class TileEntityLaptop extends TilePoweredBase
     @Override
     public void updateEntity()
     {
-    	System.out.println(powerLevel);
     	if(!isBroken())
     	{
     		if(isLidClosed() && lidAngleX != lidAngleClosed)
@@ -41,10 +41,7 @@ public class TileEntityLaptop extends TilePoweredBase
     	{
     		if(hasFlashDrive() && !worldObj.isRemote)
     		{
-    			EntityItem item = new EntityItem(worldObj, xCoord + 0.5, yCoord + 1, zCoord + 0.5, new ItemStack(ModItems.flashDrive));
-    			worldObj.spawnEntityInWorld(item);
-    			toggleHasFlashDrive();
-    			BlockLaptop.sync(xCoord, yCoord, zCoord, data);
+    			BlockLaptop.ejectFlashDrive(worldObj, xCoord, yCoord, zCoord);
     		}
     	}
     }
@@ -110,6 +107,12 @@ public class TileEntityLaptop extends TilePoweredBase
     	return (byte) (data & 0b11);
     }
     
+    public void setCondition(byte condition)
+    {
+    	data &= ~0b11;
+    	data |= condition & 0b11;
+    }
+    
     /**
      * makes the laptop more broken.
      * 
@@ -132,7 +135,7 @@ public class TileEntityLaptop extends TilePoweredBase
     
     public boolean hasFlashDrive()
     {
-    	return (data & 0b1000) != 0;
+    	return (data & 0b1000) != 0 && flashDrive != null;
     }
     
     public void setHasFlashDrive(boolean hasFlashDrive)

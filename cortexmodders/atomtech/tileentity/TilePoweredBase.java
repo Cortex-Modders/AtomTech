@@ -25,6 +25,20 @@ public abstract class TilePoweredBase extends TileEntity implements IAtomicPower
     }
     
     @Override
+	public void updateEntity()
+	{
+		if(canSendPower() && powerLevel > 0)
+		{
+			sendPower(xCoord + 1, yCoord, zCoord);
+			sendPower(xCoord - 1, yCoord, zCoord);
+			sendPower(xCoord, yCoord + 1, zCoord);
+			sendPower(xCoord, yCoord - 1, zCoord);
+			sendPower(xCoord, yCoord, zCoord + 1);
+			sendPower(xCoord, yCoord, zCoord - 1);
+		}
+	}
+    
+    @Override
     public void readFromNBT(NBTTagCompound tag)
     {
         super.readFromNBT(tag);

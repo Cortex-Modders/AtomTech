@@ -12,19 +12,12 @@ public class TileEntityCoalGenerator extends TilePoweredBase
 	@Override
 	public void updateEntity()
 	{
-		//if(!worldObj.isRemote)
-			//System.out.println(fuelLevel);
 		if(fuelLevel > 0)
 		{
 			if(fuelLevel % 10 == 0)
 			{
 				powerLevel = 1;
-				sendPower(xCoord + 1, yCoord, zCoord);
-				sendPower(xCoord - 1, yCoord, zCoord);
-				sendPower(xCoord, yCoord + 1, zCoord);
-				sendPower(xCoord, yCoord - 1, zCoord);
-				sendPower(xCoord, yCoord, zCoord + 1);
-				sendPower(xCoord, yCoord, zCoord - 1);
+				super.updateEntity();
 				powerLevel = 0;
 			}
 			fuelLevel--;

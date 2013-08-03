@@ -8,6 +8,7 @@ public class TileEntityBattery extends TilePoweredBase
 	{
 		if(!worldObj.isRemote)
 			System.out.println(powerLevel);
+		super.updateEntity();
 	}
 	
 	@Override

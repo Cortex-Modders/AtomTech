@@ -2,15 +2,19 @@ package cortexmodders.atomtech.blocks;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.util.ArrayList;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
@@ -18,11 +22,12 @@ import net.minecraft.world.World;
 import cortexmodders.atomtech.AtomTech;
 import cortexmodders.atomtech.item.ModItems;
 import cortexmodders.atomtech.lib.RenderIds;
+import cortexmodders.atomtech.power.IAtomicPower;
 import cortexmodders.atomtech.tileentity.TileEntityLaptop;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
-public class BlockLaptop extends BlockContainer {
-
+public class BlockLaptop extends BlockContainer
+{
     public BlockLaptop(int id) {
         super(id, Material.iron);
         setCreativeTab(AtomTech.atomTab);
@@ -57,6 +62,40 @@ public class BlockLaptop extends BlockContainer {
     }
     
     @Override
+    public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int metadata, int fortune)
+    {
+        ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
+        
+        ItemStack stack = new ItemStack(ModBlocks.laptop);
+        NBTTagCompound tag = stack.getTagCompound();
+        if(tag == null)
+        {
+        	tag = new NBTTagCompound();
+        }
+        tag.setInteger("power", ((TileEntityLaptop)world.getBlockTileEntity(x, y, z)).getPower());
+        tag.setByte("laptopDamage", ((TileEntityLaptop)world.getBlockTileEntity(x, y, z)).getCondition());
+        stack.setTagCompound(tag);
+        
+        ret.add(stack);
+        super.breakBlock(world, x, y, z, ModBlocks.laptop.blockID, metadata);
+        return ret;
+    }
+    
+    @Override
+    public void breakBlock(World world, int x, int y, int z, int blockId, int meta)
+    {
+    	if(!world.isRemote)
+    	{
+    		TileEntityLaptop tile = (TileEntityLaptop) world.getBlockTileEntity(x, y, z);
+    		if(tile.hasFlashDrive() && tile.flashDrive != null)
+    		{
+    			tile.toggleHasFlashDrive();
+    			ejectFlashDrive(world, x, y, z);
+    		}
+    	}
+    }
+    
+    @Override
     public void onFallenUpon(World par1World, int x, int y, int z, Entity entity, float par6)
     {
     	TileEntityLaptop tile = (TileEntityLaptop)par1World.getBlockTileEntity(x, y, z);
@@ -69,7 +108,7 @@ public class BlockLaptop extends BlockContainer {
             }
             
             tile.degradeCondition();
-            sync(x, y, z, tile.getData());
+            sync(x, y, z, tile);
         }
     }
     
@@ -85,7 +124,7 @@ public class BlockLaptop extends BlockContainer {
             }
             
             tile.degradeCondition();
-            sync(x, y, z, tile.getData());
+            sync(x, y, z, tile);
         }
     }
     
@@ -103,6 +142,7 @@ public class BlockLaptop extends BlockContainer {
 					if(heldItem != null && heldItem.getItem() != null && heldItem.getItem().equals(ModItems.flashDrive))
 					{
 						tile.toggleHasFlashDrive();
+						tile.flashDrive = heldItem;
 						heldItem.stackSize--;
 					}
 					else
@@ -115,7 +155,8 @@ public class BlockLaptop extends BlockContainer {
 					if(heldItem == null)
 					{
 						tile.toggleHasFlashDrive();
-						player.inventory.mainInventory[player.inventory.currentItem] = new ItemStack(ModItems.flashDrive);
+						player.inventory.mainInventory[player.inventory.currentItem] = tile.flashDrive;
+						tile.flashDrive = null;
 					}
 					else
 					{
@@ -123,7 +164,7 @@ public class BlockLaptop extends BlockContainer {
 					}
 				}
 				
-				sync(x, y, z, tile.getData());
+				sync(x, y, z, tile);
 				
 				return true;
 			}
@@ -133,7 +174,7 @@ public class BlockLaptop extends BlockContainer {
 				if(heldItem != null && heldItem.getItem() != null && heldItem.getItem().equals(Item.stick))
 				{
 					tile.fix();
-					sync(x, y, z, tile.getData());
+					sync(x, y, z, tile);
 					return true;
 				}
 			}
@@ -142,12 +183,19 @@ public class BlockLaptop extends BlockContainer {
     }
     
     @Override
-    public void onBlockPlacedBy(World par1World, int x, int y, int z, EntityLivingBase par5EntityLiving, ItemStack par6ItemStack)
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack stack)
     {
-    	super.onBlockPlacedBy(par1World, x, y, z, par5EntityLiving, par6ItemStack);
-        int l = MathHelper.floor_double((double)(par5EntityLiving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+    	super.onBlockPlacedBy(world, x, y, z, entity, stack);
+        int l = MathHelper.floor_double((double)(entity.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
         
-        par1World.setBlockMetadataWithNotify(x, y, z, l, 2);
+        world.setBlockMetadataWithNotify(x, y, z, l, 2);
+        
+        NBTTagCompound tag = stack.getTagCompound();
+        if(tag != null)
+        {
+        	((TileEntityLaptop)world.getBlockTileEntity(x, y, z)).setPower(tag.getInteger("power"));
+        	((TileEntityLaptop)world.getBlockTileEntity(x, y, z)).setCondition(tag.getByte("laptopDamage"));
+        }
     }
     
     @Override
@@ -206,7 +254,7 @@ public class BlockLaptop extends BlockContainer {
 		this.setBlockBounds(minx, miny, minz, maxx, maxy, maxz);
 	}
     
-    public static void sync(int x, int y, int z, byte laptopData)
+    public static void sync(int x, int y, int z, TileEntityLaptop tile)
     {
     	ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		DataOutputStream data = new DataOutputStream(bos);
@@ -217,7 +265,21 @@ public class BlockLaptop extends BlockContainer {
 			data.writeInt(x);
 			data.writeInt(y);
 			data.writeInt(z);
-			data.writeByte(laptopData);
+			data.writeByte(tile.getData());
+			if(tile.flashDrive != null && tile.hasFlashDrive())
+			{
+				if(tile.flashDrive.getTagCompound() == null)
+				{
+					tile.flashDrive.setTagCompound(new NBTTagCompound());
+				}
+				NBTTagList tagList = tile.flashDrive.getTagCompound().getTagList("elements");
+				data.writeInt(tagList.tagCount());
+				for (int i = 0; i < tagList.tagCount(); i++)
+				{
+					NBTTagCompound tag = (NBTTagCompound) tagList.tagAt(i);
+					data.writeInt(tag.getInteger("atomicNumber"));
+				}
+			}
 		}
 		catch(Exception e)
 		{
@@ -225,5 +287,35 @@ public class BlockLaptop extends BlockContainer {
 		}
 		
 		PacketDispatcher.sendPacketToAllPlayers(PacketDispatcher.getPacket("AtomTech", bos.toByteArray()));
+    }
+    
+    public static void ejectFlashDrive(World world, int x, int y, int z)
+    {
+    	TileEntityLaptop tile = (TileEntityLaptop)world.getBlockTileEntity(x, y, z);
+    	if(tile != null && !world.isRemote)
+    	{
+    		EntityItem item = new EntityItem(world);
+    		item.setEntityItemStack(tile.flashDrive);
+    		switch(world.getBlockMetadata(x, y, z))
+    		{
+    		case 0:
+    			item.setPosition(x + 1.1D, y, z + 0.5D);
+    			break;
+    		case 1:
+    			item.setPosition(x + 0.5D, y, z + 1.1D);
+    			break;
+    		case 2:
+    			item.setPosition(x - 0.1D, y, z + 0.5D);
+    			break;
+    		case 3:
+    			item.setPosition(x + 0.5D, y, z - 0.1D);
+    			break;
+    		}
+    		
+    		world.spawnEntityInWorld(item);
+    		tile.flashDrive = null;
+    		tile.toggleHasFlashDrive();
+    		sync(x, y, z, tile);
+    	}
     }
 }
