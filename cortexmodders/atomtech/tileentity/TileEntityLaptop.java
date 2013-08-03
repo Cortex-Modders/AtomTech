@@ -286,12 +286,12 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
 	}
 	
 	public static AxisAlignedBB getFlashDriveBoundingBoxByMeta(int meta) {
+	    AxisAlignedBB box = getBoundingBox();
 	    switch(meta) {
-	    default: return AxisAlignedBB.getAABBPool().getAABB( 1, 0, 0.3125, 1, 0.125, 0.375);
-	    case 0: return AxisAlignedBB.getAABBPool().getAABB( 1, 0, 0.3125, 1, 0.125, 0.375);
-	    case 1: return AxisAlignedBB.getAABBPool().getAABB( 0.3125, 0, 1, 0.375, 0.125, 1);
-	    case 2: return AxisAlignedBB.getAABBPool().getAABB( 0, 0, 0.3125, 0, 0.125, 0.375);
-	    case 3: return AxisAlignedBB.getAABBPool().getAABB( 0.3125, 0, 0, 0.375, 0.125, 0);
+	    default: return AxisAlignedBB.getAABBPool().getAABB( box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
+	    case 1: return AxisAlignedBB.getAABBPool().getAABB( 0, box.minY, box.minZ, 0, box.maxY, box.maxZ);
+	    case 2: return AxisAlignedBB.getAABBPool().getAABB( box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
+	    case 3: return AxisAlignedBB.getAABBPool().getAABB( box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
 	    }
 	}
 	

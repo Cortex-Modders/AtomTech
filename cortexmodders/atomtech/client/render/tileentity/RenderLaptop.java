@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
@@ -14,6 +15,7 @@ import org.lwjgl.opengl.GL11;
 
 import cortexmodders.atomtech.CommonProxy;
 import cortexmodders.atomtech.client.model.tileentity.ModelLaptop;
+import cortexmodders.atomtech.client.render.RenderUtil;
 import cortexmodders.atomtech.tileentity.TileEntityLaptop;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
@@ -72,64 +74,16 @@ public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBl
         int id = entity.worldObj.getBlockId(hitPosition.blockX, hitPosition.blockY, hitPosition.blockZ);
         Vec3 p = Vec3.createVectorHelper(hitPosition.hitVec.xCoord - hitPosition.blockX, hitPosition.hitVec.yCoord - hitPosition.blockY, hitPosition.hitVec.zCoord - hitPosition.blockZ);
 
-        if(hitPosition != null && id == entity.blockType.blockID && CommonProxy.isVecInsideBB(p, TileEntityLaptop.getBoundingBox())) {
+        if(hitPosition != null && (Integer)id != null && id == entity.blockType.blockID && CommonProxy.isVecInsideBB(p, TileEntityLaptop.getBoundingBox())) {
             //render wireframe
             GL11.glPushMatrix();
-            GL11.glPolygonMode( GL11.GL_FRONT, GL11.GL_LINE );
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.4F);
-            GL11.glLineWidth(2.0F);
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
-            GL11.glDepthMask(false);
 
             GL11.glTranslatef(-0.625F, 0.0F, -0.1875F);
 
             float f1 = 0.0635F;
-
-            GL11.glBegin(GL11.GL_QUADS);
-            // right       
-            GL11.glVertex3f(0.0f, f1, f1);
-            GL11.glVertex3f(0.0f, 0.0F, f1);
-            GL11.glVertex3f(0.0F, 0.0F, 0.0F);
-            GL11.glVertex3f(0.0f, f1, 0.0F);
-
-            // left
-            GL11.glVertex3f(f1*2, f1, f1);
-            GL11.glVertex3f(f1*2, 0.0F, f1);
-            GL11.glVertex3f(f1*2, 0.0F, 0.0F);
-            GL11.glVertex3f(f1*2, f1, 0.0F);
-
-            // front
-            GL11.glVertex3f(f1*2, f1, 0.0f);
-            GL11.glVertex3f(f1*2, 0.0F, 0.0f);
-            GL11.glVertex3f(0.0F, 0.0F, 0.0F);
-            GL11.glVertex3f(0.0F, f1, 0.0F);
-
-            // back
-            GL11.glVertex3f(f1*2, f1, f1);
-            GL11.glVertex3f(f1*2, 0.0F, f1);
-            GL11.glVertex3f(0.0F, 0.0F, f1);
-            GL11.glVertex3f(0.0F, f1, f1);
-
-            // top
-            GL11.glVertex3f(f1*2, f1, 0.0f);
-            GL11.glVertex3f(f1*2, f1, f1);
-            GL11.glVertex3f(0.0F, f1, f1);
-            GL11.glVertex3f(0.0F, f1, 0.0F);
-
-
-            // bottom
-            GL11.glVertex3f(f1*2, 0.0F, 0.0f);
-            GL11.glVertex3f(f1*2, 0.0F, f1);
-            GL11.glVertex3f(0.0F, 0.0F, f1);
-            GL11.glVertex3f(0.0F, 0.0F, 0.0F);
-            GL11.glEnd();
-
-            GL11.glDepthMask(true);
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GL11.glDisable(GL11.GL_BLEND);
-            GL11.glPolygonMode( GL11.GL_FRONT, GL11.GL_FILL );
+            AxisAlignedBB frame = AxisAlignedBB.getAABBPool().getAABB(0, 0, 0, f1*2, f1, f1);
+            RenderUtil.renderWireframe(frame);
+            
             GL11.glPopMatrix();
         }
 
