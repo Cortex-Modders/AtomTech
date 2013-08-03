@@ -69,16 +69,23 @@ public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBl
 
         MovingObjectPosition position = Minecraft.getMinecraft().objectMouseOver;
         int j = 0;
-        Vec3 positionOnBlock;
+        Vec3 positionOnBlock = null;
         if(position != null) {
             j = entity.worldObj.getBlockId(position.blockX, position.blockY, position.blockZ);
             positionOnBlock = Vec3.createVectorHelper(position.hitVec.xCoord - position.blockX, position.hitVec.yCoord - position.blockY, position.hitVec.zCoord - position.blockZ);
-            System.out.println(position.hitVec.xCoord + " " + position.hitVec.yCoord + " " + position.hitVec.zCoord);
-        }
+            if(positionOnBlock.xCoord == 1.0 &&
+               positionOnBlock.yCoord <= 0.125 &&
+               positionOnBlock.zCoord >= 0.3125 && positionOnBlock.zCoord <= 0.375) {
+                System.out.println(positionOnBlock.xCoord + " " + positionOnBlock.yCoord + " " + positionOnBlock.zCoord);
+        
+        
 //        if(j == entity.blockType.blockID &&)
+        /*
         if(position != null
                 && j == entity.blockType.blockID
-                && positionOnBlock.xCoord ) {
+                && laptop. ) {
+                */
+        
             //render wireframe
             GL11.glPushMatrix();
             GL11.glPolygonMode( GL11.GL_FRONT, GL11.GL_LINE );
@@ -137,6 +144,7 @@ public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBl
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glPolygonMode( GL11.GL_FRONT, GL11.GL_FILL );
             GL11.glPopMatrix();
+            }
         }
         GL11.glPopMatrix();
     }

@@ -23,13 +23,13 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
     private final float lidAngleOpen = -276.0F;
     private final float lidAngleClosed = -180.0F;
     
-    // these are not offset from the laptop bounding box!
+    // local coords
     public final static AxisAlignedBB[] flashDriveHitPositions = {
     	//south
-    	AxisAlignedBB.getBoundingBox(0, 0, 0, -0.625, 0, -0.1875),
-    	AxisAlignedBB.getBoundingBox(0, 0, 0, -0.625, 0, -0.1875),
-    	AxisAlignedBB.getBoundingBox(0, 0, 0, -0.625, 0, -0.1875),
-    	AxisAlignedBB.getBoundingBox(0, 0, 0, -0.625, 0, -0.1875),
+    	AxisAlignedBB.getAABBPool().getAABB(0, 0, 0, -0.0625*2, -0.0625, -0.0625).getOffsetBoundingBox(-0.625F, 0.0F, -0.1875F),
+    	AxisAlignedBB.getAABBPool().getAABB(0, 0, 0, -0.0625*2, -0.0625, -0.0625).getOffsetBoundingBox(-0.625F, 0.0F, -0.1875F),
+    	AxisAlignedBB.getAABBPool().getAABB(0, 0, 0, -0.0625*2, -0.0625, -0.0625).getOffsetBoundingBox(-0.625F, 0.0F, -0.1875F),
+    	AxisAlignedBB.getAABBPool().getAABB(0, 0, 0, -0.0625*2, -0.0625, -0.0625).getOffsetBoundingBox(-0.625F, 0.0F, -0.1875F),
     };
     
     public TileEntityLaptop()
@@ -47,7 +47,7 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
     		{
     			worldObj.removeBlockTileEntity(xCoord, yCoord, zCoord);
     		}
-    		System.out.println(hasFlashDrive());
+//    		System.out.println(hasFlashDrive());
     	}
     	if(!isBroken())
     	{
@@ -286,5 +286,11 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
 			return true;
 		}
 		return false;
+	}
+	
+	public AxisAlignedBB getFlashDriveBoundingBox(int x, int y, int z) {
+	    AxisAlignedBB bb = flashDriveHitPositions[this.blockMetadata];
+//        return bb.offset(this.blockType., par3, par5);
+	    return AxisAlignedBB.getAABBPool().getAABB( bb.minX + x, bb.minY + y, bb.minZ + z, bb.maxX + x, bb.maxY + y, bb.maxZ + z);
 	}
 }
