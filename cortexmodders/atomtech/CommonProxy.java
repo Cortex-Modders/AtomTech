@@ -1,6 +1,8 @@
 package cortexmodders.atomtech;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
 import cortexmodders.atomtech.blocks.ModBlocks;
@@ -57,5 +59,11 @@ public class CommonProxy
 		OreDictionary.registerOre("oreRadioactiveLead", new ItemStack(ModBlocks.ores, 1, 1));
 		OreDictionary.registerOre("oreUranium", new ItemStack(ModBlocks.ores, 1, 2));
 		OreDictionary.registerOre("oreLithium", new ItemStack(ModBlocks.ores, 1, 3));
+	}
+	
+	public static boolean isVecInsideBB(Vec3 vec, AxisAlignedBB box) {
+	    return (vec.xCoord >= box.minX && vec.xCoord <= box.maxX
+	         && vec.yCoord >= box.minY && vec.yCoord <= box.maxY
+	         && vec.zCoord >= box.minZ && vec.zCoord <= box.maxZ);
 	}
 }

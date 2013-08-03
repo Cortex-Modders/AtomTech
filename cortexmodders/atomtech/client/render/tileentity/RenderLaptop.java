@@ -12,6 +12,7 @@ import net.minecraft.world.IBlockAccess;
 
 import org.lwjgl.opengl.GL11;
 
+import cortexmodders.atomtech.CommonProxy;
 import cortexmodders.atomtech.client.model.tileentity.ModelLaptop;
 import cortexmodders.atomtech.tileentity.TileEntityLaptop;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
@@ -24,7 +25,7 @@ public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBl
 
     private static final ResourceLocation texture = new ResourceLocation("atomtech", "textures/models/laptop.png");
     private static final ResourceLocation broken_texture = new ResourceLocation("atomtech", "textures/models/laptop_broken.png");
-    
+
     public RenderLaptop(int id) {
         renderId = id;
         model = new ModelLaptop();
@@ -67,25 +68,11 @@ public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBl
 
         model.render(laptop, laptop.lidAngleX, 0f, 0f, 0f, 0f, 0.0625F);
 
-        MovingObjectPosition position = Minecraft.getMinecraft().objectMouseOver;
-        int j = 0;
-        Vec3 positionOnBlock = null;
-        if(position != null) {
-            j = entity.worldObj.getBlockId(position.blockX, position.blockY, position.blockZ);
-            positionOnBlock = Vec3.createVectorHelper(position.hitVec.xCoord - position.blockX, position.hitVec.yCoord - position.blockY, position.hitVec.zCoord - position.blockZ);
-            if(positionOnBlock.xCoord == 1.0 &&
-               positionOnBlock.yCoord <= 0.125 &&
-               positionOnBlock.zCoord >= 0.3125 && positionOnBlock.zCoord <= 0.375) {
-                System.out.println(positionOnBlock.xCoord + " " + positionOnBlock.yCoord + " " + positionOnBlock.zCoord);
-        
-        
-//        if(j == entity.blockType.blockID &&)
-        /*
-        if(position != null
-                && j == entity.blockType.blockID
-                && laptop. ) {
-                */
-        
+        MovingObjectPosition hitPosition = Minecraft.getMinecraft().objectMouseOver;
+        int id = entity.worldObj.getBlockId(hitPosition.blockX, hitPosition.blockY, hitPosition.blockZ);
+        Vec3 p = Vec3.createVectorHelper(hitPosition.hitVec.xCoord - hitPosition.blockX, hitPosition.hitVec.yCoord - hitPosition.blockY, hitPosition.hitVec.zCoord - hitPosition.blockZ);
+
+        if(hitPosition != null && id == entity.blockType.blockID && CommonProxy.isVecInsideBB(p, TileEntityLaptop.getBoundingBox())) {
             //render wireframe
             GL11.glPushMatrix();
             GL11.glPolygonMode( GL11.GL_FRONT, GL11.GL_LINE );
@@ -101,42 +88,42 @@ public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBl
             float f1 = 0.0635F;
 
             GL11.glBegin(GL11.GL_QUADS);
-                // right       
-                GL11.glVertex3f(0.0f, f1, f1);
-                GL11.glVertex3f(0.0f, 0.0F, f1);
-                GL11.glVertex3f(0.0F, 0.0F, 0.0F);
-                GL11.glVertex3f(0.0f, f1, 0.0F);
+            // right       
+            GL11.glVertex3f(0.0f, f1, f1);
+            GL11.glVertex3f(0.0f, 0.0F, f1);
+            GL11.glVertex3f(0.0F, 0.0F, 0.0F);
+            GL11.glVertex3f(0.0f, f1, 0.0F);
 
-                // left
-                GL11.glVertex3f(f1*2, f1, f1);
-                GL11.glVertex3f(f1*2, 0.0F, f1);
-                GL11.glVertex3f(f1*2, 0.0F, 0.0F);
-                GL11.glVertex3f(f1*2, f1, 0.0F);
+            // left
+            GL11.glVertex3f(f1*2, f1, f1);
+            GL11.glVertex3f(f1*2, 0.0F, f1);
+            GL11.glVertex3f(f1*2, 0.0F, 0.0F);
+            GL11.glVertex3f(f1*2, f1, 0.0F);
 
-                // front
-                GL11.glVertex3f(f1*2, f1, 0.0f);
-                GL11.glVertex3f(f1*2, 0.0F, 0.0f);
-                GL11.glVertex3f(0.0F, 0.0F, 0.0F);
-                GL11.glVertex3f(0.0F, f1, 0.0F);
+            // front
+            GL11.glVertex3f(f1*2, f1, 0.0f);
+            GL11.glVertex3f(f1*2, 0.0F, 0.0f);
+            GL11.glVertex3f(0.0F, 0.0F, 0.0F);
+            GL11.glVertex3f(0.0F, f1, 0.0F);
 
-                // back
-                GL11.glVertex3f(f1*2, f1, f1);
-                GL11.glVertex3f(f1*2, 0.0F, f1);
-                GL11.glVertex3f(0.0F, 0.0F, f1);
-                GL11.glVertex3f(0.0F, f1, f1);
+            // back
+            GL11.glVertex3f(f1*2, f1, f1);
+            GL11.glVertex3f(f1*2, 0.0F, f1);
+            GL11.glVertex3f(0.0F, 0.0F, f1);
+            GL11.glVertex3f(0.0F, f1, f1);
 
-                // top
-                GL11.glVertex3f(f1*2, f1, 0.0f);
-                GL11.glVertex3f(f1*2, f1, f1);
-                GL11.glVertex3f(0.0F, f1, f1);
-                GL11.glVertex3f(0.0F, f1, 0.0F);
+            // top
+            GL11.glVertex3f(f1*2, f1, 0.0f);
+            GL11.glVertex3f(f1*2, f1, f1);
+            GL11.glVertex3f(0.0F, f1, f1);
+            GL11.glVertex3f(0.0F, f1, 0.0F);
 
 
-                // bottom
-                GL11.glVertex3f(f1*2, 0.0F, 0.0f);
-                GL11.glVertex3f(f1*2, 0.0F, f1);
-                GL11.glVertex3f(0.0F, 0.0F, f1);
-                GL11.glVertex3f(0.0F, 0.0F, 0.0F);
+            // bottom
+            GL11.glVertex3f(f1*2, 0.0F, 0.0f);
+            GL11.glVertex3f(f1*2, 0.0F, f1);
+            GL11.glVertex3f(0.0F, 0.0F, f1);
+            GL11.glVertex3f(0.0F, 0.0F, 0.0F);
             GL11.glEnd();
 
             GL11.glDepthMask(true);
@@ -144,8 +131,8 @@ public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBl
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glPolygonMode( GL11.GL_FRONT, GL11.GL_FILL );
             GL11.glPopMatrix();
-            }
         }
+
         GL11.glPopMatrix();
     }
 

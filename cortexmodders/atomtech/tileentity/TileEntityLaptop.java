@@ -16,6 +16,9 @@ import net.minecraft.util.AxisAlignedBB;
 
 public class TileEntityLaptop extends TilePoweredBase implements IInventory
 {
+    
+    public static AxisAlignedBB test = AxisAlignedBB.getAABBPool().getAABB( 1, 0, 0.3125, 1, 0.125, 0.375);
+    
     private byte data = 0b100;
     private ItemStack[] inv;
     
@@ -24,13 +27,7 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
     private final float lidAngleClosed = -180.0F;
     
     // local coords
-    public final static AxisAlignedBB[] flashDriveHitPositions = {
-    	//south
-    	AxisAlignedBB.getAABBPool().getAABB(0, 0, 0, -0.0625*2, -0.0625, -0.0625).getOffsetBoundingBox(-0.625F, 0.0F, -0.1875F),
-    	AxisAlignedBB.getAABBPool().getAABB(0, 0, 0, -0.0625*2, -0.0625, -0.0625).getOffsetBoundingBox(-0.625F, 0.0F, -0.1875F),
-    	AxisAlignedBB.getAABBPool().getAABB(0, 0, 0, -0.0625*2, -0.0625, -0.0625).getOffsetBoundingBox(-0.625F, 0.0F, -0.1875F),
-    	AxisAlignedBB.getAABBPool().getAABB(0, 0, 0, -0.0625*2, -0.0625, -0.0625).getOffsetBoundingBox(-0.625F, 0.0F, -0.1875F),
-    };
+    public final static AxisAlignedBB flashDriveHitPosition = AxisAlignedBB.getAABBPool().getAABB(1, 0, 0.3125, 1, 0.125, 0.375);
     
     public TileEntityLaptop()
     {
@@ -288,9 +285,17 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
 		return false;
 	}
 	
-	public AxisAlignedBB getFlashDriveBoundingBox(int x, int y, int z) {
-	    AxisAlignedBB bb = flashDriveHitPositions[this.blockMetadata];
-//        return bb.offset(this.blockType., par3, par5);
-	    return AxisAlignedBB.getAABBPool().getAABB( bb.minX + x, bb.minY + y, bb.minZ + z, bb.maxX + x, bb.maxY + y, bb.maxZ + z);
+	public static AxisAlignedBB getFlashDriveBoundingBoxByMeta(int meta) {
+	    switch(meta) {
+	    default: return AxisAlignedBB.getAABBPool().getAABB( 1, 0, 0.3125, 1, 0.125, 0.375);
+	    case 0: return AxisAlignedBB.getAABBPool().getAABB( 1, 0, 0.3125, 1, 0.125, 0.375);
+	    case 1: return AxisAlignedBB.getAABBPool().getAABB( 0.3125, 0, 1, 0.375, 0.125, 1);
+	    case 2: return AxisAlignedBB.getAABBPool().getAABB( 0, 0, 0.3125, 0, 0.125, 0.375);
+	    case 3: return AxisAlignedBB.getAABBPool().getAABB( 0.3125, 0, 0, 0.375, 0.125, 0);
+	    }
+	}
+	
+	public static AxisAlignedBB getBoundingBox() {
+	    return AxisAlignedBB.getAABBPool().getAABB( 1, 0, 0.3125, 1, 0.125, 0.375);
 	}
 }
