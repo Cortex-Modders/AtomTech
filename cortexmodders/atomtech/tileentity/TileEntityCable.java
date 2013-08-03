@@ -3,6 +3,11 @@ package cortexmodders.atomtech.tileentity;
 
 public class TileEntityCable extends TilePoweredBase
 {
+	public TileEntityCable()
+	{
+		super(10);
+	}
+	
 	@Override
 	public void updateEntity()
 	{

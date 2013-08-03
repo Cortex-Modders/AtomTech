@@ -60,7 +60,7 @@ public class BlockLaptop extends BlockContainer {
     {
     	TileEntityLaptop tile = (TileEntityLaptop)par1World.getBlockTileEntity(x, y, z);
     	
-        if (!par1World.isRemote && par1World.rand.nextFloat() < par6 - 0.5F - (tile.isLidClosed() ? 0.6875F : 0.0F))
+        if (!par1World.isRemote)// && par1World.rand.nextFloat() < par6 - 0.5F - (tile.isLidClosed() ? 0.6875F : 0.0F))
         {
             if (!(entity instanceof EntityPlayer) && !par1World.getGameRules().getGameRuleBooleanValue("mobGriefing"))
             {
@@ -158,7 +158,7 @@ public class BlockLaptop extends BlockContainer {
 		this.setBlockBounds(minx, miny, minz, maxx, maxy, maxz);
 	}
     
-    private void sync(int x, int y, int z, byte laptopData)
+    public static void sync(int x, int y, int z, byte laptopData)
     {
     	ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		DataOutputStream data = new DataOutputStream(bos);

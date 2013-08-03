@@ -1,5 +1,9 @@
 package cortexmodders.atomtech.tileentity;
 
+import cortexmodders.atomtech.blocks.BlockLaptop;
+import cortexmodders.atomtech.item.ModItems;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
@@ -19,13 +23,29 @@ public class TileEntityLaptop extends TilePoweredBase
     }
     
     @Override
-    public void updateEntity() {
-        if(isLidClosed() && lidAngleX != lidAngleClosed) {
-            lidAngleX += 4.0F;
-        }
-        else if(!isLidClosed() && lidAngleX != lidAngleOpen) {
-            lidAngleX -= 4.0F;
-        }
+    public void updateEntity()
+    {
+    	if(!isBroken())
+    	{
+    		if(isLidClosed() && lidAngleX != lidAngleClosed)
+    		{
+    			lidAngleX += 4.0F;
+    		}
+    		else if(!isLidClosed() && lidAngleX != lidAngleOpen)
+    		{
+    			lidAngleX -= 4.0F;
+    		}
+    	}
+    	else
+    	{
+    		if(hasFlashDrive() && !worldObj.isRemote)
+    		{
+    			EntityItem item = new EntityItem(worldObj, xCoord + 0.5, yCoord + 1, zCoord + 0.5, new ItemStack(ModItems.flashDrive));
+    			worldObj.spawnEntityInWorld(item);
+    			toggleHasFlashDrive();
+    			BlockLaptop.sync(xCoord, yCoord, zCoord, data);
+    		}
+    	}
     }
     
     @Override
