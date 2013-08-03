@@ -99,7 +99,8 @@ public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBl
         // Move to center of block.
         GL11.glTranslatef(0.5F, 0.0625F, 0.5F);
         // Rotate because of Techne dumbness.
-        GL11.glRotatef(180F, 0F, 1F, 1F);
+        GL11.glRotatef(180F, 0F, 0F, 1F);
+        GL11.glRotatef(90F, 0F, 1F, 0F);
 
         model.render((TileEntityLaptop)null, TileEntityLaptop.LID_ANGLE_OPEN, 0f, 0f, 0f, 0f, 0.0625F);
         
