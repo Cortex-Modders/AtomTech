@@ -20,8 +20,8 @@ public class ModBlocks
 		cable = new BlockCable(BlockIds.CABLE).setResistance(1.0F).setHardness(1.0F).setStepSound(Block.soundClothFootstep).setUnlocalizedName("cable");
 		coalGenerator = new BlockCoalGenerator(BlockIds.COAL_GENERATOR).setResistance(4.0F).setHardness(5.0F).setStepSound(Block.soundMetalFootstep).setUnlocalizedName("coalGenerator");
 		battery = new BlockBattery(BlockIds.BATTERY).setResistance(3.0F).setHardness(4.0F).setStepSound(Block.soundStoneFootstep).setUnlocalizedName("battery");
-		laptop = new BlockLaptop(BlockIds.LAPTOP).setResistance(3.0F).setStepSound(Block.soundGlassFootstep).setUnlocalizedName("laptop");
-		ores = new BlockATOre(BlockIds.ORES).setResistance(3.0F).setStepSound(Block.soundStoneFootstep).setUnlocalizedName("ores");
+		laptop = new BlockLaptop(BlockIds.LAPTOP).setHardness(2.0F).setResistance(3.0F).setStepSound(Block.soundGlassFootstep).setUnlocalizedName("laptop");
+		ores = new BlockATOre(BlockIds.ORES).setHardness(4.0F).setResistance(3.0F).setStepSound(Block.soundStoneFootstep).setUnlocalizedName("ores");
 		
 		registerBlocks();
 		registerLang();

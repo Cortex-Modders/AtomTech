@@ -27,7 +27,13 @@ public class BlockCable extends BlockContainer
 	@Override
 	public int getRenderBlockPass()
 	{
-		return 0;
+		return 1;
+	}
+	
+	@Override
+	public int getRenderType()
+	{
+		return -1;
 	}
 	
 	@Override
@@ -42,13 +48,19 @@ public class BlockCable extends BlockContainer
 		return false;
 	}
 	
-	private boolean validBlock(TileEntity tile)
+	public static boolean validBlock(TileEntity tile)
 	{
 		if(tile != null && tile instanceof IAtomicPower)
 		{
 			return true;
 		}
 		return false;
+	}
+	
+	public static boolean validBlock(World world, int x, int y, int z)
+	{
+		TileEntity tile = world.getBlockTileEntity(x, y, z);
+		return validBlock(tile);
 	}
 	
 	@Override

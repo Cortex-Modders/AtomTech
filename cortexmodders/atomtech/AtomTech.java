@@ -2,6 +2,7 @@ package cortexmodders.atomtech;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.MinecraftForge;
 import cortexmodders.atomtech.blocks.ModBlocks;
 import cortexmodders.atomtech.element.ElementCollection;
 import cortexmodders.atomtech.handlers.PacketHandler;
@@ -55,6 +56,11 @@ public class AtomTech
 		proxy.addOreDictionaryOres();
 		
 		GameRegistry.registerWorldGenerator(new WorldGenAtomTech());
+		
+		MinecraftForge.setBlockHarvestLevel(ModBlocks.ores, 0, "pickaxe", 1);
+		MinecraftForge.setBlockHarvestLevel(ModBlocks.ores, 1, "pickaxe", 2);
+		MinecraftForge.setBlockHarvestLevel(ModBlocks.ores, 2, "pickaxe", 2);
+		MinecraftForge.setBlockHarvestLevel(ModBlocks.ores, 3, "pickaxe", 2);
 	}
 	
 	@EventHandler
