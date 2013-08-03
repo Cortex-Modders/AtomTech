@@ -55,15 +55,26 @@ public abstract class TilePoweredBase extends TileEntity implements IAtomicPower
     	int z = (int) sourceLoc.zCoord;
     	if(worldObj.getBlockTileEntity(x, y, z) != null && worldObj.getBlockTileEntity(x, y, z) instanceof IAtomicPower)
     	{
-    		IAtomicPower source = (IAtomicPower) worldObj.getBlockTileEntity(x, y, z);
-    		source.setPower(addPower(source.getPower()));
+    		int carryOver = addPower(((IAtomicPower)worldObj.getBlockTileEntity(x, y, z)).getPower());
+    		((IAtomicPower)worldObj.getBlockTileEntity(x, y, z)).setPower(carryOver);
+    		this.sourceLoc = sourceLoc;
     	}
     }
 
     @Override
     public void sendPower(int x, int y, int z)
     {
-    	
+    	if(sourceLoc.xCoord != x || sourceLoc.yCoord != y || sourceLoc.zCoord != z || powerLevel > 0)
+    	{
+    		Vec3 powerSource = Vec3.createVectorHelper(xCoord, yCoord, zCoord);
+    		if(worldObj.getBlockTileEntity(x, y, z) instanceof IAtomicPower)
+    		{
+    			if(((IAtomicPower)worldObj.getBlockTileEntity(x, y, z)).canRecievePower())
+    			{
+    				((IAtomicPower)worldObj.getBlockTileEntity(x, y, z)).onPowerRecieved(powerSource);
+    			}
+    		}
+    	}
     }
 
     @Override
@@ -81,6 +92,12 @@ public abstract class TilePoweredBase extends TileEntity implements IAtomicPower
     {
         int remainder = 0;
         
+    	if(power > maxInputPower)
+    	{
+    		remainder = power - maxInputPower;
+    		power = maxInputPower;
+    	}
+    	
         powerLevel += power;
         while(powerLevel > maxPower)
         {
