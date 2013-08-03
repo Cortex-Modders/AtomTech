@@ -21,7 +21,7 @@ public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBl
     
     private ModelLaptop model;    
     
-    private static final ResourceLocation texture = new ResourceLocation("atomtech", "textures/tileentity/laptop.png");
+    private static final ResourceLocation texture = new ResourceLocation("atomtech", "textures/models/laptop.png");
     private static final ResourceLocation broken_texture = new ResourceLocation(ATProperties.ID, "textures/tileentity/broken_laptop.png");
     
     public RenderLaptop(int id) {

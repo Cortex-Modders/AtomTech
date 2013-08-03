@@ -1,4 +1,4 @@
-package cortexmodders.atomtech.tilentity;
+package cortexmodders.atomtech.tileentity;
 
 import net.minecraft.tileentity.TileEntity;
 

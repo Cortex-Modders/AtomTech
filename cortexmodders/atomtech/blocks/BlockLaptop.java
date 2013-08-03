@@ -5,6 +5,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import cortexmodders.atomtech.AtomTech;
@@ -58,5 +59,27 @@ public class BlockLaptop extends BlockContainer {
 
             ((TileEntityLaptop)par1World.getBlockTileEntity(x, y, z)).degradeCondition();
         }
+    }
+    
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+    {
+    	if(!world.isRemote)
+    	{
+			TileEntityLaptop tile = (TileEntityLaptop) world.getBlockTileEntity(x, y, z);
+			if(tile != null)
+			{
+				if(player.getHeldItem() != null && player.getHeldItem().getItem() != null && player.getHeldItem().getItem().equals(Item.stick))
+				{
+					tile.setHasFlashDrive(true);
+    			}
+				else
+				{
+					tile.toggleLid();
+				}
+				return true;
+			}
+    	}
+    	return false;
     }
 }

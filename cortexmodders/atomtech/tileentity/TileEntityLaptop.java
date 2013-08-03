@@ -7,7 +7,7 @@ import net.minecraft.network.packet.Packet132TileEntityData;
 
 public class TileEntityLaptop extends TilePoweredBase
 {
-    private byte data = 0b100;
+    private byte data = 0b0100;
 
     public float lidAngleX = -180.0F;
     private final float lidAngleOpen = -80.0F;
@@ -62,21 +62,23 @@ public class TileEntityLaptop extends TilePoweredBase
     	return (data & 0b100) != 0;
     }
     
-    public void setLidClosed(boolean b) 
+    public void setLidClosed(boolean closeLid) 
     {
-        if(b)
-        {
-                data |= 0b100;
-         }
-         else
-         {
-                data &= ~0b100;
-          }
+    	if(closeLid)
+    	{
+    		data |= 0b100;
+    	}
+    	else
+    	{
+    		data &= ~0b100;
+    	}
     }
     
-    public void toggleLid() {
+    public void toggleLid()
+    {
         setLidClosed(!isLidClosed());
     }
+    
     /**
      * condition of laptop. 0 = best, 1 = ok, 2 = broken.
      */
@@ -105,6 +107,28 @@ public class TileEntityLaptop extends TilePoweredBase
     public boolean isBroken()
     {
         return (data & 0b11) >= 2;
+    }
+    
+    public boolean hasFlashDrive()
+    {
+    	return (data & 0b1000) != 0;
+    }
+    
+    public void setHasFlashDrive(boolean hasFlashDrive)
+    {
+    	if(hasFlashDrive)
+    	{
+    		data |= 0b1000;
+    	}
+    	else
+    	{
+    		data &= ~0b1000;
+    	}
+    }
+    
+    public void toggleHasFlashDrive()
+    {
+    	setHasFlashDrive(!hasFlashDrive());
     }
     
     @Override

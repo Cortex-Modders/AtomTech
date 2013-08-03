@@ -7,14 +7,14 @@ import cortexmodders.atomtech.power.IAtomicPower;
 
 public abstract class TilePoweredBase extends TileEntity implements IAtomicPower
 {
-    private int powerLevel = 0;
+    protected int powerLevel = 0;
     //maybe idk about this..
-    private int maxInputPower = 10;
-    private final int maxPower;
+    protected int maxInputPower = 10;
+    protected final int maxPower;
     
     private Vec3 sourceLoc;
     
-    public TilePoweredBase(int parMax)
+    protected TilePoweredBase(int parMax)
     {
         this.maxPower = parMax;
     }

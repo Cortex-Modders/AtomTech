@@ -7,10 +7,9 @@ import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.util.Vec3;
 import cortexmodders.atomtech.power.IAtomicPower;
 
-public class TileEntityCoalGenerator extends TilePoweredBase implements IAtomicPower
+public class TileEntityCoalGenerator extends TilePoweredBase
 {
 	private int fuelLevel = 0;
-	private byte powerLevel = 0;
 	
 	@Override
 	public void updateEntity()
@@ -62,7 +61,6 @@ public class TileEntityCoalGenerator extends TilePoweredBase implements IAtomicP
 	{
 		super.readFromNBT(tag);
 		this.fuelLevel = tag.getInteger("fuel");
-		this.powerLevel = tag.getByte("power");
 	}
 	
 	@Override
@@ -70,40 +68,6 @@ public class TileEntityCoalGenerator extends TilePoweredBase implements IAtomicP
 	{
 		super.writeToNBT(tag);
 		tag.setInteger("fuel", fuelLevel);
-		tag.setByte("power", powerLevel);
-	}
-	
-	@Override
-	public void onPowerRecieved(Vec3 sourceLoc)
-	{
-		
-	}
-	
-	@Override
-	public void sendPower(int x, int y, int z)
-	{
-		Vec3 powerSource = Vec3.createVectorHelper(xCoord, yCoord, zCoord);
-		if(worldObj.getBlockTileEntity(x, y, z) instanceof IAtomicPower)
-		{
-			IAtomicPower target = (IAtomicPower) worldObj.getBlockTileEntity(x, y, z);
-			if(target.canRecievePower())
-			{
-				powerLevel = 0;
-				target.onPowerRecieved(powerSource);
-			}
-		}
-	}
-	
-	@Override
-	public int getPower()
-	{
-		return powerLevel;
-	}
-	
-	@Override
-	public boolean canRecievePower()
-	{
-		return false;
 	}
 	
 	@Override
