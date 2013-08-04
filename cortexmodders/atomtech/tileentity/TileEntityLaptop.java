@@ -16,7 +16,7 @@ import cortexmodders.atomtech.item.ModItems;
 public class TileEntityLaptop extends TilePoweredBase implements IInventory
 {
 
-    private byte data = 0b100;
+    private byte data = 0b000100;
     private ItemStack[] inv;
 
     private float lidAngleX = -180.0F;
@@ -190,6 +190,22 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
     public void fix()
     {
         data &= ~0b11;
+    }
+    
+    public byte getState()
+    {
+    	return (byte) ((data >> 3) & 0b111);
+    }
+    
+    public void setState(byte newState)
+    {
+    	data &= ~0b111000;
+    	data |= ((newState & 0b111) << 3);
+    }
+    
+    public void incrementState()
+    {
+    	setState((byte) (getState() + 1));
     }
 
     @Override
