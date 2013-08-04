@@ -8,6 +8,7 @@ import cortexmodders.atomtech.element.ElementCollection;
 import cortexmodders.atomtech.handlers.PacketHandler;
 import cortexmodders.atomtech.item.ModItems;
 import cortexmodders.atomtech.lib.ATProperties;
+import cortexmodders.atomtech.lib.Recipes;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -49,6 +50,7 @@ public class AtomTech
 	{
 		ModBlocks.init();
 		ModItems.init();
+		Recipes.init();
 		
 		proxy.addElementsJson();
 		proxy.registerTileEntities();
