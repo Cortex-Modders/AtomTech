@@ -2,6 +2,7 @@ package cortexmodders.atomtech.client.render;
 
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.AxisAlignedBB;
 
@@ -49,5 +50,24 @@ public class RenderUtil {
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glPolygonMode( GL11.GL_FRONT, GL11.GL_FILL );
         GL11.glPopMatrix();
+    }
+    
+    /**
+     * 
+     * called for things with alpha. thank you MachineMuse. :D
+     */
+    public static void alphaOn() {
+        GL11.glPushAttrib(GL11.GL_COLOR_BUFFER_BIT);
+        GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
+        if(Minecraft.isFancyGraphicsEnabled()) {
+            GL11.glShadeModel(GL11.GL_SMOOTH);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        }
+    }
+    
+    public static void alphaOff() {
+        GL11.glPopAttrib();
+        GL11.glPopAttrib();
     }
 }
