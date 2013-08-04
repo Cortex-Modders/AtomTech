@@ -7,6 +7,7 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
 import cortexmodders.atomtech.blocks.ModBlocks;
 import cortexmodders.atomtech.element.ElementCollection;
+import cortexmodders.atomtech.item.ModItems;
 import cortexmodders.atomtech.lib.ATResources;
 import cortexmodders.atomtech.lib.BlockIds;
 import cortexmodders.atomtech.lib.ItemIds;
@@ -36,6 +37,7 @@ public class CommonProxy
 	public void registerItemIds(Configuration config)
 	{
 		ItemIds.FLASH_DRIVE = config.getItem("flashDrive", ItemIds.FLASH_DRIVE_DEF).getInt();
+		ItemIds.INGOTS = config.getItem("ingots", ItemIds.INGOTS_DEF).getInt();
 	}
 	
 	public void registerTileEntities() {
@@ -56,9 +58,15 @@ public class CommonProxy
 	public void addOreDictionaryOres()
 	{
 		OreDictionary.registerOre("oreCopper", new ItemStack(ModBlocks.ores, 1, 0));
+		OreDictionary.registerOre("ingotCopper", new ItemStack(ModItems.ingots, 1, 0));
 		OreDictionary.registerOre("oreRadioactiveLead", new ItemStack(ModBlocks.ores, 1, 1));
+		OreDictionary.registerOre("ingotRadioactiveLead", new ItemStack(ModItems.ingots, 1, 1));
 		OreDictionary.registerOre("oreUranium", new ItemStack(ModBlocks.ores, 1, 2));
+		OreDictionary.registerOre("ingotUranium", new ItemStack(ModItems.ingots, 1, 2));
 		OreDictionary.registerOre("oreLithium", new ItemStack(ModBlocks.ores, 1, 3));
+		OreDictionary.registerOre("ingotLithium", new ItemStack(ModItems.ingots, 1, 3));
+		OreDictionary.registerOre("oreAluminium", new ItemStack(ModBlocks.ores, 1, 4));
+		OreDictionary.registerOre("ingotAluminium", new ItemStack(ModItems.ingots, 1, 4));
 	}
 	
 	public static boolean isVecInsideBB(Vec3 vec, AxisAlignedBB box) {

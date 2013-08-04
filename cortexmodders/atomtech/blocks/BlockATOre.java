@@ -19,7 +19,8 @@ public class BlockATOre extends Block {
         "Cuprum Ore",
         "Plumbum Ore",
         "Uranium Ore",
-        "Lithium Ore"
+        "Lithium Ore",
+        "Aluminium Ore"
     };
     
     public BlockATOre(int par1) {
@@ -43,10 +44,8 @@ public class BlockATOre extends Block {
     @Override 
     public void registerIcons(IconRegister register) {
         textures = new Icon[unlocalizedNames.length];
-        textures[0] = register.registerIcon("atomtech:cuprum");
-        textures[1] = register.registerIcon("atomtech:plumbum");
-        textures[2] = register.registerIcon("atomtech:uranium");
-        textures[3] = register.registerIcon("atomtech:lithium");
+        for(int i = 0; i < textures.length; i++)
+        	textures[i] = register.registerIcon("atomtech:" + unlocalizedNames[i].replace(" ", "").toLowerCase());
     }
     
     /**
