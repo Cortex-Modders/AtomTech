@@ -129,7 +129,19 @@ public class ModelLaptop extends ModelBase
         setRotationAngles(f, f1, f2, f3, f4, f5);
 
         byte state = tile.getState();
-        setFaceTexture();
+        int frame = 0;
+        if(state >= 2 && state <= 7)
+            frame = state - 2;
+        else if(state == 8) {
+            float powerPercent = tile.getPowerPercentage();
+            if(powerPercent >= (2/3) && powerPercent <= 1)
+                frame = 0;
+            else if(powerPercent >= (1/3) && powerPercent <= (2/3))
+                frame = 1;
+            else if(powerPercent >= 0 && powerPercent <= (1/3))
+                frame = 2;
+        }
+        setFaceTexture(state, frame);
 
         top.render(f5);
         if(tile != null && tile.hasFlashDrive())
