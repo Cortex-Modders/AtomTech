@@ -50,4 +50,8 @@ public interface IAtomicPower
 	 * @return
 	 */
 	boolean canSendPower();
+	
+	int getMaxPower();
+	
+	float getPowerPercentage();
 }

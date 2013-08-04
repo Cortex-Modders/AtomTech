@@ -144,4 +144,14 @@ public abstract class TilePoweredBase extends TileEntity implements IAtomicPower
 	{
 		powerLevel = power;
 	}
+	
+	public int getMaxPower()
+	{
+		return maxPower;
+	}
+	
+	public float getPowerPercentage()
+	{
+		return powerLevel / maxPower;
+	}
 }
