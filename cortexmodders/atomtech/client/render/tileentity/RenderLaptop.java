@@ -14,6 +14,7 @@ import net.minecraft.world.IBlockAccess;
 import org.lwjgl.opengl.GL11;
 
 import cortexmodders.atomtech.CommonProxy;
+import cortexmodders.atomtech.blocks.BlockLaptop;
 import cortexmodders.atomtech.client.model.tileentity.ModelLaptop;
 import cortexmodders.atomtech.client.render.RenderUtil;
 import cortexmodders.atomtech.tileentity.TileEntityLaptop;
@@ -71,11 +72,12 @@ public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBl
         model.render(laptop, laptop.getLidAngle(), 0f, 0f, 0f, 0f, 0.0625F);
 
         MovingObjectPosition hitPosition = Minecraft.getMinecraft().objectMouseOver;
-        if(hitPosition != null) {
+        if(hitPosition != null && hitPosition.blockX == laptop.xCoord && hitPosition.blockY == laptop.yCoord && hitPosition.blockZ == laptop.zCoord) {
             int id = entity.worldObj.getBlockId(hitPosition.blockX, hitPosition.blockY, hitPosition.blockZ);
             Vec3 p = Vec3.createVectorHelper(hitPosition.hitVec.xCoord - hitPosition.blockX, hitPosition.hitVec.yCoord - hitPosition.blockY, hitPosition.hitVec.zCoord - hitPosition.blockZ);
-
-            if(hitPosition != null && (Integer)id != null && id == entity.blockType.blockID && CommonProxy.isVecInsideBB(p, TileEntityLaptop.getFlashDriveBoundingBoxByMeta(laptop.blockMetadata))) {
+//            System.out.println(p.xCoord + " " + p.yCoord + " " + p.zCoord + " ");
+            if(id == entity.blockType.blockID && CommonProxy.isVecInsideBB(p, BlockLaptop.getSubHitBox(laptop.blockMetadata))) {
+//                System.out.println(true);
                 //render wireframe
                 GL11.glPushMatrix();
 
