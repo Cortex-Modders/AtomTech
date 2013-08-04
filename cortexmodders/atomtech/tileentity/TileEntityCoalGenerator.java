@@ -1,5 +1,9 @@
 package cortexmodders.atomtech.tileentity;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+
+import cpw.mods.fml.common.network.PacketDispatcher;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
@@ -14,6 +18,10 @@ public class TileEntityCoalGenerator extends TilePoweredBase
 	{
 		if(fuelLevel > 0)
 		{
+			if(!worldObj.isRemote && worldObj.getBlockMetadata(xCoord, yCoord, zCoord) < 4)
+			{
+				worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, worldObj.getBlockMetadata(xCoord, yCoord, zCoord) + 4, 3);
+			}
 			if(fuelLevel % 10 == 0)
 			{
 				powerLevel = 1;
@@ -26,9 +34,19 @@ public class TileEntityCoalGenerator extends TilePoweredBase
 		{
 			fuelLevel = 0;
 		}
+		else if(!worldObj.isRemote && worldObj.getBlockMetadata(xCoord, yCoord, zCoord) > 3 && fuelLevel == 0)
+		{
+			worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, worldObj.getBlockMetadata(xCoord, yCoord, zCoord) - 4, 3);
+		}
 	}
 	
-	public void addFuel(int fuel) {
+	public int getFuelLevel()
+	{
+		return fuelLevel;
+	}
+	
+	public void addFuel(int fuel)
+	{
 	    fuelLevel += fuel;
 	}
 	
