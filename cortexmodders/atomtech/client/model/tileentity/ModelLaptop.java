@@ -1,7 +1,5 @@
 package cortexmodders.atomtech.client.model.tileentity;
 
-import org.lwjgl.util.vector.Vector2f;
-
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
@@ -17,9 +15,6 @@ public class ModelLaptop extends ModelBase
     ModelRenderer flashDrive;
     ModelRenderer base;
 
-    private static PositionTextureVertex[] faceTexturePositions = new PositionTextureVertex[] {
-    };
-
     private static final float TEXTURE_SIZE = RenderUtil.textureToGLCoordinates(128);
     private static final float SCREEN_WIDTH = RenderUtil.toGLCoordinate(TEXTURE_SIZE, 14);
     private static final float SCREEN_HEIGHT = RenderUtil.toGLCoordinate(TEXTURE_SIZE, 12);
@@ -32,39 +27,76 @@ public class ModelLaptop extends ModelBase
     private static final float[][][] stateTextures = { 
         {
             {
-
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 36),
+                0F,
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 36) + SCREEN_WIDTH,
+                SCREEN_HEIGHT,
             },
-        }, 
+        },
         {
             {
                 0F,
                 RenderUtil.toGLCoordinate(TEXTURE_SIZE, 26),
-                SCREEN_WIDTH,
+                SCREEN_WIDTH*2,
                 RenderUtil.toGLCoordinate(TEXTURE_SIZE, 26) + SCREEN_HEIGHT,
             },
             {
-                SCREEN_WIDTH,
+                SCREEN_WIDTH*2,
                 RenderUtil.toGLCoordinate(TEXTURE_SIZE, 26),
-                SCREEN_WIDTH * 2,
+                SCREEN_WIDTH*3,
                 RenderUtil.toGLCoordinate(TEXTURE_SIZE, 26) + SCREEN_HEIGHT,
             },
             {
-                SCREEN_WIDTH * 2,
+                SCREEN_WIDTH*3,
                 RenderUtil.toGLCoordinate(TEXTURE_SIZE, 26),
+                SCREEN_WIDTH*4,
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 26) + SCREEN_HEIGHT,
+            },
+            {
+                SCREEN_WIDTH*4,
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 26),
+                SCREEN_WIDTH*5,
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 26) + SCREEN_HEIGHT,
+            },
+            {
+                SCREEN_WIDTH*5,
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 26),
+                SCREEN_WIDTH*6,
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 26) + SCREEN_HEIGHT,
+            },
+            {
+                0F,
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 26) + SCREEN_HEIGHT,
+                SCREEN_WIDTH,
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 26) + SCREEN_HEIGHT*2,
+            },
+        },
+        {
+            {
+                0F,
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 62),
+                SCREEN_WIDTH,
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 62) + SCREEN_HEIGHT,
+            },
+            {
+                SCREEN_WIDTH,
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 62),
+                SCREEN_WIDTH * 2,
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 62) + SCREEN_HEIGHT,
+            },
+            {
+                SCREEN_WIDTH * 2,
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 62),
                 SCREEN_WIDTH * 3,
-                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 26) + SCREEN_HEIGHT,
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 62) + SCREEN_HEIGHT,
             },
         }
     };
-
-    private PositionTextureVertex currentTexturePosition;
-
     
+    private TexturedQuad currentTexturePosition;
 
     public ModelLaptop()
     {
-        //        faceTexturePosition = new PositionTextureVertex();
-
         textureWidth = 128;
         textureHeight = 128;
         setTextureOffset("base.base-left", 0, 13);
@@ -96,6 +128,7 @@ public class ModelLaptop extends ModelBase
     {
         setRotationAngles(f, f1, f2, f3, f4, f5);
 
+        byte state = tile.getState();
         setFaceTexture();
 
         top.render(f5);
@@ -103,8 +136,8 @@ public class ModelLaptop extends ModelBase
             flashDrive.render(f5);
         base.render(f5);
     }
-
-    private void setFaceTexture() {
+    
+    private void setFaceTexture(int state, int frame) {
         ModelBox box = (ModelBox)top.cubeList.get(0);
         for(TexturedQuad i : box.quadList) {
             int counter = 0;
@@ -112,19 +145,30 @@ public class ModelLaptop extends ModelBase
                 PositionTextureVertex t = i.vertexPositions[j];
                 boolean b = t.texturePositionX == SCREEN_MAX_X || t.texturePositionX == SCREEN_MIN_X;
                 boolean b2 = t.texturePositionY == SCREEN_MAX_Y || t.texturePositionY == SCREEN_MIN_Y;
-                if(b && b2)
+                if(i.equals(currentTexturePosition) || b && b2 )
                     counter++;
+                
                 if(counter == 4) {
-                    System.out.println(t.vector3D.xCoord + " " + t.vector3D.yCoord + " " + t.vector3D.zCoord + " " + j);
-//                    faceTexturePositions[1][0] = 7;
-                    i.vertexPositions[0].texturePositionX = stateTextures[1][0][0];
-                    i.vertexPositions[0].texturePositionY = stateTextures[1][0][1];
-                    i.vertexPositions[1].texturePositionX = stateTextures[1][0][0];
-                    i.vertexPositions[1].texturePositionY = stateTextures[1][0][3];
-                    i.vertexPositions[2].texturePositionX = stateTextures[1][0][2];
-                    i.vertexPositions[2].texturePositionY = stateTextures[1][0][3];
-                    i.vertexPositions[3].texturePositionX = stateTextures[1][0][2];
-                    i.vertexPositions[3].texturePositionY = stateTextures[1][0][1];
+//                    System.out.println(t.vector3D.xCoord + " " + t.vector3D.yCoord + " " + t.vector3D.zCoord + " " + j);
+
+//                    int frame = 2;
+//                    int state = 1;
+ //                   if(frame > 6)
+ //                       frame = 0;
+                    i.vertexPositions[0].texturePositionX = stateTextures[state][frame][2];
+                    i.vertexPositions[0].texturePositionY = stateTextures[state][frame][1];
+                    
+                    i.vertexPositions[1].texturePositionX = stateTextures[state][frame][0];
+                    i.vertexPositions[1].texturePositionY = stateTextures[state][frame][1];
+                    
+                    i.vertexPositions[2].texturePositionX = stateTextures[state][frame][0];
+                    i.vertexPositions[2].texturePositionY = stateTextures[state][frame][3];
+                    
+                    i.vertexPositions[3].texturePositionX = stateTextures[state][frame][2];
+                    i.vertexPositions[3].texturePositionY = stateTextures[state][frame][3];
+                    
+                    currentTexturePosition = i;
+//                    frame++;
                 }
             }
         }
