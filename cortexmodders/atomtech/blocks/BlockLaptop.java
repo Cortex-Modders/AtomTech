@@ -143,7 +143,6 @@ public class BlockLaptop extends BlockContainer
                 {
                     if(heldItem != null && heldItem.getItem().equals(ModItems.flashDrive) && !tile.hasFlashDrive())
                     {
-                        System.out.println("add flash");
                         ((TileEntityLaptop)world.getBlockTileEntity(x, y, z)).setInventorySlotContents(0, heldItem);
                         heldItem.stackSize--;
                     }

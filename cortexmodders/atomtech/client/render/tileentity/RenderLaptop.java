@@ -29,6 +29,8 @@ public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBl
     private static final ResourceLocation texture = new ResourceLocation("atomtech", "textures/models/laptop.png");
     private static final ResourceLocation broken_texture = new ResourceLocation("atomtech", "textures/models/laptop_broken.png");
 
+    private ResourceLocation currentTexture;
+    
     public RenderLaptop(int id) {
         renderId = id;
         model = new ModelLaptop();
@@ -42,7 +44,7 @@ public class RenderLaptop extends TileEntitySpecialRenderer implements ISimpleBl
         else
             return;
 
-        ResourceLocation currentTexture = texture;
+        currentTexture = texture;
         if(laptop.isBroken())
             currentTexture = broken_texture;
 

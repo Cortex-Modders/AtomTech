@@ -1,6 +1,7 @@
 package cortexmodders.atomtech.client.render;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Vector2f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
@@ -69,5 +70,17 @@ public class RenderUtil {
     public static void alphaOff() {
         GL11.glPopAttrib();
         GL11.glPopAttrib();
+    }
+    
+    public static Vector2f textureToGLCoordinates(int textureWidth, int textureHeight) {
+        return new Vector2f((1F / (float)textureWidth), (1F / (float)textureHeight));
+    }
+
+    public static float textureToGLCoordinates(int textureSize) {
+        return textureToGLCoordinates(textureSize, textureSize).x;
+    }
+    
+    public static float toGLCoordinate(float textureSize, float coord) {
+        return textureSize * coord;
     }
 }

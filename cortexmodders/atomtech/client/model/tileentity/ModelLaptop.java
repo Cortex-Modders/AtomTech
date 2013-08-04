@@ -1,8 +1,14 @@
 package cortexmodders.atomtech.client.model.tileentity;
 
-import cortexmodders.atomtech.tileentity.TileEntityLaptop;
+import org.lwjgl.util.vector.Vector2f;
+
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.model.PositionTextureVertex;
+import net.minecraft.client.model.TexturedQuad;
+import cortexmodders.atomtech.client.render.RenderUtil;
+import cortexmodders.atomtech.tileentity.TileEntityLaptop;
 
 public class ModelLaptop extends ModelBase
 {
@@ -11,10 +17,56 @@ public class ModelLaptop extends ModelBase
     ModelRenderer flashDrive;
     ModelRenderer base;
 
+    private static PositionTextureVertex[] faceTexturePositions = new PositionTextureVertex[] {
+    };
+
+    private static final float TEXTURE_SIZE = RenderUtil.textureToGLCoordinates(128);
+    private static final float SCREEN_WIDTH = RenderUtil.toGLCoordinate(TEXTURE_SIZE, 14);
+    private static final float SCREEN_HEIGHT = RenderUtil.toGLCoordinate(TEXTURE_SIZE, 12);
+    private static final float SCREEN_MIN_X = 36 * (1F / 128F);
+    private static final float SCREEN_MAX_X = SCREEN_MIN_X + SCREEN_WIDTH;// - (1F / 128F);
+    private static final float SCREEN_MIN_Y = 0;
+    private static final float SCREEN_MAX_Y = SCREEN_MIN_Y + (12 * (1F / 128F));
+    
+    // textures. first dimension: state. second: frame. third: frame minX, minY, maxX, maxY
+    private static final float[][][] stateTextures = { 
+        {
+            {
+
+            },
+        }, 
+        {
+            {
+                0F,
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 26),
+                SCREEN_WIDTH,
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 26) + SCREEN_HEIGHT,
+            },
+            {
+                SCREEN_WIDTH,
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 26),
+                SCREEN_WIDTH * 2,
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 26) + SCREEN_HEIGHT,
+            },
+            {
+                SCREEN_WIDTH * 2,
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 26),
+                SCREEN_WIDTH * 3,
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 26) + SCREEN_HEIGHT,
+            },
+        }
+    };
+
+    private PositionTextureVertex currentTexturePosition;
+
+    
+
     public ModelLaptop()
     {
+        //        faceTexturePosition = new PositionTextureVertex();
+
         textureWidth = 128;
-        textureHeight = 64;
+        textureHeight = 128;
         setTextureOffset("base.base-left", 0, 13);
         setTextureOffset("base.base-right", 0, 0);
         setTextureOffset("base.base", 24, 13);
@@ -22,13 +74,13 @@ public class ModelLaptop extends ModelBase
         top = new ModelRenderer(this, 24, 0);
         top.addBox(-7F, 0F, 0F, 14, 1, 12);
         top.setRotationPoint(0F, 0F, 6F);
-        top.setTextureSize(128, 64);
+        top.setTextureSize(128, 128);
         top.mirror = true;
         setRotation(top, 1.396263F, 0F, 0F);
         flashDrive = new ModelRenderer(this, 76, 0);
         flashDrive.addBox(-10F, 0F, -3F, 2, 1, 1);
         flashDrive.setRotationPoint(0F, 0F, 0F);
-        flashDrive.setTextureSize(128, 64);
+        flashDrive.setTextureSize(128, 128);
         flashDrive.mirror = true;
         setRotation(flashDrive, 0F, 0F, 0F);
         base = new ModelRenderer(this, "base");
@@ -43,10 +95,39 @@ public class ModelLaptop extends ModelBase
     public void render(TileEntityLaptop tile, float f, float f1, float f2, float f3, float f4, float f5)
     {
         setRotationAngles(f, f1, f2, f3, f4, f5);
+
+        setFaceTexture();
+
         top.render(f5);
         if(tile != null && tile.hasFlashDrive())
             flashDrive.render(f5);
         base.render(f5);
+    }
+
+    private void setFaceTexture() {
+        ModelBox box = (ModelBox)top.cubeList.get(0);
+        for(TexturedQuad i : box.quadList) {
+            int counter = 0;
+            for(int j = 0; j < i.vertexPositions.length; j++) {
+                PositionTextureVertex t = i.vertexPositions[j];
+                boolean b = t.texturePositionX == SCREEN_MAX_X || t.texturePositionX == SCREEN_MIN_X;
+                boolean b2 = t.texturePositionY == SCREEN_MAX_Y || t.texturePositionY == SCREEN_MIN_Y;
+                if(b && b2)
+                    counter++;
+                if(counter == 4) {
+                    System.out.println(t.vector3D.xCoord + " " + t.vector3D.yCoord + " " + t.vector3D.zCoord + " " + j);
+//                    faceTexturePositions[1][0] = 7;
+                    i.vertexPositions[0].texturePositionX = stateTextures[1][0][0];
+                    i.vertexPositions[0].texturePositionY = stateTextures[1][0][1];
+                    i.vertexPositions[1].texturePositionX = stateTextures[1][0][0];
+                    i.vertexPositions[1].texturePositionY = stateTextures[1][0][3];
+                    i.vertexPositions[2].texturePositionX = stateTextures[1][0][2];
+                    i.vertexPositions[2].texturePositionY = stateTextures[1][0][3];
+                    i.vertexPositions[3].texturePositionX = stateTextures[1][0][2];
+                    i.vertexPositions[3].texturePositionY = stateTextures[1][0][1];
+                }
+            }
+        }
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z)
