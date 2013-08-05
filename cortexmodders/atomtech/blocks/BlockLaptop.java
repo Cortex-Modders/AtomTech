@@ -155,6 +155,7 @@ public class BlockLaptop extends BlockContainer
                 else
                 {
                     tile.toggleLid();
+                    tile.setState((byte)8);
                 }
                 sync(x, y, z, tile);
                 return true;
