@@ -1,9 +1,8 @@
-package cortexmodders.atomtech;
+package cortexmodders.atomtech.lib;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import cortexmodders.atomtech.lib.ATProperties;
 import cpw.mods.fml.common.FMLLog;
 
 public class ATLogger {

@@ -154,6 +154,7 @@ public class BlockLaptop extends BlockContainer
                 }
                 else
                 {
+                    player.openGui(AtomTech.instance, 2, world, x, y, z);
                     tile.toggleLid();
                     tile.setState((byte)7);
                 }

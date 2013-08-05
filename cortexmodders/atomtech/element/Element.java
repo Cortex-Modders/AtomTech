@@ -10,7 +10,7 @@ import argo.jdom.JsonStringNode;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
-import cortexmodders.atomtech.ATLogger;
+import cortexmodders.atomtech.lib.ATLogger;
 import cpw.mods.fml.common.ModMetadata.JsonStringConverter;
 
 public class Element {

@@ -164,10 +164,14 @@ public class ModelLaptop extends ModelBase
 
     private void setFaceTexture(int parState, int parFrame) {//int state, int frame) {
         ModelBox box = (ModelBox)top.cubeList.get(0);
+
         System.out.println("===Start===");
-        for(TexturedQuad i : box.quadList) {
+        for(int ii = 0; ii < box.quadList.length; ii++) {//TexturedQuad i : box.quadList) {
+            TexturedQuad i = box.quadList[ii];
+            
             int counter = 0;
-            for(PositionTextureVertex t : i.vertexPositions) {
+            for(int tt = 0; tt < i.vertexPositions.length; tt++) {//PositionTextureVertex t : i.vertexPositions) {
+                PositionTextureVertex t = i.vertexPositions[tt];
                 boolean b = t.texturePositionX == stateTextures[this.lastState][this.lastFrame][0] || t.texturePositionX == stateTextures[this.lastState][this.lastFrame][2];
                 boolean b2 = t.texturePositionY == stateTextures[this.lastState][this.lastFrame][1] || t.texturePositionY == stateTextures[this.lastState][this.lastFrame][3];
                 if(b && b2)  
@@ -190,11 +194,16 @@ public class ModelLaptop extends ModelBase
                 i.vertexPositions[3].texturePositionY = stateTextures[parState][parFrame][3];
                 this.currentTexturePosition = i;
                 
+                box.quadList[ii] = i;
+                top.cubeList.remove(0);
+                top.cubeList.add(box);
+                
                 this.lastState = parState;
                 this.lastFrame = parFrame;
             }
         }
         System.out.println("===End===");
+        
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z)

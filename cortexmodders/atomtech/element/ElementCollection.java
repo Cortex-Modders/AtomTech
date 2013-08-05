@@ -13,7 +13,7 @@ import argo.saj.InvalidSyntaxException;
 
 import com.google.common.base.Throwables;
 
-import cortexmodders.atomtech.ATLogger;
+import cortexmodders.atomtech.lib.ATLogger;
 
 public class ElementCollection {
 

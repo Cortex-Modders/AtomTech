@@ -56,6 +56,7 @@ public class AtomTech
 		proxy.registerTileEntities();
 		proxy.registerRenderers();
 		proxy.addOreDictionaryOres();
+		proxy.registerGuis();
 		
 		GameRegistry.registerWorldGenerator(new WorldGenAtomTech());
 		

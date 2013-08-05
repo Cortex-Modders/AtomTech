@@ -15,6 +15,7 @@ import cortexmodders.atomtech.tileentity.TileEntityBattery;
 import cortexmodders.atomtech.tileentity.TileEntityCable;
 import cortexmodders.atomtech.tileentity.TileEntityCoalGenerator;
 import cortexmodders.atomtech.tileentity.TileEntityLaptop;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CommonProxy
@@ -67,6 +68,10 @@ public class CommonProxy
 		OreDictionary.registerOre("ingotLithium", new ItemStack(ModItems.ingots, 1, 3));
 		OreDictionary.registerOre("oreAluminium", new ItemStack(ModBlocks.ores, 1, 4));
 		OreDictionary.registerOre("ingotAluminium", new ItemStack(ModItems.ingots, 1, 4));
+	}
+	
+	public void registerGuis() {
+	    NetworkRegistry.instance().registerGuiHandler(this, new ATGuiHandler());
 	}
 	
 	public static boolean isVecInsideBB(Vec3 vec, AxisAlignedBB box) {
