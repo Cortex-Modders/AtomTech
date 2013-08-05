@@ -18,6 +18,9 @@ public class GuiLaptop extends GuiContainer {
     
     private GuiBatteryIcon batteryIcon;
     
+    private int screrenLeft;
+    private int screenTop;
+    
     private static final ResourceLocation texture = new ResourceLocation("atomtech", "textures/gui/laptop.png");;
     
     public GuiLaptop(InventoryPlayer player, TileEntityLaptop laptop) {
@@ -29,13 +32,20 @@ public class GuiLaptop extends GuiContainer {
     }
     
     @Override
+    public void initGui() {
+        super.initGui();
+        screrenLeft = this.guiLeft + 14;
+        screenTop = this.guiTop + 14;
+    }
+    
+    @Override
     public void drawGuiContainerBackgroundLayer(float renderPartialTicks, int x, int y) {
         GL11.glColor4f(1F, 1F, 1F, 1F);
         this.mc.func_110434_K().func_110577_a(texture);
         
         drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, xSize, ySize);
         
-        batteryIcon.draw(this, this.guiLeft, this.guiTop, 0.6F);
+        batteryIcon.draw(this, this.screrenLeft, this.screenTop, 0.6F);
     }
     
     @Override

@@ -9,12 +9,6 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 public class GuiCortexBase extends GuiContainer {
-
-    protected int width = 0;
-    protected int height = 0;
-    
-//    private int guiLeft;
-//    private int guiTop;
     
     protected ResourceLocation texture;
     
