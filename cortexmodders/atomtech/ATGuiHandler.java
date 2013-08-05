@@ -30,7 +30,7 @@ public class ATGuiHandler implements IGuiHandler {
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 		
 		if(tileEntity instanceof TileEntityLaptop) {
-			return new GuiLaptop((TileEntityLaptop) tileEntity);
+			return new GuiLaptop(player.inventory, (TileEntityLaptop) tileEntity);
 		}
 		
 		return null;
