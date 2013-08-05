@@ -22,7 +22,7 @@ public class ModelLaptop extends ModelBase
     private static final float SCREEN_MAX_X = SCREEN_MIN_X + SCREEN_WIDTH;// - (1F / 128F);
     private static final float SCREEN_MIN_Y = 0;
     private static final float SCREEN_MAX_Y = SCREEN_MIN_Y + (12 * (1F / 128F));
-
+    
     // textures. first dimension: state. second: frame. third: frame minX, minY, maxX, maxY
     private static final float[][][] stateTextures = { 
         {
@@ -95,6 +95,9 @@ public class ModelLaptop extends ModelBase
 
     private TexturedQuad currentTexturePosition;
 
+    private int lastState = 0;
+    private int lastFrame = 0;
+    
     public ModelLaptop()
     {
         textureWidth = 128;
@@ -128,27 +131,29 @@ public class ModelLaptop extends ModelBase
     {
         setRotationAngles(f, f1, f2, f3, f4, f5);
 
+        int fr = 0;
+        int st = 0;
+        
         if(tile != null) {
-            byte state = tile.getState();
-            int parFrame = 0;
-            int parState = 0;
+            int state = tile.getState();
             if(state >= 1 && state <= 6) {
-                parFrame = state - 2;
-                parState = 1;
+                fr = state - 2;
+                st = 1;
             }
             else if(state == 7) {
-                System.out.println(state);
-                parState = 2;
+//                System.out.println(state);
+                st = 2;
                 float powerPercent = tile.getPowerPercentage();
+//                System.out.println(powerPercent);
                 if(powerPercent >= (2/3) && powerPercent <= 1)
-                    parFrame = 0;
+                    fr = 0;
                 else if(powerPercent >= (1/3) && powerPercent <= (2/3))
-                    parFrame = 1;
+                    fr = 1;
                 else if(powerPercent >= 0 && powerPercent <= (1/3))
-                    parFrame = 2;
+                    fr = 2;
             }
 
-            setFaceTexture(parState, parFrame);
+            setFaceTexture(st, fr);
         }
         
         top.render(f5);
@@ -159,40 +164,37 @@ public class ModelLaptop extends ModelBase
 
     private void setFaceTexture(int parState, int parFrame) {//int state, int frame) {
         ModelBox box = (ModelBox)top.cubeList.get(0);
+        System.out.println("===Start===");
         for(TexturedQuad i : box.quadList) {
             int counter = 0;
-            for(int j = 0; j < i.vertexPositions.length; j++) {
-                PositionTextureVertex t = i.vertexPositions[j];
-                boolean b = t.texturePositionX == SCREEN_MAX_X || t.texturePositionX == SCREEN_MIN_X;
-                boolean b2 = t.texturePositionY == SCREEN_MAX_Y || t.texturePositionY == SCREEN_MIN_Y;
-                if(i.equals(currentTexturePosition) || b && b2 )
+            for(PositionTextureVertex t : i.vertexPositions) {
+                boolean b = t.texturePositionX == stateTextures[this.lastState][this.lastFrame][0] || t.texturePositionX == stateTextures[this.lastState][this.lastFrame][2];
+                boolean b2 = t.texturePositionY == stateTextures[this.lastState][this.lastFrame][1] || t.texturePositionY == stateTextures[this.lastState][this.lastFrame][3];
+                if(b && b2)  
                     counter++;
+            }
+            
+            if((counter == 4)) { //|| (this.currentTexturePosition != null && (this.currentTexturePosition.equals(i)))
+                System.out.println(parState + " " + parFrame);
 
-                if(counter == 4) {
-                    //                    System.out.println(t.vector3D.xCoord + " " + t.vector3D.yCoord + " " + t.vector3D.zCoord + " " + j);
+                i.vertexPositions[0].texturePositionX = stateTextures[parState][parFrame][2];
+                i.vertexPositions[0].texturePositionY = stateTextures[parState][parFrame][1];
 
-                    //                    int frame = 2;
-                    //                    int state = 1;
-                    //                   if(frame > 6)
-                    //                       frame = 0;
-                    System.out.println(parState + " " + parFrame);
-                    i.vertexPositions[0].texturePositionX = stateTextures[parState][parFrame][2];
-                    i.vertexPositions[0].texturePositionY = stateTextures[parState][parFrame][1];
+                i.vertexPositions[1].texturePositionX = stateTextures[parState][parFrame][0];
+                i.vertexPositions[1].texturePositionY = stateTextures[parState][parFrame][1];
 
-                    i.vertexPositions[1].texturePositionX = stateTextures[parState][parFrame][0];
-                    i.vertexPositions[1].texturePositionY = stateTextures[parState][parFrame][1];
+                i.vertexPositions[2].texturePositionX = stateTextures[parState][parFrame][0];
+                i.vertexPositions[2].texturePositionY = stateTextures[parState][parFrame][3];
 
-                    i.vertexPositions[2].texturePositionX = stateTextures[parState][parFrame][0];
-                    i.vertexPositions[2].texturePositionY = stateTextures[parState][parFrame][3];
-
-                    i.vertexPositions[3].texturePositionX = stateTextures[parState][parFrame][2];
-                    i.vertexPositions[3].texturePositionY = stateTextures[parState][parFrame][3];
-
-                    currentTexturePosition = i;
-                    //                    frame++;
-                }
+                i.vertexPositions[3].texturePositionX = stateTextures[parState][parFrame][2];
+                i.vertexPositions[3].texturePositionY = stateTextures[parState][parFrame][3];
+                this.currentTexturePosition = i;
+                
+                this.lastState = parState;
+                this.lastFrame = parFrame;
             }
         }
+        System.out.println("===End===");
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z)
@@ -205,5 +207,14 @@ public class ModelLaptop extends ModelBase
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5)
     {
         top.rotateAngleX = (float) Math.toRadians(f);
+    }
+    
+    private boolean test(PositionTextureVertex f) {
+        for(float[][] i : stateTextures) {
+            for(float[] j : i) {
+                return (f.texturePositionX == j[0] || f.texturePositionX == j[2]) && (f.texturePositionY == j[1] || f.texturePositionY == j[3]);
+            }
+        }
+        return false;
     }
 }
