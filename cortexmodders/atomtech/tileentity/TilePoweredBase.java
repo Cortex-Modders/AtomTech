@@ -12,7 +12,7 @@ public abstract class TilePoweredBase extends TileEntity implements IAtomicPower
     protected int maxInputPower = 10;
     protected final int maxPower;
     
-    private Vec3 sourceLoc = Vec3.createVectorHelper(xCoord, yCoord, zCoord);
+    protected Vec3 sourceLoc = Vec3.createVectorHelper(xCoord, yCoord, zCoord);
     
     protected TilePoweredBase(int parMax)
     {
@@ -27,7 +27,13 @@ public abstract class TilePoweredBase extends TileEntity implements IAtomicPower
     @Override
 	public void updateEntity()
 	{
-		if(canSendPower() && powerLevel > 0)
+    	sendPower();
+    	resetSourceLoc();
+	}
+    
+    public void sendPower()
+    {
+    	if(canSendPower() && powerLevel > 0)
 		{
 			sendPower(xCoord + 1, yCoord, zCoord);
 			sendPower(xCoord - 1, yCoord, zCoord);
@@ -36,7 +42,12 @@ public abstract class TilePoweredBase extends TileEntity implements IAtomicPower
 			sendPower(xCoord, yCoord, zCoord + 1);
 			sendPower(xCoord, yCoord, zCoord - 1);
 		}
-	}
+    }
+    
+    public void resetSourceLoc()
+    {
+    	sourceLoc = Vec3.createVectorHelper(xCoord, yCoord, zCoord);
+    }
     
     @Override
     public void readFromNBT(NBTTagCompound tag)

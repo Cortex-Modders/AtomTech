@@ -25,7 +25,7 @@ public class TileEntityCoalGenerator extends TilePoweredBase
 			if(fuelLevel % 10 == 0)
 			{
 				powerLevel = 1;
-				super.updateEntity();
+				sendPower();
 				powerLevel = 0;
 			}
 			fuelLevel--;

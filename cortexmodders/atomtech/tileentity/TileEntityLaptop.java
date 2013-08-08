@@ -15,7 +15,6 @@ import cortexmodders.atomtech.item.ModItems;
 
 public class TileEntityLaptop extends TilePoweredBase implements IInventory
 {
-
     private byte data = 0b000100;
     private ItemStack[] inv;
 
@@ -300,5 +299,4 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
         }
         return false;
     }
-
 }
