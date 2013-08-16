@@ -7,23 +7,23 @@ import cortexmodders.atomtech.power.IAtomicPower;
 
 public abstract class TilePoweredBase extends TileEntity implements IAtomicPower
 {
-    protected int powerLevel = 0;
+    protected float powerLevel = 0.0F;
     //maybe idk about this..
-    protected int maxInputPower = 10;
-    protected final int maxPower;
+    protected float maxInputPower = 10.0F;
+    protected final float maxPower;
     
     public int powerUsedTick = 0;
     
     protected Vec3 sourceLoc = Vec3.createVectorHelper(xCoord, yCoord, zCoord);
     
-    protected TilePoweredBase(int parMax)
+    protected TilePoweredBase(float parMax)
     {
         this.maxPower = parMax;
     }
     
     public TilePoweredBase()
     {
-        this(100);
+        this(100.0F);
     }
     
     @Override
@@ -55,7 +55,7 @@ public abstract class TilePoweredBase extends TileEntity implements IAtomicPower
     public void readFromNBT(NBTTagCompound tag)
     {
         super.readFromNBT(tag);
-        this.powerLevel = tag.getInteger("power");
+        this.powerLevel = tag.getFloat("power");
         this.sourceLoc = Vec3.createVectorHelper(tag.getDouble("xv"), tag.getDouble("yv"), tag.getDouble("zv"));
     }
     
@@ -63,7 +63,7 @@ public abstract class TilePoweredBase extends TileEntity implements IAtomicPower
     public void writeToNBT(NBTTagCompound tag)
     {
         super.writeToNBT(tag);
-        tag.setInteger("power", powerLevel);
+        tag.setFloat("power", powerLevel);
         if(sourceLoc != null)
         {
             tag.setDouble("xv", sourceLoc.xCoord);
@@ -82,7 +82,7 @@ public abstract class TilePoweredBase extends TileEntity implements IAtomicPower
     	int z = (int) sourceLoc.zCoord;
     	if(worldObj.getBlockTileEntity(x, y, z) != null && worldObj.getBlockTileEntity(x, y, z) instanceof IAtomicPower)
     	{
-    		int carryOver = addPower(((IAtomicPower)worldObj.getBlockTileEntity(x, y, z)).getPower());
+    		float carryOver = addPower(((IAtomicPower)worldObj.getBlockTileEntity(x, y, z)).getPower());
     		((IAtomicPower)worldObj.getBlockTileEntity(x, y, z)).setPower(carryOver);
     		this.sourceLoc = sourceLoc;
     	}
@@ -105,7 +105,7 @@ public abstract class TilePoweredBase extends TileEntity implements IAtomicPower
     }
 
     @Override
-    public int getPower()
+    public float getPower()
     {
         return powerLevel;
     }
@@ -115,9 +115,9 @@ public abstract class TilePoweredBase extends TileEntity implements IAtomicPower
      * 
      */
     @Override
-    public int addPower(int power)
+    public float addPower(float power)
     {
-        int remainder = 0;
+        float remainder = 0;
         
     	if(power > maxInputPower)
     	{
@@ -126,10 +126,11 @@ public abstract class TilePoweredBase extends TileEntity implements IAtomicPower
     	}
     	
         powerLevel += power;
-        while(powerLevel > maxPower)
+        
+        if(powerLevel > maxPower)
         {
-        	powerLevel--;
-        	remainder++;
+        	remainder += powerLevel - maxPower;
+        	powerLevel = maxPower;
         }
         
         if(powerLevel < 0)
@@ -153,12 +154,12 @@ public abstract class TilePoweredBase extends TileEntity implements IAtomicPower
     }
 
 	@Override
-	public void setPower(int power)
+	public void setPower(float power)
 	{
 		powerLevel = power;
 	}
 	
-	public int getMaxPower()
+	public float getMaxPower()
 	{
 		return maxPower;
 	}
