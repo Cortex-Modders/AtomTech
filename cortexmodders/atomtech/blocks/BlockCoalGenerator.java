@@ -10,7 +10,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import cortexmodders.atomtech.AtomTech;
 import cortexmodders.atomtech.tileentity.TileEntityCoalGenerator;
@@ -142,7 +141,8 @@ public class BlockCoalGenerator extends BlockContainer
 			{
 				TileEntityCoalGenerator coalGen = (TileEntityCoalGenerator)world.getBlockTileEntity(x, y, z);
 				coalGen.addFuel(TileEntityFurnace.getItemBurnTime(heldItem) / 8);
-				heldItem.stackSize--;
+				if(!player.capabilities.isCreativeMode)
+					heldItem.stackSize--;
 				return true;
 			}
 		}

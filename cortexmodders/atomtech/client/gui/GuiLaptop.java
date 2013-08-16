@@ -20,6 +20,8 @@ public class GuiLaptop extends GuiContainer {
     
     private int screrenLeft;
     private int screenTop;
+    private int screenWidth;
+    private int screenHeight;
     
     private static final ResourceLocation texture = new ResourceLocation("atomtech", "textures/gui/laptop.png");;
     
@@ -36,6 +38,8 @@ public class GuiLaptop extends GuiContainer {
         super.initGui();
         screrenLeft = this.guiLeft + 14;
         screenTop = this.guiTop + 14;
+        screenWidth = 224;
+        screenHeight = 190;
     }
     
     @Override
@@ -45,7 +49,7 @@ public class GuiLaptop extends GuiContainer {
         
         drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, xSize, ySize);
         
-        batteryIcon.draw(this, this.screrenLeft, this.screenTop, 0.6F);
+        batteryIcon.draw(this, this.screrenLeft + screenWidth - 16, this.screenTop + screenHeight - 16, 0.6F);
     }
     
     @Override

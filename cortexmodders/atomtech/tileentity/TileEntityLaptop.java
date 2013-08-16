@@ -27,8 +27,9 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
 
     public TileEntityLaptop()
     {
-        super(20);
+        super(20000);
         inv = new ItemStack[1];
+        powerUsedTick = 1;
     }
 
     @Override
@@ -40,6 +41,10 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
             {
                 worldObj.removeBlockTileEntity(xCoord, yCoord, zCoord);
             }
+            
+            if(this.powerLevel > 0)
+            	this.setPower(this.getPower() - this.powerUsedTick);
+            System.out.println(this.getPower());
         }
         if(!isBroken())
         {

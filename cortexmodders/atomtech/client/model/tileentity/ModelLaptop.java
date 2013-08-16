@@ -165,7 +165,7 @@ public class ModelLaptop extends ModelBase
     private void setFaceTexture(int parState, int parFrame) {//int state, int frame) {
         ModelBox box = (ModelBox)top.cubeList.get(0);
 
-        System.out.println("===Start===");
+//        System.out.println("===Start===");
         for(int ii = 0; ii < box.quadList.length; ii++) {//TexturedQuad i : box.quadList) {
             TexturedQuad i = box.quadList[ii];
             
@@ -179,7 +179,7 @@ public class ModelLaptop extends ModelBase
             }
             
             if((counter == 4)) { //|| (this.currentTexturePosition != null && (this.currentTexturePosition.equals(i)))
-                System.out.println(parState + " " + parFrame);
+ //               System.out.println(parState + " " + parFrame);
 
                 i.vertexPositions[0].texturePositionX = stateTextures[parState][parFrame][2];
                 i.vertexPositions[0].texturePositionY = stateTextures[parState][parFrame][1];
@@ -202,7 +202,7 @@ public class ModelLaptop extends ModelBase
                 this.lastFrame = parFrame;
             }
         }
-        System.out.println("===End===");
+//        System.out.println("===End===");
         
     }
 
