@@ -75,7 +75,7 @@ public class BlockLaptop extends BlockContainer
         {
             tag = new NBTTagCompound();
         }
-        tag.setInteger("power", ((TileEntityLaptop)world.getBlockTileEntity(x, y, z)).getPower());
+        tag.setFloat("power", ((TileEntityLaptop)world.getBlockTileEntity(x, y, z)).getPower());
         tag.setByte("laptopDamage", ((TileEntityLaptop)world.getBlockTileEntity(x, y, z)).getCondition());
         stack.setTagCompound(tag);
 
@@ -186,7 +186,7 @@ public class BlockLaptop extends BlockContainer
         NBTTagCompound tag = stack.getTagCompound();
         if(tag != null)
         {
-            ((TileEntityLaptop)world.getBlockTileEntity(x, y, z)).setPower(tag.getInteger("power"));
+            ((TileEntityLaptop)world.getBlockTileEntity(x, y, z)).setPower(tag.getFloat("power"));
             ((TileEntityLaptop)world.getBlockTileEntity(x, y, z)).setCondition(tag.getByte("laptopDamage"));
         }
     }

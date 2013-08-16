@@ -25,9 +25,9 @@ public interface IAtomicPower
 	 * 
 	 * @return
 	 */
-	int getPower();
+	float getPower();
 	
-	void setPower(int power);
+	void setPower(float power);
 	
 	/**
 	 * adds power and returns the remainder of the power not used.
@@ -35,7 +35,7 @@ public interface IAtomicPower
 	 * @param power
 	 * @return
 	 */
-	int addPower(int power);
+	float addPower(float power);
 	
 	/**
 	 * whether or not power may be received by this block.
@@ -51,7 +51,7 @@ public interface IAtomicPower
 	 */
 	boolean canSendPower();
 	
-	int getMaxPower();
+	float getMaxPower();
 	
 	float getPowerPercentage();
 }
