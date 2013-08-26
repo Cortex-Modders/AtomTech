@@ -15,9 +15,9 @@ public class ModelLaptop extends ModelBase
     ModelRenderer flashDrive;
     ModelRenderer base;
 
-    private static final float TEXTURE_SIZE = RenderUtil.textureToGLCoordinates(128);
-    private static final float SCREEN_WIDTH = RenderUtil.toGLCoordinate(TEXTURE_SIZE, 14);
-    private static final float SCREEN_HEIGHT = RenderUtil.toGLCoordinate(TEXTURE_SIZE, 12);
+    private static final float TEXTURE_SIZE = RenderUtil.textureToGLCoordinates(128); //0.0078125
+    private static final float SCREEN_WIDTH = RenderUtil.toGLCoordinate(TEXTURE_SIZE, 14); //0.109375
+    private static final float SCREEN_HEIGHT = RenderUtil.toGLCoordinate(TEXTURE_SIZE, 12); //0.09375
     private static final float SCREEN_MIN_X = 36 * (1F / 128F);
     private static final float SCREEN_MAX_X = SCREEN_MIN_X + SCREEN_WIDTH;// - (1F / 128F);
     private static final float SCREEN_MIN_Y = 0;
@@ -27,10 +27,10 @@ public class ModelLaptop extends ModelBase
     private static final float[][][] stateTextures = { 
         {
             {
-                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 36),
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 36), //0.28125
                 0F,
-                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 36) + SCREEN_WIDTH,
-                SCREEN_HEIGHT,
+                RenderUtil.toGLCoordinate(TEXTURE_SIZE, 36) + SCREEN_WIDTH, //0.390625
+                SCREEN_HEIGHT, //0.09375
             },
         },
         {
@@ -153,7 +153,7 @@ public class ModelLaptop extends ModelBase
                     fr = 2;
             }
 
-            setFaceTexture(st, fr);
+            setFaceTexture(2, 0);
         }
         
         top.render(f5);
@@ -162,41 +162,50 @@ public class ModelLaptop extends ModelBase
         base.render(f5);
     }
 
-    private void setFaceTexture(int parState, int parFrame) {//int state, int frame) {
+    private void setFaceTexture(int parState, int parFrame) {
         ModelBox box = (ModelBox)top.cubeList.get(0);
 
 //        System.out.println("===Start===");
-        for(int ii = 0; ii < box.quadList.length; ii++) {//TexturedQuad i : box.quadList) {
-            TexturedQuad i = box.quadList[ii];
+        //loops through the quads
+        for(int quadIndex = 0; quadIndex < box.quadList.length; quadIndex++) {//TexturedQuad i : box.quadList) {
+            TexturedQuad i = box.quadList[quadIndex];
             
             int counter = 0;
-            for(int tt = 0; tt < i.vertexPositions.length; tt++) {//PositionTextureVertex t : i.vertexPositions) {
-                PositionTextureVertex t = i.vertexPositions[tt];
-                boolean b = t.texturePositionX == stateTextures[this.lastState][this.lastFrame][0] || t.texturePositionX == stateTextures[this.lastState][this.lastFrame][2];
-                boolean b2 = t.texturePositionY == stateTextures[this.lastState][this.lastFrame][1] || t.texturePositionY == stateTextures[this.lastState][this.lastFrame][3];
+            //loops throught the quad vertexes.
+            for(int vertexIndex = 0; vertexIndex < i.vertexPositions.length; vertexIndex++) {//PositionTextureVertex t : i.vertexPositions) {
+                PositionTextureVertex vertex = i.vertexPositions[vertexIndex];
+                //minX and maxX
+                boolean b = vertex.texturePositionX == stateTextures[this.lastState][this.lastFrame][0] || vertex.texturePositionX == stateTextures[this.lastState][this.lastFrame][2];
+                //minY and maxY
+                boolean b2 = vertex.texturePositionY == stateTextures[this.lastState][this.lastFrame][1] || vertex.texturePositionY == stateTextures[this.lastState][this.lastFrame][3];
                 if(b && b2)  
                     counter++;
             }
             
             if((counter == 4)) { //|| (this.currentTexturePosition != null && (this.currentTexturePosition.equals(i)))
  //               System.out.println(parState + " " + parFrame);
+                System.out.println("-S-");
+                //max, min, min, max
+                System.out.println( i.vertexPositions[0].texturePositionX + " " + i.vertexPositions[1].texturePositionX + " " + i.vertexPositions[2].texturePositionX + " " + i.vertexPositions[3].texturePositionX);
+                //max, min, min, max
+                System.out.println( i.vertexPositions[0].texturePositionY + " " + i.vertexPositions[1].texturePositionY + " " + i.vertexPositions[2].texturePositionY + " " + i.vertexPositions[3].texturePositionY);
+                System.out.println("-E-");
+                ((ModelBox)top.cubeList.get(0)).quadList[quadIndex].vertexPositions[0].texturePositionX = stateTextures[parState][parFrame][2];
+                ((ModelBox)top.cubeList.get(0)).quadList[quadIndex].vertexPositions[0].texturePositionY = stateTextures[parState][parFrame][1];
 
-                i.vertexPositions[0].texturePositionX = stateTextures[parState][parFrame][2];
-                i.vertexPositions[0].texturePositionY = stateTextures[parState][parFrame][1];
+                ((ModelBox)top.cubeList.get(0)).quadList[quadIndex].vertexPositions[1].texturePositionX = stateTextures[parState][parFrame][0];
+                ((ModelBox)top.cubeList.get(0)).quadList[quadIndex].vertexPositions[1].texturePositionY = stateTextures[parState][parFrame][1];
 
-                i.vertexPositions[1].texturePositionX = stateTextures[parState][parFrame][0];
-                i.vertexPositions[1].texturePositionY = stateTextures[parState][parFrame][1];
+                ((ModelBox)top.cubeList.get(0)).quadList[quadIndex].vertexPositions[2].texturePositionX = stateTextures[parState][parFrame][0];
+                ((ModelBox)top.cubeList.get(0)).quadList[quadIndex].vertexPositions[2].texturePositionY = stateTextures[parState][parFrame][3];
 
-                i.vertexPositions[2].texturePositionX = stateTextures[parState][parFrame][0];
-                i.vertexPositions[2].texturePositionY = stateTextures[parState][parFrame][3];
-
-                i.vertexPositions[3].texturePositionX = stateTextures[parState][parFrame][2];
-                i.vertexPositions[3].texturePositionY = stateTextures[parState][parFrame][3];
+                ((ModelBox)top.cubeList.get(0)).quadList[quadIndex].vertexPositions[3].texturePositionX = stateTextures[parState][parFrame][2];
+                ((ModelBox)top.cubeList.get(0)).quadList[quadIndex].vertexPositions[3].texturePositionY = stateTextures[parState][parFrame][3];
                 this.currentTexturePosition = i;
                 
-                box.quadList[ii] = i;
-                top.cubeList.remove(0);
-                top.cubeList.add(box);
+//                box.quadList[quadIndex] = i;
+//                top.cubeList.remove(0);
+//                top.cubeList.add(box);
                 
                 this.lastState = parState;
                 this.lastFrame = parFrame;
