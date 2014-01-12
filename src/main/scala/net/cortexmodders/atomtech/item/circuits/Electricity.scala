@@ -2,7 +2,7 @@ package net.cortexmodders.atomtech.item.circuits
 
 abstract class Electricity(amount: Double)
 {
-	def getValue: Double = amount
+	def getValue = amount
 }
 
 class Amp(amount: Double) extends Electricity(amount)
