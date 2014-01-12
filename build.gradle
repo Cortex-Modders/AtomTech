@@ -26,6 +26,17 @@ minecraft {
 	version = "1.6.4-9.11.1.964"
 }
 
+repositories {
+    maven {
+        name = "calclavia"
+        url = "http://calclavia.com/maven/"
+    }
+}
+
+dependencies {
+    compile 'universalelectricity:Universal-Electricity:3.0.0.+:dev'
+}
+
 // version and stuff
 version = "1.0.0.0"
 group= "net.cortexmodders.atomtech"
