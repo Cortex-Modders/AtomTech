@@ -1,5 +1,8 @@
 package net.cortexmodders.atomtech.tileentity;
 
+import net.cortexmodders.atomtech.blocks.BlockLaptop;
+import net.cortexmodders.atomtech.blocks.ModBlocks;
+import net.cortexmodders.atomtech.item.ModItems;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -9,13 +12,10 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.util.AxisAlignedBB;
-import cortexmodders.atomtech.blocks.BlockLaptop;
-import cortexmodders.atomtech.blocks.ModBlocks;
-import cortexmodders.atomtech.item.ModItems;
 
 public class TileEntityLaptop extends TilePoweredBase implements IInventory
 {
-    private byte data = 0b000100;
+    private byte data = 7;
     private ItemStack[] inv;
 
     private float lidAngleX = -180.0F;
@@ -69,7 +69,7 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
 
     public void fix()
     {
-        data &= ~0b11;
+        data &= ~3;
     }
 
     /**
@@ -77,7 +77,7 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
      */
     public byte getCondition()
     {
-        return (byte) (data & 0b11);
+        return (byte) (data & 3);
     }
 
     public byte getData()
@@ -128,7 +128,7 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
 
     public byte getState()
     {
-    	return (byte) ((data >> 3) & 0b111);
+    	return (byte) ((data >> 3) & 7);
     }
 
     public boolean hasFlashDrive()
@@ -148,7 +148,7 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
      */
     public boolean isBroken()
     {
-        return (data & 0b11) >= 2;
+        return (data & 3) >= 2;
     }
     
     @Override
@@ -167,7 +167,7 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
 
     public boolean isLidClosed()
     {
-        return (data & 0b100) != 0;
+        return (data & 4) != 0;
     }
 
     @Override
@@ -179,7 +179,7 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
     @Override
     public void onDataPacket(final INetworkManager net, final Packet132TileEntityData pkt)
     {
-        NBTTagCompound tag = pkt.customParam1;
+        NBTTagCompound tag = pkt.data;
         this.readFromNBT(tag);
     }
 
@@ -203,8 +203,8 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
 
     public void setCondition(final byte condition)
     {
-        data &= ~0b11;
-        data |= condition & 0b11;
+        data &= ~3;
+        data |= condition & 3;
     }
 
     public void setData(final byte data)
@@ -223,18 +223,18 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
     {
         if(closeLid)
         {
-            data |= 0b100;
+            data |= 4;
         }
         else
         {
-            data &= ~0b100;
+            data &= ~4;
         }
     }
 
     public void setState(final byte newState)
     {
-    	data &= ~0b111000;
-    	data |= ((newState & 0b111) << 3);
+    	data &= ~56;
+    	data |= ((newState & 7) << 3);
     }
 
     public void toggleLid()

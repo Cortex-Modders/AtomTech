@@ -131,7 +131,7 @@ public class TileEntityCoalGenerator extends TilePoweredBase implements IInvento
     @Override
     public void onDataPacket(final INetworkManager net, final Packet132TileEntityData pkt)
     {
-        NBTTagCompound tag = pkt.customParam1;
+        NBTTagCompound tag = pkt.data;
         this.readFromNBT(tag);
     }
     
