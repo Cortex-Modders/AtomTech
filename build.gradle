@@ -20,6 +20,7 @@ buildscript {
 
 // apply plugin to this project
 apply plugin: 'forge'
+apply plugin: 'scala'
 
 // minecraft properteis
 minecraft {
