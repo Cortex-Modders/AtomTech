@@ -7,10 +7,9 @@ bin/
 .settings/
 .gradle/
 eclipse/
-
 .project
 .classpath
-MANIFEST.MF
-build.properties
+
 Thumbs.db
 .DS_Store
+._.DS_Store
