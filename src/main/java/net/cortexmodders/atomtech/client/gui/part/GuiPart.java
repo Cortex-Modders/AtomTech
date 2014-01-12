@@ -1,16 +1,17 @@
 package net.cortexmodders.atomtech.client.gui.part;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
 
-public abstract class GuiPart extends Gui {
+import org.lwjgl.opengl.GL11;
 
+public abstract class GuiPart extends Gui
+{
+    
     private int x;
     private int y;
-
+    
     protected int width;
     protected int height;
     
@@ -24,24 +25,28 @@ public abstract class GuiPart extends Gui {
     
     protected ResourceLocation texture;
     
-    public GuiPart(int parX, int parY) {
-        x = parX;
-        y = parY;
-
-    }
-    
-    public boolean inRect(Gui gui, int mouseX, int mouseY) {
-        return false;
-    }
-    
-    protected void draw(GuiCortexBase gui) {
-        draw(gui, gui.getLeft(), gui.getTop());
-    }
-    
-    protected void draw(Gui gui, int guiLeft, int guiTop) {
-        GL11.glColor4f(1F, 1F, 1F, 1F);
-        Minecraft.getMinecraft().func_110434_K().func_110577_a(texture);
+    public GuiPart(final int parX, final int parY)
+    {
+        this.x = parX;
+        this.y = parY;
         
-        this.drawTexturedModalRect(guiLeft + x, guiTop + y, srcX, srcY, width, height);
+    }
+    
+    protected void draw(final Gui gui, final int guiLeft, final int guiTop)
+    {
+        GL11.glColor4f(1F, 1F, 1F, 1F);
+        Minecraft.getMinecraft().getTextureManager().bindTexture(this.texture);
+        
+        this.drawTexturedModalRect(guiLeft + this.x, guiTop + this.y, this.srcX, this.srcY, this.width, this.height);
+    }
+    
+    protected void draw(final GuiCortexBase gui)
+    {
+        this.draw(gui, gui.getLeft(), gui.getTop());
+    }
+    
+    public boolean inRect(final Gui gui, final int mouseX, final int mouseY)
+    {
+        return false;
     }
 }

@@ -4,19 +4,23 @@ import net.cortexmodders.atomtech.blocks.BlockATOre;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-public class ItemBlockATOre extends ItemBlock {
-
-    public ItemBlockATOre(int id) {
+public class ItemBlockATOre extends ItemBlock
+{
+    
+    public ItemBlockATOre(final int id)
+    {
         super(id);
-        setHasSubtypes(true);
+        this.setHasSubtypes(true);
     }
     
-    public int getMetadata(int i) {
+    @Override
+    public int getMetadata(final int i)
+    {
         return i;
     }
     
     @Override
-    public String getUnlocalizedName(ItemStack stack)
+    public String getUnlocalizedName(final ItemStack stack)
     {
         return super.getUnlocalizedName() + "." + BlockATOre.unlocalizedNames[stack.getItemDamage()];
     }

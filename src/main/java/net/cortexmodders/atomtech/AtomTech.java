@@ -20,55 +20,56 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = ATProperties.ID, name = ATProperties.NAME, version = ATProperties.VERSION)
-@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = {"AtomTech"}, packetHandler = PacketHandler.class)
+@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "AtomTech" }, packetHandler = PacketHandler.class)
 public class AtomTech
 {
+    
     public static ElementCollection elements;
     
     public static CreativeTabs atomTab = new ATCreativeTab("AtomTech");
-	
-	@SidedProxy(clientSide = "cortexmodders.atomtech.client.ClientProxy", serverSide = "cortexmodders.atomtech.CommonProxy")
-	public static CommonProxy proxy;
-	
-	@Instance
-	public static AtomTech instance;
-	
-	@EventHandler
-	public void preLoad(FMLPreInitializationEvent event)
-	{
-		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-		config.load();
-		
-		proxy.registerBlockIds(config);
-		proxy.registerItemIds(config);
-		
-		config.save();
-	}
-	
-	@EventHandler
-	public void load(FMLInitializationEvent event)
-	{
-		ModBlocks.init();
-		ModItems.init();
-		Recipes.init();
-		
-		proxy.addElementsJson();
-		proxy.registerTileEntities();
-		proxy.registerRenderers();
-		proxy.addOreDictionaryOres();
-		proxy.registerGuis();
-		
-		GameRegistry.registerWorldGenerator(new WorldGenAtomTech());
-		
-		MinecraftForge.setBlockHarvestLevel(ModBlocks.ores, 0, "pickaxe", 1);
-		MinecraftForge.setBlockHarvestLevel(ModBlocks.ores, 1, "pickaxe", 2);
-		MinecraftForge.setBlockHarvestLevel(ModBlocks.ores, 2, "pickaxe", 2);
-		MinecraftForge.setBlockHarvestLevel(ModBlocks.ores, 3, "pickaxe", 2);
-	}
-	
-	@EventHandler
-	public void postLoad(FMLPostInitializationEvent event)
-	{
-		
-	}
+    
+    @SidedProxy(clientSide = "cortexmodders.atomtech.client.ClientProxy", serverSide = "cortexmodders.atomtech.CommonProxy")
+    public static CommonProxy proxy;
+    
+    @Instance
+    public static AtomTech instance;
+    
+    @EventHandler
+    public void load(final FMLInitializationEvent event)
+    {
+        ModBlocks.init();
+        ModItems.init();
+        Recipes.init();
+        
+        proxy.addElementsJson();
+        proxy.registerTileEntities();
+        proxy.registerRenderers();
+        proxy.addOreDictionaryOres();
+        proxy.registerGuis();
+        
+        GameRegistry.registerWorldGenerator(new WorldGenAtomTech());
+        
+        MinecraftForge.setBlockHarvestLevel(ModBlocks.ores, 0, "pickaxe", 1);
+        MinecraftForge.setBlockHarvestLevel(ModBlocks.ores, 1, "pickaxe", 2);
+        MinecraftForge.setBlockHarvestLevel(ModBlocks.ores, 2, "pickaxe", 2);
+        MinecraftForge.setBlockHarvestLevel(ModBlocks.ores, 3, "pickaxe", 2);
+    }
+    
+    @EventHandler
+    public void postLoad(final FMLPostInitializationEvent event)
+    {
+        
+    }
+    
+    @EventHandler
+    public void preLoad(final FMLPreInitializationEvent event)
+    {
+        Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+        config.load();
+        
+        proxy.registerBlockIds(config);
+        proxy.registerItemIds(config);
+        
+        config.save();
+    }
 }

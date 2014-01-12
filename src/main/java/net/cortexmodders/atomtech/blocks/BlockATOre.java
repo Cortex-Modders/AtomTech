@@ -12,51 +12,49 @@ import net.minecraft.util.Icon;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockATOre extends Block {
-
-    private static Icon[] textures;
-    public final static String[] unlocalizedNames = new String[] {
-        "Cuprum Ore",
-        "Plumbum Ore",
-        "Uranium Ore",
-        "Lithium Ore",
-        "Aluminium Ore"
-    };
+public class BlockATOre extends Block
+{
     
-    public BlockATOre(int par1) {
+    private static Icon[] textures;
+    public final static String[] unlocalizedNames = new String[] { "Cuprum Ore", "Plumbum Ore", "Uranium Ore", "Lithium Ore", "Aluminium Ore" };
+    
+    public BlockATOre(final int par1)
+    {
         super(par1, Material.rock);
-        setCreativeTab(AtomTech.atomTab);
+        this.setCreativeTab(AtomTech.atomTab);
     }
-
+    
     @Override
-    public int damageDropped(int par1)
+    public int damageDropped(final int par1)
     {
         return par1;
     }
     
     @SideOnly(Side.CLIENT)
     @Override
-    public Icon getIcon(int side, int metadata) {
+    public Icon getIcon(final int side, final int metadata)
+    {
         return textures[metadata];
     }
     
-    @SideOnly(Side.CLIENT)
-    @Override 
-    public void registerIcons(IconRegister register) {
-        textures = new Icon[unlocalizedNames.length];
-        for(int i = 0; i < textures.length; i++)
-        	textures[i] = register.registerIcon("atomtech:" + unlocalizedNames[i].replace(" ", "").toLowerCase());
-    }
-    
     /**
-     * returns a list of blocks with the same ID, but different meta (eg: wood returns 4 blocks)
+     * returns a list of blocks with the same ID, but different meta (eg: wood
+     * returns 4 blocks)
      */
-    public void getSubBlocks(int par1, CreativeTabs par2CreativeTabs, List par3List)
+    @Override
+    public void getSubBlocks(final int par1, final CreativeTabs par2CreativeTabs, final List par3List)
     {
         for (int j = 0; j < unlocalizedNames.length; ++j)
-        {
             par3List.add(new ItemStack(par1, 1, j));
-        }
+    }
+    
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void registerIcons(final IconRegister register)
+    {
+        textures = new Icon[unlocalizedNames.length];
+        for (int i = 0; i < textures.length; i++)
+            textures[i] = register.registerIcon("atomtech:" + unlocalizedNames[i].replace(" ", "").toLowerCase());
     }
     
 }

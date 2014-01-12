@@ -9,21 +9,23 @@ import net.minecraft.world.World;
 
 public class ItemFlashDrive extends Item
 {
-	public ItemFlashDrive(int par1)
-	{
-		super(par1);
-		this.setCreativeTab(AtomTech.atomTab);
-		this.setMaxStackSize(1);
-	}
-	
-	@Override
-	public void registerIcons(IconRegister iconRegister)
-	{
-		this.itemIcon = iconRegister.registerIcon("atomtech:flashdrive");
-	}
-	
-	public void onCreated(ItemStack stack, World world, EntityPlayer player)
-	{
-		
-	}
+    
+    public ItemFlashDrive(final int par1)
+    {
+        super(par1);
+        this.setCreativeTab(AtomTech.atomTab);
+        this.setMaxStackSize(1);
+    }
+    
+    @Override
+    public void onCreated(final ItemStack stack, final World world, final EntityPlayer player)
+    {
+        
+    }
+    
+    @Override
+    public void registerIcons(final IconRegister iconRegister)
+    {
+        this.itemIcon = iconRegister.registerIcon("atomtech:flashdrive");
+    }
 }

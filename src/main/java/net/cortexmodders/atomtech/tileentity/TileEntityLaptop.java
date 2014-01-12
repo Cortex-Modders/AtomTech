@@ -28,46 +28,61 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
     public TileEntityLaptop()
     {
         super(20000);
-        inv = new ItemStack[1];
-        powerUsedTick = 1;
+        this.inv = new ItemStack[1];
+        this.powerUsedTick = 1;
     }
 
     @Override
-    public void updateEntity()
+    public boolean canRecievePower()
     {
-        if(!worldObj.isRemote)
-        {
-            if(worldObj.getBlockId(xCoord, yCoord, zCoord) != ModBlocks.laptop.blockID)
-            {
-                worldObj.removeBlockTileEntity(xCoord, yCoord, zCoord);
-            }
-            
-            if(this.powerLevel > 0)
-            	this.setPower(this.getPower() - this.powerUsedTick);
-            System.out.println(this.getPower());
-        }
-        if(!isBroken())
-        {
-            if(isLidClosed() && lidAngleX != LID_ANGLE_CLOSED)
-            {
-                lidAngleX += 4.0F;
-            }
-            else if(!isLidClosed() && lidAngleX != LID_ANGLE_OPEN)
-            {
-                lidAngleX -= 4.0F;
-            }
-        }
-        else
-        {
-            if(hasFlashDrive() && !worldObj.isRemote)
-            {
-                BlockLaptop.ejectFlashDrive(worldObj, xCoord, yCoord, zCoord);
-            }
-        }
+        return !this.isBroken();
     }
 
-    public float getLidAngle() {
-        return this.lidAngleX;
+    @Override
+    public void closeChest() {}
+
+    @Override
+    public ItemStack decrStackSize(final int slot, final int amt) 
+    {
+        ItemStack stack = this.getStackInSlot(slot);
+        if (stack != null)
+            if (stack.stackSize <= amt)
+                this.setInventorySlotContents(slot, null);
+            else
+            {
+                stack = stack.splitStack(amt);
+                if (stack.stackSize == 0)
+                    this.setInventorySlotContents(slot, null);
+            }
+        return stack;
+    }
+
+    /**
+     * makes the laptop more broken.
+     * 
+     */
+    public void degradeCondition()
+    {
+        if(this.getCondition() < 2)
+            this.data++;
+    }
+
+    public void fix()
+    {
+        data &= ~0b11;
+    }
+
+    /**
+     * condition of laptop. 0 = best, 1 = ok, 2 = broken.
+     */
+    public byte getCondition()
+    {
+        return (byte) (data & 0b11);
+    }
+
+    public byte getData()
+    {
+        return this.data;
     }
 
     @Override
@@ -75,49 +90,79 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
     {
         NBTTagCompound tag = new NBTTagCompound();
         this.writeToNBT(tag);
-        return new Packet132TileEntityData(xCoord, yCoord, zCoord, 0, tag);
+        return new Packet132TileEntityData(this.xCoord, this.yCoord, this.zCoord, 0, tag);
     }
 
     @Override
-    public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt)
-    {
-        NBTTagCompound tag = pkt.customParam1;
-        this.readFromNBT(tag);
+    public int getInventoryStackLimit() {
+        return 1;
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound tag)
+    public String getInvName()
     {
-        super.readFromNBT(tag);
-        NBTTagList tagList = tag.getTagList("Inventory");
-        for (int i = 0; i < tagList.tagCount(); i++) {
-            NBTTagCompound tag2 = (NBTTagCompound) tagList.tagAt(i);
-            byte slot = tag2.getByte("Slot");
-            if (slot >= 0 && slot < inv.length) {
-                inv[slot] = ItemStack.loadItemStackFromNBT(tag2);
-            }
-        }
-        data = tag.getByte("data");
-        lidAngleX = tag.getFloat("lidAngle");
+        return "tileentitylaptop";
+    }
+
+    public float getLidAngle() {
+        return this.lidAngleX;
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tag)
+    public int getSizeInventory() {
+        return this.inv.length;
+    }
+
+    @Override
+    public ItemStack getStackInSlot(final int slot) {
+        return this.inv[slot];
+    }
+
+    @Override
+    public ItemStack getStackInSlotOnClosing(final int slot) {
+        ItemStack stack = this.getStackInSlot(slot);
+        if (stack != null)
+            this.setInventorySlotContents(slot, null);
+        return stack;
+    }
+
+    public byte getState()
     {
-        super.writeToNBT(tag);
-        tag.setByte("data", data);
-        tag.setFloat("lidAngle", lidAngleX);
-        NBTTagList itemList = new NBTTagList();
-        for (int i = 0; i < inv.length; i++) {
-            ItemStack stack = inv[i];
-            if (stack != null) {
-                NBTTagCompound tag2 = new NBTTagCompound();
-                tag2.setByte("Slot", (byte) i);
-                stack.writeToNBT(tag2);
-                itemList.appendTag(tag2);
-            }
-        }
-        tag.setTag("Inventory", itemList);
+    	return (byte) ((data >> 3) & 0b111);
+    }
+
+    public boolean hasFlashDrive()
+    {
+        return this.isItemValidForSlot(0, this.getStackInSlot(0));
+    }
+
+    public void incrementState()
+    {
+    	this.setState((byte) (this.getState() + 1));
+    }
+    
+    /**
+     * returns if laptop is broken or not.
+     * 
+     * @return
+     */
+    public boolean isBroken()
+    {
+        return (data & 0b11) >= 2;
+    }
+    
+    @Override
+    public boolean isInvNameLocalized()
+    {
+        return false;
+    }
+    
+    @Override
+    public boolean isItemValidForSlot(final int slot, final ItemStack stack)
+    {
+        if(stack != null && stack.getItem().equals(ModItems.flashDrive) && slot == 0)
+            return true;
+        return false;
     }
 
     public boolean isLidClosed()
@@ -125,7 +170,56 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
         return (data & 0b100) != 0;
     }
 
-    public void setLidClosed(boolean closeLid) 
+    @Override
+    public boolean isUseableByPlayer(final EntityPlayer player) {
+        return this.worldObj.getBlockTileEntity(this.xCoord, this.yCoord, this.zCoord) == this &&
+                player.getDistanceSq(this.xCoord + 0.5, this.yCoord + 0.5, this.zCoord + 0.5) < 64;
+    }
+
+    @Override
+    public void onDataPacket(final INetworkManager net, final Packet132TileEntityData pkt)
+    {
+        NBTTagCompound tag = pkt.customParam1;
+        this.readFromNBT(tag);
+    }
+
+    @Override
+    public void openChest() {}
+
+    @Override
+    public void readFromNBT(final NBTTagCompound tag)
+    {
+        super.readFromNBT(tag);
+        NBTTagList tagList = tag.getTagList("Inventory");
+        for (int i = 0; i < tagList.tagCount(); i++) {
+            NBTTagCompound tag2 = (NBTTagCompound) tagList.tagAt(i);
+            byte slot = tag2.getByte("Slot");
+            if (slot >= 0 && slot < this.inv.length)
+                this.inv[slot] = ItemStack.loadItemStackFromNBT(tag2);
+        }
+        this.data = tag.getByte("data");
+        this.lidAngleX = tag.getFloat("lidAngle");
+    }
+
+    public void setCondition(final byte condition)
+    {
+        data &= ~0b11;
+        data |= condition & 0b11;
+    }
+
+    public void setData(final byte data)
+    {
+        this.data = data;
+    }
+
+    @Override
+    public void setInventorySlotContents(final int slot, final ItemStack stack) {
+        this.inv[slot] = stack;
+        if (stack != null && stack.stackSize > this.getInventoryStackLimit())
+            stack.stackSize = this.getInventoryStackLimit();
+    }
+
+    public void setLidClosed(final boolean closeLid) 
     {
         if(closeLid)
         {
@@ -137,171 +231,56 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
         }
     }
 
-    public void toggleLid()
-    {
-        setLidClosed(!isLidClosed());
-    }
-
-    /**
-     * condition of laptop. 0 = best, 1 = ok, 2 = broken.
-     */
-    public byte getCondition()
-    {
-        return (byte) (data & 0b11);
-    }
-
-    public void setCondition(byte condition)
-    {
-        data &= ~0b11;
-        data |= condition & 0b11;
-    }
-
-    /**
-     * makes the laptop more broken.
-     * 
-     */
-    public void degradeCondition()
-    {
-        if(getCondition() < 2)
-            data++;
-    }
-
-    /**
-     * returns if laptop is broken or not.
-     * 
-     * @return
-     */
-    public boolean isBroken()
-    {
-        return (data & 0b11) >= 2;
-    }
-
-    public boolean hasFlashDrive()
-    {
-        return isItemValidForSlot(0, getStackInSlot(0));
-    }
-
-    public byte getData()
-    {
-        return data;
-    }
-
-    public void setData(byte data)
-    {
-        this.data = data;
-    }
-
-    public void fix()
-    {
-        data &= ~0b11;
-    }
-    
-    public byte getState()
-    {
-    	return (byte) ((data >> 3) & 0b111);
-    }
-    
-    public void setState(byte newState)
+    public void setState(final byte newState)
     {
     	data &= ~0b111000;
     	data |= ((newState & 0b111) << 3);
     }
-    
-    public void incrementState()
+
+    public void toggleLid()
     {
-    	setState((byte) (getState() + 1));
+        this.setLidClosed(!this.isLidClosed());
     }
 
     @Override
-    public boolean canRecievePower()
+    public void updateEntity()
     {
-        return !isBroken();
-    }
-
-    @Override
-    public int getSizeInventory() {
-        return inv.length;
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int slot) {
-        return inv[slot];
-    }
-
-    @Override
-    public void setInventorySlotContents(int slot, ItemStack stack) {
-        inv[slot] = stack;
-        if (stack != null && stack.stackSize > getInventoryStackLimit()) {
-            stack.stackSize = getInventoryStackLimit();
-        }
-    }
-
-    @Override
-    public ItemStack decrStackSize(int slot, int amt) {
-        ItemStack stack = getStackInSlot(slot);
-        if (stack != null)
+        if(!this.worldObj.isRemote)
         {
-            if (stack.stackSize <= amt)
-            {
-                setInventorySlotContents(slot, null);
-            }
-            else
-            {
-                stack = stack.splitStack(amt);
-                if (stack.stackSize == 0)
-                {
-                    setInventorySlotContents(slot, null);
-                }
+            if(this.worldObj.getBlockId(this.xCoord, this.yCoord, this.zCoord) != ModBlocks.laptop.blockID)
+                this.worldObj.removeBlockTileEntity(this.xCoord, this.yCoord, this.zCoord);
+            
+            if(this.powerLevel > 0)
+            	this.setPower(this.getPower() - this.powerUsedTick);
+            System.out.println(this.getPower());
+        }
+        if(!this.isBroken())
+        {
+            if(this.isLidClosed() && this.lidAngleX != LID_ANGLE_CLOSED)
+                this.lidAngleX += 4.0F;
+            else if(!this.isLidClosed() && this.lidAngleX != LID_ANGLE_OPEN)
+                this.lidAngleX -= 4.0F;
+        }
+        else if(this.hasFlashDrive() && !this.worldObj.isRemote)
+            BlockLaptop.ejectFlashDrive(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+    }
+
+    @Override
+    public void writeToNBT(final NBTTagCompound tag)
+    {
+        super.writeToNBT(tag);
+        tag.setByte("data", this.data);
+        tag.setFloat("lidAngle", this.lidAngleX);
+        NBTTagList itemList = new NBTTagList();
+        for (int i = 0; i < this.inv.length; i++) {
+            ItemStack stack = this.inv[i];
+            if (stack != null) {
+                NBTTagCompound tag2 = new NBTTagCompound();
+                tag2.setByte("Slot", (byte) i);
+                stack.writeToNBT(tag2);
+                itemList.appendTag(tag2);
             }
         }
-        return stack;
-    }
-
-    @Override
-    public ItemStack getStackInSlotOnClosing(int slot) {
-        ItemStack stack = getStackInSlot(slot);
-        if (stack != null) {
-            setInventorySlotContents(slot, null);
-        }
-        return stack;
-    }
-
-    @Override
-    public int getInventoryStackLimit() {
-        return 1;
-    }
-
-    @Override
-    public boolean isUseableByPlayer(EntityPlayer player) {
-        return worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) == this &&
-                player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) < 64;
-    }
-
-    @Override
-    public void openChest() {}
-
-    @Override
-    public void closeChest() {}
-
-    @Override
-    public String getInvName()
-    {
-        return "tileentitylaptop";
-    }
-
-    @Override
-    public boolean isInvNameLocalized()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slot, ItemStack stack)
-    {
-        if(stack != null && stack.getItem().equals(ModItems.flashDrive) && slot == 0)
-        {
-            return true;
-        }
-        return false;
+        tag.setTag("Inventory", itemList);
     }
 }
