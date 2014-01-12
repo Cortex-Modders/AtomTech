@@ -33,13 +33,16 @@ abstract class ElectricalComponent(val maxAmperes: Double, val maxVolts: Double,
 
 class Wire(maxAmps: Double, maxVolts: Double) extends ElectricalComponent(maxAmps, maxVolts, 0.0D)
 {
-	def process(electricity: ElectricalUnit) = {
-		if(shouldFry(electricity))
+	def process(electricity: ElectricalUnit): ElectricalUnit = {
+		if(shouldFry(electricity) || fried)
 		{
 			fry
-			null
+			return null
 		}
-		electricity
+		else
+		{
+			electricity
+		}
 	}
 }
 
@@ -47,16 +50,17 @@ class Transistor(val minVolts: Double, maxAmps: Double, maxVolts: Double) extend
 {
 	var on = false
 	// TODO
-	def process(electricity: ElectricalUnit) = {
-		if(shouldFry(electricity))
+	def process(electricity: ElectricalUnit): ElectricalUnit = {
+		if(shouldFry(electricity) || fried)
 		{
 			fry
-			null
-		}
-		if(electricity.volts > minVolts)
-			on = true
-		else
 			on = false
-		electricity
+			return null
+		}
+		else
+		{
+			on = electricity.volts > minVolts
+			electricity
+		}
 	}
 }
