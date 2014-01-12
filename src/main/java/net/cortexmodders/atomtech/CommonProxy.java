@@ -1,9 +1,7 @@
 package net.cortexmodders.atomtech;
 
 import net.cortexmodders.atomtech.blocks.ModBlocks;
-import net.cortexmodders.atomtech.element.ElementCollection;
 import net.cortexmodders.atomtech.item.ModItems;
-import net.cortexmodders.atomtech.lib.ATResources;
 import net.cortexmodders.atomtech.lib.BlockIds;
 import net.cortexmodders.atomtech.lib.ItemIds;
 import net.cortexmodders.atomtech.tileentity.TileEntityBattery;
@@ -28,9 +26,10 @@ public class CommonProxy
     
     public void addElementsJson()
     {
-        ElementCollection elements = new ElementCollection();
-        elements.parseElementInfo(ATResources.ELEMENT_JSON_FILE);
-        AtomTech.elements = elements;
+        //TODO: redo element code in Gson and move to scala.
+//        ElementCollection elements = new ElementCollection();
+//        elements.parseElementInfo(ATResources.ELEMENT_JSON_FILE);
+//        AtomTech.elements = elements;
     }
     
     public void addOreDictionaryOres()

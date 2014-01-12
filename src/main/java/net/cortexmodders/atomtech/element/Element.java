@@ -1,15 +1,7 @@
 package net.cortexmodders.atomtech.element;
 
-import static argo.jdom.JsonNodeBuilders.aStringBuilder;
-
-import java.util.Map;
-
 import net.cortexmodders.atomtech.lib.ATLogger;
 import argo.jdom.JsonNode;
-import argo.jdom.JsonStringNode;
-
-import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
 
 public class Element
 {
@@ -48,11 +40,11 @@ public class Element
      */
     public Element(final String parString, final JsonNode parNode)
     {
-        Map<JsonStringNode, Object> processedFields = Maps.transformValues(parNode.getFields(), new JsonStringConverter());
+//        Map<JsonStringNode, Object> processedFields = Maps.transformValues(parNode.getFields(), new JsonStringConverter());
         this.name = parString;
-        this.symbol = Strings.nullToEmpty((String) processedFields.get(aStringBuilder("symbol")));
-        this.atomic_number = Integer.parseInt(fixString((String) processedFields.get(aStringBuilder("atomic_number"))));
-        this.atomic_weight = Float.parseFloat(fixString((String) processedFields.get(aStringBuilder("atomic_weight"))));
+//        this.symbol = Strings.nullToEmpty((String) processedFields.get(aStringBuilder("symbol")));
+//        this.atomic_number = Integer.parseInt(fixString((String) processedFields.get(aStringBuilder("atomic_number"))));
+//        this.atomic_weight = Float.parseFloat(fixString((String) processedFields.get(aStringBuilder("atomic_weight"))));
         if (this.debug)
             ATLogger.info("New element: " + this.name);
     }
