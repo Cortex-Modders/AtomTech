@@ -28,7 +28,7 @@ public class AtomTech
     
     public static CreativeTabs atomTab = new ATCreativeTab("AtomTech");
     
-    @SidedProxy(clientSide = "cortexmodders.atomtech.client.ClientProxy", serverSide = "cortexmodders.atomtech.CommonProxy")
+    @SidedProxy(clientSide = "net.cortexmodders.atomtech.client.ClientProxy", serverSide = "net.cortexmodders.atomtech.CommonProxy")
     public static CommonProxy proxy;
     
     @Instance
