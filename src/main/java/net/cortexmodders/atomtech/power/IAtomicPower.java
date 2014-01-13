@@ -2,6 +2,7 @@ package net.cortexmodders.atomtech.power;
 
 import net.minecraft.util.Vec3;
 
+@Deprecated
 public interface IAtomicPower
 {
     

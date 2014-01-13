@@ -1,6 +1,6 @@
 package net.cortexmodders.atomtech.item;
 
-import net.cortexmodders.atomtech.blocks.BlockATOre;
+import net.cortexmodders.atomtech.blocks.BlockOre;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
@@ -22,6 +22,6 @@ public class ItemBlockATOre extends ItemBlock
     @Override
     public String getUnlocalizedName(final ItemStack stack)
     {
-        return super.getUnlocalizedName() + "." + BlockATOre.unlocalizedNames[stack.getItemDamage()];
+        return super.getUnlocalizedName() + "." + BlockOre.unlocalizedNames[stack.getItemDamage()];
     }
 }

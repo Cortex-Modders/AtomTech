@@ -12,13 +12,13 @@ import net.minecraft.util.Icon;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockATOre extends Block
+public class BlockOre extends Block
 {
     
     private static Icon[] textures;
     public final static String[] unlocalizedNames = new String[] { "Cuprum Ore", "Plumbum Ore", "Uranium Ore", "Lithium Ore", "Aluminium Ore" };
     
-    public BlockATOre(final int par1)
+    public BlockOre(final int par1)
     {
         super(par1, Material.rock);
         this.setCreativeTab(AtomTech.atomTab);

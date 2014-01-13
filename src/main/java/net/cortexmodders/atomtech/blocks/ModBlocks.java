@@ -22,7 +22,7 @@ public class ModBlocks
         coalGenerator = new BlockCoalGenerator(BlockIds.COAL_GENERATOR).setResistance(4.0F).setHardness(5.0F).setStepSound(Block.soundMetalFootstep).setUnlocalizedName("coalGenerator");
         battery = new BlockBattery(BlockIds.BATTERY).setResistance(3.0F).setHardness(4.0F).setStepSound(Block.soundStoneFootstep).setUnlocalizedName("battery");
         laptop = new BlockLaptop(BlockIds.LAPTOP).setHardness(2.0F).setResistance(3.0F).setStepSound(Block.soundGlassFootstep).setUnlocalizedName("laptop");
-        ores = new BlockATOre(BlockIds.ORES).setHardness(4.0F).setResistance(3.0F).setStepSound(Block.soundStoneFootstep).setUnlocalizedName("ores");
+        ores = new BlockOre(BlockIds.ORES).setHardness(4.0F).setResistance(3.0F).setStepSound(Block.soundStoneFootstep).setUnlocalizedName("ores");
         
         registerBlocks();
         registerLang();
@@ -43,7 +43,7 @@ public class ModBlocks
         LanguageRegistry.addName(coalGenerator, "Coal Generator");
         LanguageRegistry.addName(battery, "Battery");
         LanguageRegistry.addName(laptop, "Laptop");
-        for (int i = 0; i < BlockATOre.unlocalizedNames.length; i++)
-            LanguageRegistry.addName(new ItemStack(ores, 1, i), BlockATOre.unlocalizedNames[i]);
+        for (int i = 0; i < BlockOre.unlocalizedNames.length; i++)
+            LanguageRegistry.addName(new ItemStack(ores, 1, i), BlockOre.unlocalizedNames[i]);
     }
 }

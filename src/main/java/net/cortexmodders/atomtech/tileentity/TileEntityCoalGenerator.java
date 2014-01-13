@@ -7,23 +7,26 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.ForgeDirection;
+import universalelectricity.api.energy.EnergyStorageHandler;
+import universalelectricity.api.energy.IEnergyContainer;
+import universalelectricity.api.energy.IEnergyInterface;
 
-public class TileEntityCoalGenerator extends TilePoweredBase implements IInventory
+public class TileEntityCoalGenerator extends TileEntity implements IInventory, IEnergyInterface, IEnergyContainer
 {
     
     private int fuelLevel = 0;
-    
     private ItemStack fuelStack;
+    
+    private long maxStored = 0;
+    private long outputMax = 8;
+    
+    private long energy = 0;
     
     public void addFuel(final int fuel)
     {
         this.fuelLevel += fuel;
-    }
-    
-    @Override
-    public boolean canSendPower()
-    {
-        return true;
     }
     
     @Override
@@ -166,9 +169,9 @@ public class TileEntityCoalGenerator extends TilePoweredBase implements IInvento
                 this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord) + 4, 3);
             if (this.fuelLevel % 10 == 0)
             {
-                this.powerLevel = 1;
-                this.sendPower();
-                this.powerLevel = 0;
+                //this.powerLevel = 1;
+                //this.sendPower();
+                //this.powerLevel = 0;
             }
             this.fuelLevel--;
         }
@@ -183,5 +186,42 @@ public class TileEntityCoalGenerator extends TilePoweredBase implements IInvento
     {
         super.writeToNBT(tag);
         tag.setInteger("fuel", this.fuelLevel);
+    }
+
+    @Override
+    public boolean canConnect(ForgeDirection arg0)
+    {
+        return true;
+    }
+
+    @Override
+    public long getEnergy(ForgeDirection direction)
+    {
+        return energy;
+    }
+
+    @Override
+    public long getEnergyCapacity(ForgeDirection direction)
+    {
+        return this.maxStored;
+    }
+
+    @Override
+    public void setEnergy(ForgeDirection direction, long energy)
+    {
+        this.energy = energy;
+    }
+
+    @Override
+    public long onExtractEnergy(ForgeDirection arg0, long arg1, boolean arg2)
+    {
+        //TODO fix this
+        return energy -= outputMax;
+    }
+
+    @Override
+    public long onReceiveEnergy(ForgeDirection arg0, long arg1, boolean arg2)
+    {
+        return 0;
     }
 }
