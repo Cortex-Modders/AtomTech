@@ -30,6 +30,7 @@ public class TileEntityLaptop extends TilePoweredBase implements IInventory
         super(20000);
         this.inv = new ItemStack[1];
         this.powerUsedTick = 1;
+        fix();
     }
 
     @Override

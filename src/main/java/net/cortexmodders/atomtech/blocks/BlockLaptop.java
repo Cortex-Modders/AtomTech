@@ -29,7 +29,6 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class BlockLaptop extends BlockContainer
 {
-    
     public static void ejectFlashDrive(final World world, final int x, final int y, final int z)
     {
         TileEntityLaptop tile = (TileEntityLaptop) world.getBlockTileEntity(x, y, z);

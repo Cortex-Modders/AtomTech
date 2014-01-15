@@ -1,6 +1,6 @@
 package net.cortexmodders.atomtech.item;
 
-import net.cortexmodders.atomtech.item.circuits.components.ElectricalComponentWrapper;
+import net.cortexmodders.atomtech.item.circuits.ElectricalComponentWrapper;
 import net.cortexmodders.atomtech.lib.ItemIds;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
