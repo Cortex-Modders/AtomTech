@@ -1,8 +1,5 @@
 package net.cortexmodders.atomtech.item.circuits;
 
-import net.cortexmodders.atomtech.item.circuits.components.Transistor;
-import net.cortexmodders.atomtech.item.circuits.components.Wire;
-
 public class Memory
 {
 	private long bits;
