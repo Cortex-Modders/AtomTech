@@ -9,7 +9,6 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.api.energy.EnergyStorageHandler;
 import universalelectricity.api.energy.IEnergyContainer;
 import universalelectricity.api.energy.IEnergyInterface;
 
@@ -24,41 +23,42 @@ public class TileEntityCoalGenerator extends TileEntity implements IInventory, I
     
     private long energy = 0;
     
+    // My methods
+    
     public void addFuel(final int fuel)
     {
         this.fuelLevel += fuel;
+    } 
+    
+    public int getFuelLevel()
+    {
+        return this.fuelLevel;
     }
     
-    @Override
-    public void closeChest()
-    {
-    }
+    // TileEntity methods
     
     @Override
-    public ItemStack decrStackSize(final int i, final int j)
+    public void updateEntity()
     {
-        if (this.fuelStack != null)
+        if(!this.worldObj.isRemote)
         {
-            ItemStack itemstack;
-            
-            if (this.fuelStack.stackSize <= j)
+            if (this.fuelLevel > 0)
             {
-                itemstack = this.fuelStack;
-                this.fuelStack = null;
-                return itemstack;
+                if (this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord) < 4)
+                    this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord) + 4, 3);
+                if (this.fuelLevel % 10 == 0)
+                {
+                    //this.powerLevel = 1;
+                    //this.sendPower();
+                    //this.powerLevel = 0;
+                }
+                this.fuelLevel--;
             }
-            else
-            {
-                itemstack = this.fuelStack.splitStack(j);
-                
-                if (this.fuelStack.stackSize == 0)
-                    this.fuelStack = null;
-                
-                return itemstack;
-            }
+            else if (this.fuelLevel < 0)
+                this.fuelLevel = 0;
+            else if (!this.worldObj.isRemote && this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord) > 3 && this.fuelLevel == 0)
+                this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord) - 4, 3);
         }
-        else
-            return null;
     }
     
     @Override
@@ -69,21 +69,25 @@ public class TileEntityCoalGenerator extends TileEntity implements IInventory, I
         return new Packet132TileEntityData(this.xCoord, this.yCoord, this.zCoord, 0, tag);
     }
     
-    public int getFuelLevel()
+    @Override
+    public void onDataPacket(final INetworkManager net, final Packet132TileEntityData pkt)
     {
-        return this.fuelLevel;
+        NBTTagCompound tag = pkt.data;
+        this.readFromNBT(tag);
     }
     
     @Override
-    public int getInventoryStackLimit()
+    public void readFromNBT(final NBTTagCompound tag)
     {
-        return 64;
+        super.readFromNBT(tag);
+        this.fuelLevel = tag.getInteger("fuel");
     }
     
     @Override
-    public String getInvName()
+    public void writeToNBT(final NBTTagCompound tag)
     {
-        return null;
+        super.writeToNBT(tag);
+        tag.setInteger("fuel", this.fuelLevel);
     }
     
     // inventory methods
@@ -131,23 +135,33 @@ public class TileEntityCoalGenerator extends TileEntity implements IInventory, I
         return true;
     }
     
-    @Override
-    public void onDataPacket(final INetworkManager net, final Packet132TileEntityData pkt)
-    {
-        NBTTagCompound tag = pkt.data;
-        this.readFromNBT(tag);
-    }
+    // IInventory Methods
     
     @Override
-    public void openChest()
+    public ItemStack decrStackSize(final int i, final int j)
     {
-    }
-    
-    @Override
-    public void readFromNBT(final NBTTagCompound tag)
-    {
-        super.readFromNBT(tag);
-        this.fuelLevel = tag.getInteger("fuel");
+        if (this.fuelStack != null)
+        {
+            ItemStack itemstack;
+            
+            if (this.fuelStack.stackSize <= j)
+            {
+                itemstack = this.fuelStack;
+                this.fuelStack = null;
+                return itemstack;
+            }
+            else
+            {
+                itemstack = this.fuelStack.splitStack(j);
+                
+                if (this.fuelStack.stackSize == 0)
+                    this.fuelStack = null;
+                
+                return itemstack;
+            }
+        }
+        else
+            return null;
     }
     
     @Override
@@ -161,64 +175,60 @@ public class TileEntityCoalGenerator extends TileEntity implements IInventory, I
     }
     
     @Override
-    public void updateEntity()
+    public int getInventoryStackLimit()
     {
-        if (this.fuelLevel > 0)
-        {
-            if (!this.worldObj.isRemote && this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord) < 4)
-                this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord) + 4, 3);
-            if (this.fuelLevel % 10 == 0)
-            {
-                //this.powerLevel = 1;
-                //this.sendPower();
-                //this.powerLevel = 0;
-            }
-            this.fuelLevel--;
-        }
-        else if (this.fuelLevel < 0)
-            this.fuelLevel = 0;
-        else if (!this.worldObj.isRemote && this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord) > 3 && this.fuelLevel == 0)
-            this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord) - 4, 3);
+        return 64;
     }
     
     @Override
-    public void writeToNBT(final NBTTagCompound tag)
+    public String getInvName()
     {
-        super.writeToNBT(tag);
-        tag.setInteger("fuel", this.fuelLevel);
+        return "";
     }
-
+    
+    @Override
+    public void openChest()
+    {
+    }
+    
+    @Override
+    public void closeChest()
+    {
+    }
+    
+    // Universal Electricity Methods
+    
     @Override
     public boolean canConnect(ForgeDirection arg0)
     {
         return true;
     }
-
+    
     @Override
     public long getEnergy(ForgeDirection direction)
     {
         return energy;
     }
-
+    
     @Override
     public long getEnergyCapacity(ForgeDirection direction)
     {
         return this.maxStored;
     }
-
+    
     @Override
     public void setEnergy(ForgeDirection direction, long energy)
     {
         this.energy = energy;
     }
-
+    
     @Override
     public long onExtractEnergy(ForgeDirection arg0, long arg1, boolean arg2)
     {
         //TODO fix this
         return energy -= outputMax;
     }
-
+    
     @Override
     public long onReceiveEnergy(ForgeDirection arg0, long arg1, boolean arg2)
     {

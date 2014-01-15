@@ -17,9 +17,13 @@ public class TileEntityCable extends TileEntity implements IEnergyInterface, ICo
     // all the connections. 6 for 6 sides.
     private TileEntity[] connections = new TileEntity[6];
     
+    private float resistance = 1;
+    private int capacity = 1;
+    
     public TileEntityCable()
     {
-
+        resistance = 0.0000001F;
+        capacity = 1;
     }
 
     @Override
@@ -55,6 +59,15 @@ public class TileEntityCable extends TileEntity implements IEnergyInterface, ICo
         return this.connections;
     }
 
+    public int getNumConnections()
+    {
+        int length = 0;
+        for(int i = 0; i < connections.length; i++)
+            if(connections[i] != null)
+                length++;
+        return length;
+    }
+    
     @Override
     public IEnergyNetwork getNetwork()
     {
@@ -91,28 +104,24 @@ public class TileEntityCable extends TileEntity implements IEnergyInterface, ICo
     @Override
     public long onExtractEnergy(ForgeDirection from, long extract, boolean doExtract)
     {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
     public long onReceiveEnergy(ForgeDirection from, long receive, boolean doReceive)
     {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
     public long getCurrentCapacity()
     {
-        // TODO Auto-generated method stub
-        return 0;
+        return capacity;
     }
 
     @Override
     public float getResistance()
     {
-        // TODO Auto-generated method stub
-        return 0;
+        return resistance;
     }
 }

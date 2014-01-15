@@ -1,5 +1,6 @@
 package net.cortexmodders.atomtech;
 
+import net.cortexmodders.atomtech.blocks.ModBlocks;
 import net.minecraft.creativetab.CreativeTabs;
 
 public class ATCreativeTab extends CreativeTabs
@@ -14,7 +15,7 @@ public class ATCreativeTab extends CreativeTabs
     public int getTabIconItemIndex()
     {
         // block id of block that is on the tab
-        return 54;
+        return ModBlocks.coalGenerator.blockID;
     }
     
     @Override

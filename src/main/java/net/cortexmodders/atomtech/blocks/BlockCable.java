@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 
 public class BlockCable extends BlockContainer
 {
@@ -65,7 +66,8 @@ public class BlockCable extends BlockContainer
     @Override
     public void setBlockBoundsBasedOnState(final IBlockAccess access, final int x, final int y, final int z)
     {
-        this.setBlockBounds(0.3125F, 0.3125F, 0.3125F, 0.6875F, 0.6875F, 0.6875F);
+        this.setBlockBounds(0.40625F, 0F, 0F, 0.59375F, 0.0625F, 1F);
+        
         float minx = (float) this.minX;
         float miny = (float) this.minY;
         float minz = (float) this.minZ;
@@ -73,19 +75,45 @@ public class BlockCable extends BlockContainer
         float maxy = (float) this.maxY;
         float maxz = (float) this.maxZ;
         
-        if (validBlock(access.getBlockTileEntity(x - 1, y, z)))
-            minx = 0;
-        if (validBlock(access.getBlockTileEntity(x + 1, y, z)))
-            maxx = 1;
-        if (validBlock(access.getBlockTileEntity(x, y - 1, z)))
-            miny = 0;
-        if (validBlock(access.getBlockTileEntity(x, y + 1, z)))
-            maxy = 1;
-        if (validBlock(access.getBlockTileEntity(x, y, z - 1)))
-            minz = 0;
-        if (validBlock(access.getBlockTileEntity(x, y, z + 1)))
-            maxz = 1;
+        TileEntityCable tile = (TileEntityCable) access.getBlockTileEntity(x, y, z);
+        int length = tile.getNumConnections();
         
-        this.setBlockBounds(minx, miny, minz, maxx, maxy, maxz);
+        if(length > 0 && length < 3)
+        {
+            TileEntity[] connections = tile.getConnections();
+            
+            for(int i = 0; i < connections.length; i++)
+            {
+                if(connections[i] == null)
+                    continue;
+                
+                ForgeDirection direction = ForgeDirection.getOrientation(i);
+                
+                if(length == 1)
+                {
+                    
+                    break;
+                }
+            }
+        }
+        else if(length > 3)
+        {
+            
+        }
+        
+        //        if (validBlock(access.getBlockTileEntity(x - 1, y, z)))
+        //            minx = 0;
+        //        if (validBlock(access.getBlockTileEntity(x + 1, y, z)))
+        //            maxx = 1;
+        //        if (validBlock(access.getBlockTileEntity(x, y - 1, z)))
+        //            miny = 0;
+        //        if (validBlock(access.getBlockTileEntity(x, y + 1, z)))
+        //            maxy = 1;
+        //        if (validBlock(access.getBlockTileEntity(x, y, z - 1)))
+        //            minz = 0;
+        //        if (validBlock(access.getBlockTileEntity(x, y, z + 1)))
+        //            maxz = 1;
+        
+        //        this.setBlockBounds(minx, miny, minz, maxx, maxy, maxz);
     }
 }
