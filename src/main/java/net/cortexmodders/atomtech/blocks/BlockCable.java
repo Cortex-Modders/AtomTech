@@ -1,7 +1,6 @@
 package net.cortexmodders.atomtech.blocks;
 
 import net.cortexmodders.atomtech.AtomTech;
-import net.cortexmodders.atomtech.power.IAtomicPower;
 import net.cortexmodders.atomtech.tileentity.TileEntityCable;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -13,19 +12,6 @@ import net.minecraftforge.common.ForgeDirection;
 
 public class BlockCable extends BlockContainer
 {
-    
-    public static boolean validBlock(final TileEntity tile)
-    {
-        if (tile != null && tile instanceof IAtomicPower)
-            return true;
-        return false;
-    }
-    
-    public static boolean validBlock(final World world, final int x, final int y, final int z)
-    {
-        TileEntity tile = world.getBlockTileEntity(x, y, z);
-        return validBlock(tile);
-    }
     
     protected BlockCable(final int par1)
     {
@@ -58,11 +44,38 @@ public class BlockCable extends BlockContainer
     }
     
     @Override
+    public boolean renderAsNormalBlock()
+    {
+        return false;
+    }
+    
+    @Override
     public void registerIcons(final IconRegister register)
     {
         this.blockIcon = register.registerIcon("atomtech:cable");
     }
     
+    @Override
+    public boolean canPlaceBlockAt(World world, int x, int y, int z)
+    {
+        return world.doesBlockHaveSolidTopSurface(x, y - 1, z);
+    }
+    
+    @Override
+    public void onNeighborBlockChange(World world, int x, int y, int z, int neighborId)
+    {
+        if (!world.isRemote)
+        {
+            if (!this.canPlaceBlockAt(world, x, y, z))
+            {
+                this.dropBlockAsItem(world, x, y, z, 0, 0);
+                world.setBlockToAir(x, y, z);
+            }
+
+            super.onNeighborBlockChange(world, x, y, z, neighborId);
+        }
+    }
+
     @Override
     public void setBlockBoundsBasedOnState(final IBlockAccess access, final int x, final int y, final int z)
     {
@@ -76,9 +89,9 @@ public class BlockCable extends BlockContainer
         float maxz = (float) this.maxZ;
         
         TileEntityCable tile = (TileEntityCable) access.getBlockTileEntity(x, y, z);
-        int length = tile.getNumConnections();
+        int conNum = tile.getNumConnections();
         
-        if(length > 0 && length < 3)
+        if(conNum > 0 && conNum < 3)
         {
             TileEntity[] connections = tile.getConnections();
             
@@ -89,31 +102,44 @@ public class BlockCable extends BlockContainer
                 
                 ForgeDirection direction = ForgeDirection.getOrientation(i);
                 
-                if(length == 1)
+                if(conNum == 1)
                 {
+                    maxz = 0.4375F;
+                    
+                    switch(direction)
+                    {
+                        case NORTH: {break;}
+                        case SOUTH: {break;}
+                        case EAST: {break;}
+                        case WEST: {break;}
+                    }
+                    //System.out.println(String.format("MinX = %s, MinY = %s, MinZ = %s, MaxX = %s, MaxY = %s, MaxZ = %s", minx, miny, minz, maxx, maxy, maxz));
+                }
+                else if(conNum == 2 && (direction == ForgeDirection.EAST || direction == ForgeDirection.WEST))
+                {
+                    float swapX1, swapX2;
+                    swapX1 = minx;
+                    swapX2 = maxx;
+                    
+                    minx = minz;
+                    minz = swapX1;
+                    maxx = maxz;
+                    maxz = swapX2;
                     
                     break;
                 }
             }
         }
-        else if(length > 3)
+        else if(conNum >= 3)
         {
-            
+            minx = 0F;
+            miny = 0F;
+            minz = 0F;
+            maxx = 1F;
+            maxy = 0.125F;
+            maxz = 1F;
         }
-        
-        //        if (validBlock(access.getBlockTileEntity(x - 1, y, z)))
-        //            minx = 0;
-        //        if (validBlock(access.getBlockTileEntity(x + 1, y, z)))
-        //            maxx = 1;
-        //        if (validBlock(access.getBlockTileEntity(x, y - 1, z)))
-        //            miny = 0;
-        //        if (validBlock(access.getBlockTileEntity(x, y + 1, z)))
-        //            maxy = 1;
-        //        if (validBlock(access.getBlockTileEntity(x, y, z - 1)))
-        //            minz = 0;
-        //        if (validBlock(access.getBlockTileEntity(x, y, z + 1)))
-        //            maxz = 1;
-        
-        //        this.setBlockBounds(minx, miny, minz, maxx, maxy, maxz);
+
+        this.setBlockBounds(minx, miny, minz, maxx, maxy, maxz);
     }
 }

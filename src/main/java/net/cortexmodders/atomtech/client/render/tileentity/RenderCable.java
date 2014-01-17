@@ -33,6 +33,13 @@ public class RenderCable extends TileEntitySpecialRenderer
         GL11.glPushMatrix();
         {
             GL11.glTranslatef((float)x, (float)y, (float)z);
+            TileEntity[] connections = tile.getConnections();
+            
+            if(connections[0] != null || connections[1] != null)
+            {
+                
+            }
+            
             this.model.render(tile, 0.0625F);
         }
         GL11.glPopMatrix();
