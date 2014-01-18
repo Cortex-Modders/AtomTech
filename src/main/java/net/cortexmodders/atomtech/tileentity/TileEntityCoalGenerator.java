@@ -9,10 +9,15 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import universalelectricity.api.electricity.IVoltageInput;
+import universalelectricity.api.electricity.IVoltageOutput;
+import universalelectricity.api.energy.IConductor;
 import universalelectricity.api.energy.IEnergyContainer;
 import universalelectricity.api.energy.IEnergyInterface;
+import universalelectricity.api.vector.Vector3;
+import universalelectricity.api.vector.VectorHelper;
 
-public class TileEntityCoalGenerator extends TileEntity implements IInventory, IEnergyInterface, IEnergyContainer
+public class TileEntityCoalGenerator extends TileEntity implements IInventory, IEnergyInterface, IEnergyContainer, IVoltageOutput, IVoltageInput
 {
     
     private int fuelLevel = 0;
@@ -51,6 +56,8 @@ public class TileEntityCoalGenerator extends TileEntity implements IInventory, I
                     //this.powerLevel = 1;
                     //this.sendPower();
                     //this.powerLevel = 0;
+                    
+                    
                 }
                 this.fuelLevel--;
             }
@@ -135,8 +142,6 @@ public class TileEntityCoalGenerator extends TileEntity implements IInventory, I
         return true;
     }
     
-    // IInventory Methods
-    
     @Override
     public ItemStack decrStackSize(final int i, final int j)
     {
@@ -199,9 +204,13 @@ public class TileEntityCoalGenerator extends TileEntity implements IInventory, I
     // Universal Electricity Methods
     
     @Override
-    public boolean canConnect(ForgeDirection arg0)
+    public boolean canConnect(ForgeDirection direction)
     {
-        return true;
+        TileEntity tile = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), direction);
+        if(tile instanceof IConductor)
+            return true;
+        
+        return false;
     }
     
     @Override
@@ -223,14 +232,36 @@ public class TileEntityCoalGenerator extends TileEntity implements IInventory, I
     }
     
     @Override
-    public long onExtractEnergy(ForgeDirection arg0, long arg1, boolean arg2)
+    public long onExtractEnergy(ForgeDirection direction, long extract, boolean doExtract)
     {
         //TODO fix this
-        return energy -= outputMax;
+        if(doExtract && canConnect(direction))
+            return energy -= outputMax;
+        
+        return 0;
     }
     
     @Override
     public long onReceiveEnergy(ForgeDirection arg0, long arg1, boolean arg2)
+    {
+        return 0;
+    }
+
+    @Override
+    public long getVoltageInput(ForgeDirection direction)
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public void onWrongVoltage(ForgeDirection direction, long voltage)
+    {
+        
+    }
+
+    @Override
+    public long getVoltageOutput(ForgeDirection side)
     {
         return 0;
     }

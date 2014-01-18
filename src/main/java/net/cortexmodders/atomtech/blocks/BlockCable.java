@@ -76,6 +76,7 @@ public class BlockCable extends BlockContainer
         }
     }
 
+    @SuppressWarnings("incomplete-switch")
     @Override
     public void setBlockBoundsBasedOnState(final IBlockAccess access, final int x, final int y, final int z)
     {

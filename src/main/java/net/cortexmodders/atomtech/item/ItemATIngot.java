@@ -34,6 +34,7 @@ public class ItemATIngot extends Item
         return i;
     }
     
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void getSubItems(final int id, final CreativeTabs tabs, final List list)
     {

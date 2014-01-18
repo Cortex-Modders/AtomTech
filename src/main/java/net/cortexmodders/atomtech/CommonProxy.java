@@ -4,7 +4,7 @@ import net.cortexmodders.atomtech.blocks.ModBlocks;
 import net.cortexmodders.atomtech.item.ModItems;
 import net.cortexmodders.atomtech.lib.BlockIds;
 import net.cortexmodders.atomtech.lib.ItemIds;
-import net.cortexmodders.atomtech.tileentity.TileEntityBattery;
+import net.cortexmodders.atomtech.tileentity.TileEntitySmallBattery;
 import net.cortexmodders.atomtech.tileentity.TileEntityCable;
 import net.cortexmodders.atomtech.tileentity.TileEntityCoalGenerator;
 import net.cortexmodders.atomtech.tileentity.TileEntityLaptop;
@@ -80,7 +80,7 @@ public class CommonProxy
     {
         GameRegistry.registerTileEntity(TileEntityCable.class, "tileEntityCable");
         GameRegistry.registerTileEntity(TileEntityCoalGenerator.class, "tileEntityCoalGenerator");
-        GameRegistry.registerTileEntity(TileEntityBattery.class, "tileEntityBattery");
+        GameRegistry.registerTileEntity(TileEntitySmallBattery.class, "tileEntityBattery");
         GameRegistry.registerTileEntity(TileEntityLaptop.class, "tileEntityLaptop");
     }
 }

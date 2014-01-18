@@ -1,6 +1,7 @@
 package net.cortexmodders.atomtech.tileentity;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.api.energy.EnergyNetworkLoader;
 import universalelectricity.api.energy.IConductor;
@@ -8,6 +9,8 @@ import universalelectricity.api.energy.IEnergyInterface;
 import universalelectricity.api.energy.IEnergyNetwork;
 import universalelectricity.api.vector.Vector3;
 import universalelectricity.api.vector.VectorHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityCable extends TileEntity implements IEnergyInterface, IConductor
 {
@@ -22,7 +25,8 @@ public class TileEntityCable extends TileEntity implements IEnergyInterface, ICo
     
     public TileEntityCable()
     {
-        resistance = 0.0000001F;
+        // copper resistance
+        resistance = 0.0000000168F;
         capacity = 1;
     }
 
@@ -93,7 +97,8 @@ public class TileEntityCable extends TileEntity implements IEnergyInterface, ICo
 
     public boolean canConnect(TileEntity entity)
     {
-        if(entity instanceof TileEntityCable)
+        if(entity instanceof TileEntityCable ||
+           entity instanceof IEnergyInterface)
         {
             return true;
         }
@@ -110,6 +115,10 @@ public class TileEntityCable extends TileEntity implements IEnergyInterface, ICo
     @Override
     public long onReceiveEnergy(ForgeDirection from, long receive, boolean doReceive)
     {
+        if (this.canConnect(from) && this.getNetwork() != null)
+        {
+            return this.getNetwork().produce(this, from.getOpposite(), receive, doReceive);
+        }
         return 0;
     }
 
@@ -123,5 +132,12 @@ public class TileEntityCable extends TileEntity implements IEnergyInterface, ICo
     public float getResistance()
     {
         return resistance;
+    }
+    
+    @Override
+    @SideOnly(Side.CLIENT)
+    public AxisAlignedBB getRenderBoundingBox()
+    {
+        return AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord + 1, yCoord + 1, zCoord + 1);
     }
 }
