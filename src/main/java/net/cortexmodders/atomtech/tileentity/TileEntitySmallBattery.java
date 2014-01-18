@@ -26,6 +26,11 @@ public class TileEntitySmallBattery extends AbstractTileElectricity implements I
     @Override
     public long getEnergy(ForgeDirection from)
     {
+        return this.getEnergy();
+    }
+    
+    public long getEnergy()
+    {
         return energy;
     }
     
@@ -67,12 +72,29 @@ public class TileEntitySmallBattery extends AbstractTileElectricity implements I
         if(from != ForgeDirection.UNKNOWN || this.canConnect(from))
         {
             long energyReceived = Math.min(this.maxEnergy - this.energy, Math.min(this.maxReceive, receive));
-
+            
             if (doReceive)
             {
                 this.energy += energyReceived;
             }
             return energyReceived;
+        }
+        
+        return 0;
+    }
+    
+    @Override
+    public long produce()
+    {
+        long total = 0;
+        
+        
+        for(ForgeDirection side: this.getOutputDirections())
+        {
+            if(this.getEnergy() > 0)
+            {
+                
+            }
         }
         
         return 0;

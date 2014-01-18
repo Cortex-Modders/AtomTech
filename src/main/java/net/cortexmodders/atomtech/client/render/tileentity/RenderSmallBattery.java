@@ -24,11 +24,13 @@ public class RenderSmallBattery extends TileEntitySpecialRenderer
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float delta)
     {
         this.bindTexture(texture);
+        int meta = tile.worldObj.getBlockMetadata(tile.xCoord, tile.yCoord, tile.zCoord);
         
         GL11.glPushMatrix();
         {
             GL11.glTranslated(x, y, z);
             GL11.glTranslatef(0.5F, 0.0F, 0.5F);
+            GL11.glRotatef(-90 * meta, 0F, 1F, 0F);
             GL11.glScalef(-1F, -1F, 1F);
             
             model.render(0.0625F);
