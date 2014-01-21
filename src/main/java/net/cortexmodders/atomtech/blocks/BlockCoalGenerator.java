@@ -2,6 +2,7 @@ package net.cortexmodders.atomtech.blocks;
 
 import net.cortexmodders.atomtech.AtomTech;
 import net.cortexmodders.atomtech.tileentity.TileEntityCoalGenerator;
+import net.cortexmodders.atomtech.lib.BlockHelper;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -26,20 +27,20 @@ public class BlockCoalGenerator extends BlockContainer
     private static Icon front_on;
     private static Icon front_off;
     
-    protected BlockCoalGenerator(final int par1)
+    protected BlockCoalGenerator(int par1)
     {
         super(par1, Material.iron);
         this.setCreativeTab(AtomTech.atomTab);
     }
     
     @Override
-    public TileEntity createNewTileEntity(final World world)
+    public TileEntity createNewTileEntity(World world)
     {
         return new TileEntityCoalGenerator();
     }
     
     @Override
-    public Icon getIcon(final int side, final int meta)
+    public Icon getIcon(int side, int meta)
     {
         if (meta == 0 || meta == 4)
             switch (side)
@@ -109,34 +110,26 @@ public class BlockCoalGenerator extends BlockContainer
     }
     
     @Override
-    public boolean onBlockActivated(final World world, final int x, final int y, final int z, final EntityPlayer player, final int side, final float hitX, final float hitY, final float hitZ)
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
     {
-        if (!world.isRemote && world.getBlockTileEntity(x, y, z) != null && player != null)
+        if (!world.isRemote && world.getBlockTileEntity(x, y, z) instanceof TileEntityCoalGenerator && player != null)
         {
-            ItemStack heldItem = player.getHeldItem();
-            if (TileEntityFurnace.getItemBurnTime(heldItem) > 0)
-            {
-                TileEntityCoalGenerator coalGen = (TileEntityCoalGenerator) world.getBlockTileEntity(x, y, z);
-                coalGen.addFuel(TileEntityFurnace.getItemBurnTime(heldItem) / 8);
-                if (!player.capabilities.isCreativeMode)
-                    heldItem.stackSize--;
-                return true;
-            }
+            return ((TileEntityCoalGenerator)world.getBlockTileEntity(x, y, z)).onBlockActivated(player, side, hitX, hitY, hitZ);
         }
         return false;
     }
     
     @Override
-    public void onBlockPlacedBy(final World world, final int x, final int y, final int z, final EntityLivingBase entity, final ItemStack stack)
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack stack)
     {
         super.onBlockPlacedBy(world, x, y, z, entity, stack);
-        int l = MathHelper.floor_double(entity.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+        int meta = BlockHelper.getBlockOrientation(entity.rotationYaw) & 3;
         
-        world.setBlockMetadataWithNotify(x, y, z, l, 2);
+        world.setBlockMetadataWithNotify(x, y, z, meta, 2);
     }
     
     @Override
-    public void registerIcons(final IconRegister register)
+    public void registerIcons(IconRegister register)
     {
         back = register.registerIcon("atomtech:generator_back");
         bottom = register.registerIcon("atomtech:generator_bottom");

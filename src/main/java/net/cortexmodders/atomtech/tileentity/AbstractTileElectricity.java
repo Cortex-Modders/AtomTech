@@ -16,9 +16,11 @@ public abstract class AbstractTileElectricity extends TileEntity
     long maxExtract = 0;
     float resistance = 0.0000000168F;
     
+//    protected EnergyStorageHandler energy;
+    
     // Abstract methods
     
-    public abstract long produce();
+    protected abstract long produce();
     
     // Pre-implemented methods
     

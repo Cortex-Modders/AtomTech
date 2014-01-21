@@ -1,8 +1,12 @@
 package net.cortexmodders.atomtech.tileentity;
 
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import universalelectricity.api.CompatibilityModule;
+import universalelectricity.api.energy.EnergyStorageHandler;
 import universalelectricity.api.energy.IEnergyContainer;
 import universalelectricity.api.energy.IEnergyInterface;
+import universalelectricity.api.vector.Vector3;
 
 public class TileEntitySmallBattery extends AbstractTileElectricity implements IEnergyInterface, IEnergyContainer
 {
@@ -11,14 +15,18 @@ public class TileEntitySmallBattery extends AbstractTileElectricity implements I
     {
         super();
         maxEnergy = 100;
+//        
+//        energy = new EnergyStorageHandler(100, 10, 10);
     }
     
     @Override
     public void updateEntity()
     {
-        if (!this.worldObj.isRemote)
-            System.out.println(this.energy);
+//        if (!this.worldObj.isRemote)
+//            System.out.println(this.energy);
         super.updateEntity();
+        
+        this.produce();
     }
     
     // UE Methods
@@ -86,17 +94,24 @@ public class TileEntitySmallBattery extends AbstractTileElectricity implements I
     @Override
     public long produce()
     {
-        long total = 0;
+        long totalUsed = 0;
         
-        
-        for(ForgeDirection side: this.getOutputDirections())
+        for (ForgeDirection direction : this.getOutputDirections())
         {
-            if(this.getEnergy() > 0)
+            if (this.getEnergy(direction) > 0)
             {
+                TileEntity tileEntity = new Vector3(this).modifyPositionFromSide(direction).getTileEntity(this.worldObj);
                 
+                if (tileEntity != null)
+                {
+                    // sends the energy
+                    long used = CompatibilityModule.receiveEnergy(tileEntity, direction.getOpposite(), this.onExtractEnergy(direction, this.getEnergy(direction), false), true);
+                    this.onExtractEnergy(direction, used, true);
+                    totalUsed += used;
+                }
             }
         }
         
-        return 0;
+        return totalUsed;
     }
 }

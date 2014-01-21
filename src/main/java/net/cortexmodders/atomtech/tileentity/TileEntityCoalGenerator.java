@@ -1,5 +1,6 @@
 package net.cortexmodders.atomtech.tileentity;
 
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -8,8 +9,9 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.api.electricity.IVoltageInput;
+import universalelectricity.api.CompatibilityModule;
 import universalelectricity.api.electricity.IVoltageOutput;
 import universalelectricity.api.energy.IConductor;
 import universalelectricity.api.energy.IEnergyContainer;
@@ -17,27 +19,76 @@ import universalelectricity.api.energy.IEnergyInterface;
 import universalelectricity.api.vector.Vector3;
 import universalelectricity.api.vector.VectorHelper;
 
-public class TileEntityCoalGenerator extends TileEntity implements IInventory, IEnergyInterface, IEnergyContainer, IVoltageOutput, IVoltageInput
+public class TileEntityCoalGenerator extends AbstractTileElectricity implements IInventory, IEnergyInterface, IEnergyContainer, IVoltageOutput
 {
     
     private int fuelLevel = 0;
     private ItemStack fuelStack;
     
-    private long maxStored = 0;
-    private long outputMax = 8;
-    
-    private long energy = 0;
+    public TileEntityCoalGenerator()
+    {
+        this.maxEnergy = 10;
+    }
     
     // My methods
     
-    public void addFuel(final int fuel)
+    public int addFuel(ItemStack item)
     {
-        this.fuelLevel += fuel;
+        if(fuelStack.itemID == item.itemID)
+        {
+            if(fuelStack.stackSize < 64)
+            {
+                int f = fuelStack.stackSize;
+                int t = item.stackSize;
+                
+                int i = f + item.stackSize;
+                if(i > this.fuelStack.getMaxStackSize())
+                {
+                    int k = Math.abs(this.fuelStack.getMaxStackSize() - i);
+                    fuelStack.stackSize += (item.stackSize -= k);
+                }
+                
+                return item.stackSize;
+            }
+        }
+        
+        return 0;
     } 
     
     public int getFuelLevel()
     {
         return this.fuelLevel;
+    }
+    
+    public boolean onBlockActivated(EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+    {
+        ItemStack heldItem = player.getHeldItem();
+        if (heldItem != null)
+        {
+            if(TileEntityFurnace.getItemBurnTime(heldItem) > 0)
+            {
+                int added = this.addFuel(heldItem);
+                
+                if (added != 0 && !player.capabilities.isCreativeMode)
+                {
+                    heldItem.stackSize--;
+                }
+                
+                return added != 0;
+            }
+        }
+        else
+        {
+            EntityItem item = new EntityItem(this.worldObj, this.xCoord, this.yCoord, this.zCoord, fuelStack);
+            this.worldObj.spawnEntityInWorld(item);
+        }
+        
+        return false;
+    }
+    
+    public void onBlockBroken()
+    {
+        
     }
     
     // TileEntity methods
@@ -46,25 +97,28 @@ public class TileEntityCoalGenerator extends TileEntity implements IInventory, I
     public void updateEntity()
     {
         if(!this.worldObj.isRemote)
-        {
+        {            
             if (this.fuelLevel > 0)
             {
                 if (this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord) < 4)
                     this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord) + 4, 3);
+                
                 if (this.fuelLevel % 10 == 0)
                 {
-                    //this.powerLevel = 1;
-                    //this.sendPower();
+                    this.energy = 1;
+                    this.produce();
                     //this.powerLevel = 0;
                     
                     
                 }
+                
                 this.fuelLevel--;
             }
-            else if (this.fuelLevel < 0)
+            else if (this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord) > 3)
+            {
                 this.fuelLevel = 0;
-            else if (!this.worldObj.isRemote && this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord) > 3 && this.fuelLevel == 0)
                 this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord) - 4, 3);
+            }            
         }
     }
     
@@ -77,21 +131,21 @@ public class TileEntityCoalGenerator extends TileEntity implements IInventory, I
     }
     
     @Override
-    public void onDataPacket(final INetworkManager net, final Packet132TileEntityData pkt)
+    public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt)
     {
         NBTTagCompound tag = pkt.data;
         this.readFromNBT(tag);
     }
     
     @Override
-    public void readFromNBT(final NBTTagCompound tag)
+    public void readFromNBT(NBTTagCompound tag)
     {
         super.readFromNBT(tag);
         this.fuelLevel = tag.getInteger("fuel");
     }
     
     @Override
-    public void writeToNBT(final NBTTagCompound tag)
+    public void writeToNBT(NBTTagCompound tag)
     {
         super.writeToNBT(tag);
         tag.setInteger("fuel", this.fuelLevel);
@@ -106,13 +160,13 @@ public class TileEntityCoalGenerator extends TileEntity implements IInventory, I
     }
     
     @Override
-    public ItemStack getStackInSlot(final int i)
+    public ItemStack getStackInSlot(int i)
     {
         return this.fuelStack;
     }
     
     @Override
-    public ItemStack getStackInSlotOnClosing(final int i)
+    public ItemStack getStackInSlotOnClosing(int i)
     {
         if (this.fuelStack != null)
         {
@@ -131,19 +185,19 @@ public class TileEntityCoalGenerator extends TileEntity implements IInventory, I
     }
     
     @Override
-    public boolean isItemValidForSlot(final int i, final ItemStack itemstack)
+    public boolean isItemValidForSlot(int i, ItemStack itemstack)
     {
         return false;
     }
     
     @Override
-    public boolean isUseableByPlayer(final EntityPlayer entityplayer)
+    public boolean isUseableByPlayer(EntityPlayer entityplayer)
     {
         return true;
     }
     
     @Override
-    public ItemStack decrStackSize(final int i, final int j)
+    public ItemStack decrStackSize(int i, int j)
     {
         if (this.fuelStack != null)
         {
@@ -170,7 +224,7 @@ public class TileEntityCoalGenerator extends TileEntity implements IInventory, I
     }
     
     @Override
-    public void setInventorySlotContents(final int i, final ItemStack itemstack)
+    public void setInventorySlotContents(int i, ItemStack itemstack)
     {
         this.fuelStack = itemstack;
         
@@ -222,7 +276,7 @@ public class TileEntityCoalGenerator extends TileEntity implements IInventory, I
     @Override
     public long getEnergyCapacity(ForgeDirection direction)
     {
-        return this.maxStored;
+        return this.maxEnergy;
     }
     
     @Override
@@ -236,7 +290,7 @@ public class TileEntityCoalGenerator extends TileEntity implements IInventory, I
     {
         //TODO fix this
         if(doExtract && canConnect(direction))
-            return energy -= outputMax;
+            return energy -= maxExtract;
         
         return 0;
     }
@@ -246,23 +300,33 @@ public class TileEntityCoalGenerator extends TileEntity implements IInventory, I
     {
         return 0;
     }
-
-    @Override
-    public long getVoltageInput(ForgeDirection direction)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public void onWrongVoltage(ForgeDirection direction, long voltage)
-    {
-        
-    }
-
+    
     @Override
     public long getVoltageOutput(ForgeDirection side)
     {
         return 0;
+    }
+    
+    @Override
+    protected long produce()
+    {
+        long totalUsed = 0;
+        
+        for (ForgeDirection direction : this.getOutputDirections())
+        {
+            if (this.getEnergy(direction) > 0)
+            {
+                TileEntity tileEntity = new Vector3(this).modifyPositionFromSide(direction).getTileEntity(this.worldObj);
+                
+                if (tileEntity != null)
+                {
+                    long used = CompatibilityModule.receiveEnergy(tileEntity, direction.getOpposite(), this.onExtractEnergy(direction, this.getEnergy(direction), false), true);
+                    this.onExtractEnergy(direction, used, true);
+                    totalUsed += used;
+                }
+            }
+        }
+        
+        return totalUsed;
     }
 }
