@@ -131,7 +131,8 @@ public class TileEntityCoalGenerator extends AbstractTileElectricity implements 
                     ATLogger.info("Get new fuel." + this.fuelStack.stackSize);
                 }
             }
-            else if (this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord) > 3)
+            
+            if (this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord) > 3)
             {
                 this.fuelLevel = 0;
                 this.fuelStack = null;
