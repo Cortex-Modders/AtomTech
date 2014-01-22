@@ -1,8 +1,8 @@
 package net.cortexmodders.atomtech.blocks;
 
 import net.cortexmodders.atomtech.AtomTech;
-import net.cortexmodders.atomtech.tileentity.TileEntityCoalGenerator;
 import net.cortexmodders.atomtech.lib.BlockHelper;
+import net.cortexmodders.atomtech.tileentity.TileEntityCoalGenerator;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -10,9 +10,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.Icon;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public class BlockCoalGenerator extends BlockContainer

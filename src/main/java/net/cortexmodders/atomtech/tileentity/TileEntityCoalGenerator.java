@@ -1,5 +1,6 @@
 package net.cortexmodders.atomtech.tileentity;
 
+import net.cortexmodders.atomtech.lib.ATLogger;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -34,22 +35,29 @@ public class TileEntityCoalGenerator extends AbstractTileElectricity implements 
     
     public int addFuel(ItemStack item)
     {
-        if(fuelStack.itemID == item.itemID)
+        if(fuelStack != null)
         {
-            if(fuelStack.stackSize < 64)
+            if(fuelStack.itemID == item.itemID)
             {
-                int f = fuelStack.stackSize;
-                int t = item.stackSize;
-                
-                int i = f + item.stackSize;
-                if(i > this.fuelStack.getMaxStackSize())
+                if(fuelStack.stackSize < this.fuelStack.getMaxStackSize())
                 {
-                    int k = Math.abs(this.fuelStack.getMaxStackSize() - i);
-                    fuelStack.stackSize += (item.stackSize -= k);
+                    int sum = fuelStack.stackSize + item.stackSize;
+                    int remainder = 0;
+                    if(sum > this.fuelStack.getMaxStackSize())
+                    {
+                        remainder = this.fuelStack.getMaxStackSize() - sum;
+                    }
+                    
+                    fuelStack.stackSize += (item.stackSize + remainder);
+                    ATLogger.info(String.format("Current Fuel: %s, Remainder: %s", fuelStack.stackSize, remainder));
+                    
+                    return Math.abs(remainder);
                 }
-                
-                return item.stackSize;
             }
+        }
+        else
+        {
+            fuelStack = item;
         }
         
         return 0;
@@ -63,24 +71,26 @@ public class TileEntityCoalGenerator extends AbstractTileElectricity implements 
     public boolean onBlockActivated(EntityPlayer player, int side, float hitX, float hitY, float hitZ)
     {
         ItemStack heldItem = player.getHeldItem();
+        ATLogger.info("Activated Block! ");
         if (heldItem != null)
         {
             if(TileEntityFurnace.getItemBurnTime(heldItem) > 0)
             {
-                int added = this.addFuel(heldItem);
+                int remainder = this.addFuel(heldItem);
                 
-                if (added != 0 && !player.capabilities.isCreativeMode)
-                {
-                    heldItem.stackSize--;
-                }
+                heldItem.stackSize = remainder;
                 
-                return added != 0;
+                return remainder != 0;
             }
         }
         else
         {
-            EntityItem item = new EntityItem(this.worldObj, this.xCoord, this.yCoord, this.zCoord, fuelStack);
-            this.worldObj.spawnEntityInWorld(item);
+            if(fuelStack != null && fuelStack.stackSize > 0)
+            {
+                EntityItem item = new EntityItem(this.worldObj, this.xCoord, this.yCoord, this.zCoord, fuelStack);
+                this.worldObj.spawnEntityInWorld(item);
+                System.out.println("Extract item.");
+            }
         }
         
         return false;
@@ -105,21 +115,30 @@ public class TileEntityCoalGenerator extends AbstractTileElectricity implements 
                 
                 if (this.fuelLevel % 10 == 0)
                 {
-                    this.energy = 1;
+                    this.energy += 1;
                     this.produce();
-                    //this.powerLevel = 0;
-                    
-                    
                 }
                 
                 this.fuelLevel--;
+                //ATLogger.info("Fuel Level: " + fuelLevel);
+            }
+            else if(fuelLevel <= 0)
+            {
+                if(this.fuelStack != null && this.fuelStack.stackSize > 0)
+                {
+                    this.fuelStack.stackSize--;
+                    this.fuelLevel = TileEntityFurnace.getItemBurnTime(this.fuelStack);
+                    ATLogger.info("Get new fuel." + this.fuelStack.stackSize);
+                }
             }
             else if (this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord) > 3)
             {
                 this.fuelLevel = 0;
+                this.fuelStack = null;
                 this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord) - 4, 3);
-            }            
+            }
         }
+        
     }
     
     @Override
@@ -141,14 +160,21 @@ public class TileEntityCoalGenerator extends AbstractTileElectricity implements 
     public void readFromNBT(NBTTagCompound tag)
     {
         super.readFromNBT(tag);
-        this.fuelLevel = tag.getInteger("fuel");
+        this.fuelLevel = tag.getInteger("Fuel");
+        this.fuelStack = ItemStack.loadItemStackFromNBT((NBTTagCompound) tag.getTag("FuelStack"));
     }
     
     @Override
     public void writeToNBT(NBTTagCompound tag)
     {
         super.writeToNBT(tag);
-        tag.setInteger("fuel", this.fuelLevel);
+        
+        tag.setInteger("Fuel", this.fuelLevel);
+        NBTTagCompound itemTag = new NBTTagCompound();
+        if(this.fuelStack != null)
+            this.fuelStack.writeToNBT(itemTag);
+        
+        tag.setTag("FuelStack", itemTag);
     }
     
     // inventory methods
